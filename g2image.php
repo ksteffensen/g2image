@@ -817,12 +817,13 @@ function g2ic_make_html_empty_page() {
  */
 function g2ic_make_html_header(){
 	global $g2ic_options;
-	$html = '<html xmlns="http://www.w3.org/1999/xhtml">' . "\n"
+	$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n"
+	. '<html xmlns="http://www.w3.org/1999/xhtml">' . "\n"
 	. '<head>' . "\n"
 	. '    <title>' . T_('Gallery2 Image Chooser') . '</title>' . "\n"
 	. '    <link rel="stylesheet" href="css/g2image.css" type="text/css" />' . "\n"
 	. '    <link rel="stylesheet" href="css/dtree.css" type="text/css" />' . "\n"
-	. '    <link rel="stylesheet" href="css/lightbox.css" type="text/css" />' . "\n"
+	. '    <link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />' . "\n"
 	. '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' . "\n";
 	if($g2ic_options['tinymce'] && $g2ic_options['wpg2_valid']) {
 		$html .= "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
@@ -832,13 +833,8 @@ function g2ic_make_html_header(){
 	}
 	$html .= '    <script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>' . "\n"
 	. '    <script language="javascript" type="text/javascript" src="jscripts/dtree.js"></script>' . "\n"
-
-//**aob [B2] using mootlools and slimbox instead of lightbox !!!
-//**
-//	. '    <script language="javascript" type="text/javascript" src="jscripts/prototype.js"></script>' . "\n"
-//	. '    <script language="javascript" type="text/javascript" src="jscripts/scriptaculous.js?load=effects"></script>' . "\n"
-//	. '    <script language="javascript" type="text/javascript" src="jscripts/lightbox.js"></script>' . "\n"
-
+	. '    <script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>' . "\n"
+	. '    <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>' . "\n"
 //**aob [A3] add all needed functions
 	. '    <script type="text/javascript">' . "\n";
 	foreach($g2ic_options['modules'] as $moduleName => $version){
