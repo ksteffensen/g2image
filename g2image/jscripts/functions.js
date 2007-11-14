@@ -76,11 +76,6 @@ function toggleTextboxes() {
 	else
 		document.getElementsByName('custom_url_textbox')[0].className = 'hidden_textbox';
 
-	if ((obj.imginsert.value == 'link_image') || (obj.imginsert.value == 'link_album'))
-		document.getElementsByName('link_text_textbox')[0].className = 'displayed_textbox';
-	else
-		document.getElementsByName('link_text_textbox')[0].className = 'hidden_textbox';
-
 	if (obj.imginsert.value == 'thumbnail_lightbox')
 		document.getElementsByName('lightbox_group_textbox')[0].className = 'displayed_textbox';
 	else
@@ -99,7 +94,7 @@ function toggleTextboxes() {
 		else
 			document.getElementsByName('drupal_exactsize_textbox')[0].className = 'hidden_textbox';
 	}
-	
+
 	//**aob [A4]
 	//** just hide or show the blocks
 		var pp = document.getElementById("a_"+obj.imginsert.value); // is there a new module selected?
@@ -112,7 +107,7 @@ function toggleTextboxes() {
 		if(pp && pp.getAttribute("module") ){
 			pp.className = 'displayed_textbox';
 		}
-			
+
 	//**
 	//**aob
 }
@@ -174,7 +169,7 @@ function insertHtml(html,form) {
 		else
 			insertAtCursor(window.opener.document.forms[g2ic_form].elements[g2ic_field],html);
 		window.close();
-	
+
 	//**aob [A7] added if(window.opener)
 	}else{
 		var textA = document.getElementById("outputArea");
@@ -182,7 +177,7 @@ function insertHtml(html,form) {
 			var p = document.createElement("TEXTAREA");
 			p.style.width = "50%";
 			p.style.height = "100px";
-			p.id = "outputArea"; 
+			p.id = "outputArea";
 			textA = document.body.appendChild(p);
 			p = document.createElement("DIV");
 			p.id = "outputDiv";
@@ -204,7 +199,7 @@ function insertItems(){
 	var item_title = new Array();
 	var item_description = new Array();
 	var image_url = new Array();
-	var thumbnail_src = new Array();
+	var thumbnail_img = new Array();
 	var fullsize_img = new Array();
 	var thumbw = new Array();
 	var thumbh = new Array();
@@ -221,7 +216,7 @@ function insertItems(){
 			item_description[i] = obj.item_description[i].value
 			image_url[i] = obj.image_url[i].value;
 			fullsize_img[i] = obj.fullsize_img[i].value;
-			thumbnail_src[i] = obj.thumbnail_src[i].value;
+			thumbnail_img[i] = obj.thumbnail_img[i].value;
 			thumbw[i] = obj.thumbw[i].value;
 			thumbh[i] = obj.thumbh[i].value;
 		}
@@ -233,7 +228,7 @@ function insertItems(){
 		item_summary[0] = obj.item_summary.value;
 		item_description[0] = obj.item_description.value
 		image_url[0] = obj.image_url.value;
-		thumbnail_src[0] = obj.thumbnail_src.value;
+		thumbnail_img[0] = obj.thumbnail_img.value;
 		fullsize_img[0] = obj.fullsize_img.value;
 		thumbw[0] = obj.thumbw.value;
 		thumbh[0] = obj.thumbh.value;
@@ -250,27 +245,12 @@ function insertItems(){
 			thumbh[i] = 'height="' + thumbh[i] + '" ';
 
 			switch(obj.imginsert.value){
-				case 'thumbnail_image':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<a href="' + image_url[i]
-					+ '"><img src="'+ thumbnail_src[i] + '" ' + thumbw[i]
-					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' /></a>';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
 				case 'thumbnail_album':
 					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
 						htmlCode += '<div class="' + obj.alignment.value + '">';
 					}
 					htmlCode += '<a href="' + obj.album_url.value
-					+ '"><img src="'+thumbnail_src[i] + '" ' + thumbw[i]
+					+ '"><img src="'+thumbnail_img[i] + '" ' + thumbw[i]
 					+ ' ' + thumbh[i] + imgalt + imgtitle;
 					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
 						htmlCode += ' class="' + obj.alignment.value + '"';
@@ -289,22 +269,8 @@ function insertItems(){
 						htmlCode += '[' + obj.lightbox_group.value + ']';
 					htmlCode += '" title="'
 					+ item_description[i] + '" ><img src="'
-					+ thumbnail_src[i] + '" ' + thumbw[i]
+					+ thumbnail_img[i] + '" ' + thumbw[i]
 					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' /></a>';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'fullsize_image':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<a href="' + image_url[i]
-					+ '"><img src="'+fullsize_img[i] + '" ' + imgalt + imgtitle;
 					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
 						htmlCode += ' class="' + obj.alignment.value + '"';
 					}
@@ -318,7 +284,7 @@ function insertItems(){
 						htmlCode += '<div class="' + obj.alignment.value + '">';
 					}
 					htmlCode += '<a href="' + obj.custom_url.value
-					+ '"><img src="'+thumbnail_src[i] + '" ' + thumbw[i]
+					+ '"><img src="'+thumbnail_img[i] + '" ' + thumbw[i]
 					+ ' ' + thumbh[i] + imgalt + imgtitle;
 					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
 						htmlCode += ' class="' + obj.alignment.value + '"';
@@ -328,39 +294,12 @@ function insertItems(){
 						htmlCode += '</div>';
 					}
 				break;
-				case 'thumbnail_only':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<img src="'+thumbnail_src[i] + '" ' + thumbw[i]
-					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' />';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'fullsize_only':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<img src="'+fullsize_img[i] + '" ' + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' />';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
 				case 'wpg2_image':
 					if (obj.alignment.value != 'none'){
 						htmlCode += '<div class="' + obj.alignment.value + '">';
 					}
 					if(window.tinyMCE) {
-						htmlCode += '<img src="' + thumbnail_src[i]
+						htmlCode += '<img src="' + thumbnail_img[i]
 						+ '" alt="' + image_id[i];
 						if (obj.wpg2_tag_size.value)
 							htmlCode += '|' + obj.wpg2_tag_size.value;
@@ -389,12 +328,6 @@ function insertItems(){
 						htmlCode += ' exactsize=' + obj.drupal_exactsize.value;
 					htmlCode += ']';
 				break;
-				case 'link_image':
-					htmlCode += '<a href="' + image_url[i] + '">' + obj.link_text.value + '</a>';
-				break;
-				case 'link_album':
-					htmlCode += '<a href="' + obj.album_url.value + '">' + obj.link_text.value + '</a>';
-				break;
 				default:
 				//**aob [A6]
 					if(typeof(insertFunctions[obj.imginsert.value])=="function"){
@@ -402,23 +335,28 @@ function insertItems(){
 						var imageObj = {}; // new Object()
 						imageObj.pos = i;
 						imageObj.id = image_id[i];
-						imageObj.url = image_url[i];
-						imageObj.original = fullsize_img[i];
-						imageObj.thumbnail = thumbnail_src[i];
+						imageObj.image_url = image_url[i];
+						imageObj.album_url = obj.album_url.value;
+						imageObj.fullsize_img = fullsize_img[i];
+						imageObj.thumbnail_img = thumbnail_img[i];
 						imageObj.thumbw = thumbw[i];
 						imageObj.thumbh = thumbh[i];
 						imageObj.w = false; 			// to be done
 						imageObj.h =  false; 			// to be done
-						imageObj.title = item_title[i];
-						imageObj.summary = item_summary[i];
+						imageObj.item_title = item_title[i];
+						imageObj.item_summary = item_summary[i];
 						imageObj.description = item_description[i];
 						imageObj.album_id =  false; 		// to be done
 						imageObj.keywords =  false; 		// to be done
 						imageObj.derivatives =  false; 		// to be done
 						imageObj.siblings =  false; 		// to be done
+						imageObj.link_text_image = obj.link_text_image.value;
+						imageObj.link_text_album = obj.link_text_album.value;
+						imageObj.alignment = obj.alignment.value;
+						imageObj.class_mode = obj.class_mode.value;
 
-						htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );		
-				//**aob				
+						htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
+				//**aob
 					}else{
 						alert(obj.imginsert.value);
 						htmlCode += 'Error';
@@ -434,7 +372,7 @@ function insertItems(){
 //**aob [A5]
 //**
 var insertFunctions = new Object();
-// this object will be filled with an array 
+// this object will be filled with an array
 // of functions to be called in insertItems
 //**
 //**aob

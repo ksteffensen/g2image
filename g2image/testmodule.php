@@ -10,6 +10,7 @@ var insertFunctions = new Object();
 	imageObj.pos = 0;
 	imageObj.id = 111;
 	imageObj.url = "/images/pic.jpg";
+	imageObj.album_url = "/album/";
 	imageObj.original = "/images/original.jpg";
 	imageObj.thumbnail = "/images/thumb.jpg";
 	imageObj.thumbw = 45;
@@ -23,6 +24,7 @@ var insertFunctions = new Object();
 	imageObj.keywords =  "boss dia sun"; 		// to be done
 	imageObj.derivatives =  [ [334,"/thumb2", 145,145] ,[335,"/thumb3", 245,245] ]; 		// to be done ** needed in mediawiki !!!
 	imageObj.siblings =  [333,444,555]; 		// to be done
+	imageObj.link_text_album = "Test album link text";
 
 function doInsert(){
 	var val = document.getElementById("demo_select").value;
@@ -32,10 +34,21 @@ function doInsert(){
 }
 </script>
 <?php
-require_once("module.inc.php");
+require_once('./gettext.inc');
+T_setlocale(LC_ALL, 'en');
+
+// Set the text domain as 'default'
+T_bindtextdomain('default', 'langs');
+T_bind_textdomain_codeset('default', 'UTF-8');
+T_textdomain('default');
 
 $g2ic_options = array();
+$g2ic_options['default_action'] = 'text_link_album';
 
+require_once("./modules/module.inc.php");
+
+$g2ic_options = array();
+$g2ic_options['default_action'] = 'text_link_album';
 //** test part in init.php
 	test_modules::init();
 	$str  = "";
@@ -106,7 +119,7 @@ class test_modules{
 	function init(){
 		global $g2ic_options;
 		//**aob mod [A1] test in init.php
-		list( $g2ic_options['modules'], $hasErrModules)  = all_modules::getModules(dirname(__FILE__)."/");
+		list( $g2ic_options['modules'], $hasErrModules)  = all_modules::getModules(dirname(__FILE__)."/modules/");
 		if(count($hasErrModules)>0){
 			echo "following Modules are not correct:";
 			print_r ($hasErrModules);

@@ -6,14 +6,7 @@
  * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
  */
 
-
-//------------------------------------------------------------
-//------------------------------------------------------------
-// the skeleton of a module
-//------------------------------------------------------------
-// each new insertModule should be an extension of this basich module
-//
-class sample_prototype{
+class text_link_image{
 
 	//------------------------------------------------------------
 	/**
@@ -53,19 +46,7 @@ class sample_prototype{
 
 	function module_{$name}(stack, imageObj){
 		var str = "";
-		for(var a in imageObj){
-			if(typeof(imageObj[a] == "string")){
-				str += "<div class='part'>" + a +" : " + imageObj[a] +"</div>\\n";
-			}else{
-				str += "<div class='part'>" + a + "<hr/>\\n";
-				for(var e in imageObj[a]){
-					if(typeof(imageObj[a][e] == "string")){
-						str += "<div class='part'>" + e +" : " + imageObj[a][e] +"</div>\\n";
-					}
-				}
-				str += "</div>";
-			}
-		}
+		str += '<a href="' + imageObj['image_url'] + '">' + imageObj['link_text_image'] + '</a>\\n';
 		return str;
 	}
 //end module [{$name}]
@@ -84,7 +65,12 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return "sample dialog";
+		$html = '            <label for="link_text_image">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '            <input type="text" name="link_text_image" size="84" maxlength="150" value="" />' . "\n"
+		. '            <br />' . "\n"
+		. '            <br />' . "\n"
+		. '            </div>' . "\n";
+		return $html;
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -94,7 +80,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return "sample mySelection";
+		return T_('Textlink to image') . ' ' . T_('(HTML)');
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
