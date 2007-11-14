@@ -161,15 +161,9 @@ function g2ic_get_imginsert_selectoptions(){
 	$imginsert_selectoptions = array();
 
 	// These are the universal image insertion options
-	$message['thumbnail_image'] = T_('Thumbnail with link to image');
 	$message['thumbnail_album'] = T_('Thumbnail with link to parent album');
 	$message['thumbnail_lightbox'] = T_('Thumbnail with LightBox link to Fullsized Image');
 	$message['thumbnail_custom_url'] = T_('Thumbnail with link to custom URL (from text box below)');
-	$message['thumbnail_only'] = T_('Thumbnail only - no link');
-	$message['fullsize_image'] = T_('Fullsized image with link to Gallery page for image');
-	$message['fullsize_only'] = T_('Fullsized image only - no link');
-	$message['link_image'] = T_('Text link to image');
-	$message['link_album'] = T_('Text link to parent album');
 
 	// If using the WPG2 or Drupal Gallery Module append '(HTML)' to the end of the universal messages
 	if ($g2ic_options['wpg2_valid'] || $g2ic_options['drupal_g2_filter']) {
@@ -184,24 +178,12 @@ function g2ic_get_imginsert_selectoptions(){
 
 	// Make the universal message array
 	$imginsert_selectoptions = array(
-		'thumbnail_image' => array(
-			'text'  => $message['thumbnail_image'] ),
 		'thumbnail_album' => array(
 			'text'  => $message['thumbnail_album'] ),
 		'thumbnail_lightbox' => array(
 			'text'  => $message['thumbnail_lightbox'] ),
 		'thumbnail_custom_url' => array(
 			'text'  => $message['thumbnail_custom_url'] ),
-		'thumbnail_only' => array(
-			'text'  => $message['thumbnail_only'] ),
-		'fullsize_image' => array(
-			'text'  => $message['fullsize_image'] ),
-		'fullsize_only' => array(
-			'text'  => $message['fullsize_only'] ),
-		'link_image' => array(
-			'text'  => $message['link_image'] ),
-		'link_album'  => array(
-			'text'  => $message['link_album'] ),
 	);
 
 	//**aob mod [A2]
@@ -265,7 +247,7 @@ function g2ic_get_item_info($item_id) {
 			list($error, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array($item_id));
 			if(!$error) {
 				foreach($thumbnails as $thumbnail) {
-					$item_info['thumbnail_src'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $thumbnail->getid()), array('forceFullUrl' => true));
+					$item_info['thumbnail_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $thumbnail->getid()), array('forceFullUrl' => true));
 					$item_info['image_url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
 					$item_info['thumbnail_width'] = $thumbnail->getWidth();
 					$item_info['thumbnail_height'] = $thumbnail->getHeight();
@@ -576,26 +558,11 @@ function g2ic_make_html_controls(){
 		$html .= ' class="displayed_textbox"';
 	}
 	else {
-		$html .= 'class="hidden_textbox"';
+		$html .= ' class="hidden_textbox"';
 	}
 	$html .= '>' . "\n"
 	. '            <label for="custom_url">' . T_('Custom URL') . '<br /></label>' . "\n"
 	. '            <input type="text" name="custom_url" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-	. '            <br />' . "\n"
-	. '            <br />' . "\n"
-	. '            </div>' . "\n"
-
-	// "Link Text" textbox
-	. '            <div name="link_text_textbox"';
-	if (($g2ic_options['default_action'] == 'link_image') || ($g2ic_options['default_action'] == 'link_album')){
-		$html .= ' class="displayed_textbox"';
-	}
-	else {
-		$html .= 'class="hidden_textbox"';
-	}
-	$html .= '>' . "\n"
-	. '            <label for="link_text">' . T_('Text for text link') . '<br /></label>' . "\n"
-	. '            <input type="text" name="link_text" size="84" maxlength="150" value="" />' . "\n"
 	. '            <br />' . "\n"
 	. '            <br />' . "\n"
 	. '            </div>' . "\n"
@@ -606,7 +573,7 @@ function g2ic_make_html_controls(){
 		$html .= ' class="displayed_textbox"';
 	}
 	else {
-		$html .= 'class="hidden_textbox"';
+		$html .= ' class="hidden_textbox"';
 	}
 	$html .= '>' . "\n"
 	. '            <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
@@ -629,7 +596,7 @@ function g2ic_make_html_controls(){
 				$html .= ' class="displayed_textbox"';
 			}
 			else {
-				$html .= 'class="hidden_textbox"';
+				$html .= ' class="hidden_textbox"';
 			}
 			$html .= '>' . "\n"
 			. '            <label for="wpg2_tag_size">' . T_('WPG2 tag "size" attribute (Leave blank for the default size of: ') . $g2ic_options['wpg2_tag_size']. 'px)' . '<br /></label>' . "\n"
@@ -657,7 +624,7 @@ function g2ic_make_html_controls(){
 				$html .= ' class="displayed_textbox"';
 			}
 			else {
-				$html .= 'class="hidden_textbox"';
+				$html .= ' class="hidden_textbox"';
 			}
 			$html .= '>' . "\n"
 			. '            <label for="drupal_exactsize">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
@@ -887,9 +854,9 @@ function g2ic_make_html_image_navigation(){
 		else
 			$html .= '    <div class="hidden_title">' . "\n";
 
-		$html .= '        ' . T_('Title:') . ' ' . htmlspecialchars($item_info['title']) . '<br />' . "\n"
-		. '        ' . T_('Summary:') . ' ' . htmlspecialchars($item_info['summary']) . '<br />' . "\n"
-		. '        ' . T_('Description:') . ' ' . htmlspecialchars($item_info['description']) . '<br />' . "\n";
+		$html .= '        ' . T_('Title: (used for alt in HTML)') . ' <input type="text" name="item_title" size="60" maxlength="200" value="' . htmlspecialchars($item_info['title']) . '" /><br />' . "\n"
+		. '        ' . T_('Summary: (used for title in HTML)') . ' <input type="text" name="item_summary" size="60" maxlength="200" value="' . htmlspecialchars($item_info['summary']) . '" /><br />' . "\n"
+		. '        ' . T_('Description: (used for caption in Lightbox)') . '<input type="text" name="item_description" size="60" maxlength="200" value="' . htmlspecialchars($item_info['description']) . '" /><br />' . "\n";
 
 		$html .=  "    </div>\n\n";
 
@@ -903,11 +870,11 @@ function g2ic_make_html_image_navigation(){
 		}
 
 		// hidden fields
-		$html .= '    <input type="hidden" name="thumbnail_src" value="' . $item_info['thumbnail_src'] . '" />' . "\n"
+		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item_info['thumbnail_img'] . '" />' . "\n"
 		. '    <input type="hidden" name="fullsize_img" value="' . $item_info['fullsize_img'] . '" />' . "\n"
-		. '    <input type="hidden" name="item_title" value="' . $item_info['title'] . '" />' . "\n"
-		. '    <input type="hidden" name="item_summary" value="' . $item_info['summary'] . '" />' . "\n"
-		. '    <input type="hidden" name="item_description" value="' . $item_info['description'] . '" />' . "\n"
+//		. '    <input type="hidden" name="item_title" value="' . $item_info['title'] . '" />' . "\n"
+//		. '    <input type="hidden" name="item_summary" value="' . $item_info['summary'] . '" />' . "\n"
+//		. '    <input type="hidden" name="item_description" value="' . $item_info['description'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_url" value="' . $item_info['image_url'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_id" value="' . $image_id . '" />' . "\n"
 		. '    <input type="hidden" name="thumbw" value="' . $item_info['thumbnail_width'] . '" />' . "\n"
@@ -929,7 +896,7 @@ function g2ic_make_html_img($item_info) {
 	$html = '';
 
 	// ---- image code
-	$html .= '    <div style="background:#F0F0EE url(' . $item_info['thumbnail_src'] . '); width:'
+	$html .= '    <div style="background:#F0F0EE url(' . $item_info['thumbnail_img'] . '); width:'
 	. $item_info['thumbnail_width'] . 'px; height:' . $item_info['thumbnail_height'] . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
@@ -1085,7 +1052,7 @@ function g2ic_make_html_wpg2_album_insert_button(){
 
 	$html .= '            <input type="hidden" name="wpg2_id" value="' . $g2ic_options['current_album'] . '" />' . "\n"
 	. '            <input type="hidden" name="wpg2_summary" value="' . $album_info['summary'] . '" />' . "\n"
-	. '            <input type="hidden" name="wpg2_thumbnail" value="' . $album_info['thumbnail_src'] . '" />' . "\n"
+	. '            <input type="hidden" name="wpg2_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
 	. '            <input type="hidden" name="wpg2_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
 	. '            <input type="hidden" name="wpg2_thumbh" value="' . $album_info['thumbnail_height'] . '" />' . "\n"
 	. '    </fieldset>' . "\n"

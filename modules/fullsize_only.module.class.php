@@ -1,86 +1,12 @@
 <?php
-//------------------------------------------------------------
+/**
+ * Get all of the Gallery2 items
+ *
+ * @return array $album_info Album Title and URL for the current album
+ * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
+ */
 
-define("_MODULE_PATTERN_", ".module.class.php");
-define("_MODULE_REGEXP_", "/.*".preg_quote(_MODULE_PATTERN_)."/i");
-
-class all_modules{
-	function has_error(){
-	}
-	//------------------------------------------------------------
-	// looks for all modules available and includes them if valid
-	//------------------------------------------------------------
-	function getModules( $dir ){
-		$modulesAvailable = array();
-		$modulesErrors = array();
-		$modules = all_modules::findMatchFiles($dir, _MODULE_REGEXP_);
-		foreach( $modules as $module ){  //maybe a caching method would increase speed - write all in one file!
-			require_once($dir.$module);
-			$className = preg_replace("/"._MODULE_PATTERN_."/i", "", $module );  // get the classname out of the filename
-			if(class_exists($className) ){  // erst ab PHP5.0.3 && is_subclass_of("module_basic")){
-				$valid = call_user_func(array($className, "extra"), "version" );
-
-				if($valid != module_prototype::extra("version")) {
-					$modulesAvailable[$className] = $valid;
-				}else{
-					$modulesErrors[$className] = "$className: " .$dir.$module . " : ". $valid;
-				}
-			}else{
-					$modulesErrors[$className] = "$className: " .$dir.$module;
-			}
-		}
-		return array($modulesAvailable, $modulesErrors);
-	}
-
-	//------------------------------------------------------------
-	//------------------------------------------------------------
-	function call($module, $func){
-		return call_user_func( array($module, $func), $module );
-	}
-
-	//-------------------------------
-	//$regexp = "/[0-9]{1,}_[0-9]{1,}_[0-9]{4,}/";
-	//$regexp = "/.jpg/";
-
-	function findMatchFiles($dir,$regexp){
-		$result_array = array();
-			$dir = dir($dir);
-		if ($regexp != null) {
-			while ($file = $dir->read()) {
-				if (preg_match($regexp, $file)) {
-					$result_array[] = $file;
-				}
-			}
-		}
-		$dir->close();
-		return $result_array;
-	}
-
-
-	//------------------------------------------------------------
-
-	function renderOptions($defaultAction, $module){
-			$class = ($defaultAction == $module ) ? "displayed" : "hidden" ;
-			$html = "            <div id=\"a_{$module}\" module=\"{$module}\" name=\"{$module}_textbox\"  class=\"{$class}_textbox\" >";
-			$html .= call_user_func(array($module, "dialog"));
-			$html .= '           </div>' . "\n\n";
-			return $html;
-
-	}
-
-}
-
-
-
-
-
-//------------------------------------------------------------
-//------------------------------------------------------------
-// the skeleton of a module
-//------------------------------------------------------------
-// each new insertModule should be an extension of this basich module
-//
-class module_prototype{
+class fullsize_only{
 
 	//------------------------------------------------------------
 	/**
@@ -89,6 +15,8 @@ class module_prototype{
 	 *	stack[0] = module_name
 	 *	stack[1] = function within module
 	 *	stack[n] = optional extra subfunction or switch
+	 *
+	 *	var args = {};
 	 *
 	 *	var imageObj = {};
 	 *	imageObj.id
@@ -117,7 +45,19 @@ class module_prototype{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
-		return " ---";
+		var str = "";
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+			str += '<div class="' + imageObj['alignment'] + '">';
+		}
+		str += '<img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
+			str += ' class="' + imageObj['alignment'] + '"';
+		}
+		str += ' />';
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+			str += '</div>';
+		}
+		return str;
 	}
 //end module [{$name}]
 
@@ -135,7 +75,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return "my dialog";
+		return '';
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -145,17 +85,17 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return "mySelection";
+		return T_('Fullsized image only - no link') . ' ' . T_('(HTML)');
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
 
 	/**
-	 * instead of a selection-box an icon
+	 * instead of a selectionbox a icon
 	 *
 	 */
 	function icon(){
-		return "";
+		return "sample";
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -165,7 +105,6 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function preeq(){
-		return "";
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -174,7 +113,6 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function help(){
-		return "";
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -184,7 +122,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function setup(){
-		return "mySetup";
+		return "sample Setup";
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
@@ -197,7 +135,7 @@ SCRIPTSTUFF;
 	 */
 	function extra($key=false){
 		$data = array();
-		$data["version"] = "prototype V.0.1";
+		$data["version"] = "sample V.0.1";
 		$data["description"] = "this is the prototype";
 		if($key and isset($data[$key])){
 			return $data[$key];
