@@ -4,7 +4,7 @@
  *
  */
 
-class thumbnail_image{
+class thumbnail_lightbox{
 
 	/**
 	 * See sample module for details
@@ -21,7 +21,12 @@ class thumbnail_image{
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
 			str += '<div class="' + imageObj['alignment'] + '">';
 		}
-		str += '<a href="' + imageObj['image_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		str += '<a href="' + imageObj['fullsize_img'] + '" rel="lightbox';
+		if (imageObj['lightbox_group'])
+			str += '[' + imageObj['lightbox_group'] + ']';
+		str += '" title="' + imageObj['item_description'] + '"><img src="'
+		+ imageObj['thumbnail_img'] + '" ' + imageObj['thumbw']
+		+ ' ' + imageObj['thumbh'] + ' alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
 			str += ' class="' + imageObj['alignment'] + '"';
 		}
@@ -45,7 +50,11 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
+		$html = '            <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
+		. '            <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
+		. '            <br />' . "\n"
+		. '            <br />' . "\n";
+		return $html;
 	}
 
 	/**
@@ -53,7 +62,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return '';
+		return "							imageObj.lightbox_group = obj.lightbox_group.value;\n";
 	}
 
 	/**
@@ -61,7 +70,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Thumbnail with link to image') . ' ' . T_('(HTML)');
+		return T_('Thumbnail with LightBox link to Fullsized Image') . ' ' . T_('(HTML)');
 	}
 
 	/**

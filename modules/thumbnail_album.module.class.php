@@ -1,12 +1,10 @@
 <?php
 /**
- * Get all of the Gallery2 items
+ * thumbnail
  *
- * @return array $album_info Album Title and URL for the current album
- * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
  */
 
-class text_link_album{
+class thumbnail_album{
 
 	/**
 	 * See sample module for details
@@ -19,7 +17,19 @@ class text_link_album{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
-		return '<a href="' + imageObj['album_url'] + '">' + imageObj['text_link_album'] + '</a>';
+		var str = "";
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+			str += '<div class="' + imageObj['alignment'] + '">';
+		}
+		str += '<a href="' + imageObj['album_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
+			str += ' class="' + imageObj['alignment'] + '"';
+		}
+		str += ' /></a>';
+		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+			str += '</div>';
+		}
+		return str;
 	}
 //end module [{$name}]
 
@@ -35,11 +45,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '            <label for="text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '            <input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
-		. '            <br />' . "\n"
-		. '            <br />' . "\n";
-		return $html;
+		return '';
 	}
 
 	/**
@@ -47,7 +53,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "							imageObj.text_link_album = obj.text_link_album.value;\n";
+		return '';
 	}
 
 	/**
@@ -55,7 +61,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Textlink to parent album') . ' ' . T_('(HTML)');
+		return T_('Thumbnail with link to parent album') . ' ' . T_('(HTML)');
 	}
 
 	/**
@@ -63,7 +69,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function icon(){
-		return "sample";
+		return '';
 	}
 
 	/**
@@ -84,7 +90,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function setup(){
-		return "sample Setup";
+		return '';
 	}
 
 	/**
@@ -95,8 +101,8 @@ SCRIPTSTUFF;
 	 */
 	function extra($key=false){
 		$data = array();
-		$data["version"] = "sample V.0.1";
-		$data["description"] = "this is the prototype";
+		$data["version"] = 1.0;
+		$data["description"] = "HTML for thumbnail image with a link to the image's parent album in Gallery2";
 		if($key and isset($data[$key])){
 			return $data[$key];
 		}else{

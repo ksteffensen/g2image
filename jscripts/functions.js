@@ -71,16 +71,6 @@ function uncheckAllImages() {
 function toggleTextboxes() {
 	var obj = document.forms[0];
 
-	if (obj.imginsert.value == 'thumbnail_custom_url')
-		document.getElementsByName('custom_url_textbox')[0].className = 'displayed_textbox';
-	else
-		document.getElementsByName('custom_url_textbox')[0].className = 'hidden_textbox';
-
-	if (obj.imginsert.value == 'thumbnail_lightbox')
-		document.getElementsByName('lightbox_group_textbox')[0].className = 'displayed_textbox';
-	else
-		document.getElementsByName('lightbox_group_textbox')[0].className = 'hidden_textbox';
-
 	if (obj.g2ic_wpg2_valid.value == true) {
 		if (obj.imginsert.value == 'wpg2_image')
 			document.getElementsByName('wpg2_tag_size_textbox')[0].className = 'displayed_textbox';
@@ -95,21 +85,16 @@ function toggleTextboxes() {
 			document.getElementsByName('drupal_exactsize_textbox')[0].className = 'hidden_textbox';
 	}
 
-	//**aob [A4]
-	//** just hide or show the blocks
-		var pp = document.getElementById("a_"+obj.imginsert.value); // is there a new module selected?
-		var allFields = document.getElementById("additional_dialog").getElementsByTagName("DIV");
-		for(var i=0; i<allFields.length; i++){
-			if(allFields[i].getAttribute("module") != ""){
-				allFields[i].className = 'hidden_textbox';
-			}
+	var pp = document.getElementById("a_"+obj.imginsert.value); // is there a new module selected?
+	var allFields = document.getElementById("additional_dialog").getElementsByTagName("DIV");
+	for(var i=0; i<allFields.length; i++){
+		if(allFields[i].getAttribute("module") != ""){
+			allFields[i].className = 'hidden_textbox';
 		}
-		if(pp && pp.getAttribute("module") ){
-			pp.className = 'displayed_textbox';
-		}
-
-	//**
-	//**aob
+	}
+	if(pp && pp.getAttribute("module") ){
+		pp.className = 'displayed_textbox';
+	}
 }
 
 function insertAtCursor(myField, myValue) {
@@ -188,186 +173,6 @@ function insertHtml(html,form) {
 	}
 	//**aob
 }
-
-function insertItems(){
-	var obj = document.forms[0];
-	var htmlCode = '';
-	var imgtitle = '';
-	var imgalt = '';
-	var loop = '';
-	var item_summary = new Array();
-	var item_title = new Array();
-	var item_description = new Array();
-	var image_url = new Array();
-	var thumbnail_img = new Array();
-	var fullsize_img = new Array();
-	var thumbw = new Array();
-	var thumbh = new Array();
-	var image_id = new Array();
-
-	//hack required for when there is only one image
-
-	if (obj.images.length) {
-		loop = obj.images.length;
-		for (var i=0;i<loop;i++) {
-			image_id[i] = obj.image_id[i].value;
-			item_title[i] = obj.item_title[i].value;
-			item_summary[i] = obj.item_summary[i].value;
-			item_description[i] = obj.item_description[i].value
-			image_url[i] = obj.image_url[i].value;
-			fullsize_img[i] = obj.fullsize_img[i].value;
-			thumbnail_img[i] = obj.thumbnail_img[i].value;
-			thumbw[i] = obj.thumbw[i].value;
-			thumbh[i] = obj.thumbh[i].value;
-		}
-	}
-	else {
-		loop = 1;
-		image_id[0] = obj.image_id.value;
-		item_title[0] = obj.item_title.value;
-		item_summary[0] = obj.item_summary.value;
-		item_description[0] = obj.item_description.value
-		image_url[0] = obj.image_url.value;
-		thumbnail_img[0] = obj.thumbnail_img.value;
-		fullsize_img[0] = obj.fullsize_img.value;
-		thumbw[0] = obj.thumbw.value;
-		thumbh[0] = obj.thumbh.value;
-	}
-
-	//let's generate HTML code according to selected insert option
-
-	for (var i=0;i<loop;i++) {
-		if ((loop == 1) || obj.images[i].checked) {
-
-			imgtitle = ' title="' + item_summary[i] + '"';
-			imgalt = ' alt="' + item_title[i] + '"';
-			thumbw[i] = 'width="' + thumbw[i] + '" ';
-			thumbh[i] = 'height="' + thumbh[i] + '" ';
-
-			switch(obj.imginsert.value){
-				case 'thumbnail_album':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<a href="' + obj.album_url.value
-					+ '"><img src="'+thumbnail_img[i] + '" ' + thumbw[i]
-					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' /></a>';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'thumbnail_lightbox':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<a href="' + fullsize_img[i] + '" rel="lightbox';
-					if (obj.lightbox_group.value)
-						htmlCode += '[' + obj.lightbox_group.value + ']';
-					htmlCode += '" title="'
-					+ item_description[i] + '" ><img src="'
-					+ thumbnail_img[i] + '" ' + thumbw[i]
-					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' /></a>';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'thumbnail_custom_url':
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					htmlCode += '<a href="' + obj.custom_url.value
-					+ '"><img src="'+thumbnail_img[i] + '" ' + thumbw[i]
-					+ ' ' + thumbh[i] + imgalt + imgtitle;
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'img')){
-						htmlCode += ' class="' + obj.alignment.value + '"';
-					}
-					htmlCode += ' /></a>';
-					if ((obj.alignment.value != 'none') && (obj.class_mode.value == 'div')){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'wpg2_image':
-					if (obj.alignment.value != 'none'){
-						htmlCode += '<div class="' + obj.alignment.value + '">';
-					}
-					if(window.tinyMCE) {
-						htmlCode += '<img src="' + thumbnail_img[i]
-						+ '" alt="' + image_id[i];
-						if (obj.wpg2_tag_size.value)
-							htmlCode += '|' + obj.wpg2_tag_size.value;
-						htmlCode += '" title="' + image_id[i];
-						if (obj.wpg2_tag_size.value)
-							htmlCode += '|' + obj.wpg2_tag_size.value;
-						htmlCode += '" ' + thumbw[i] + thumbh[i]
-						+ 'id="mce_plugin_g2image_wpg2" />';
-					}
-					else {
-						htmlCode += '<wpg2>' + image_id[i];
-						if (obj.wpg2_tag_size.value)
-							htmlCode += '|' + obj.wpg2_tag_size.value;
-						htmlCode += '</wpg2>';
-					}
-					if (obj.alignment.value != 'none'){
-						htmlCode += '</div>';
-					}
-				break;
-				case 'drupal_g2_filter':
-					htmlCode += '[' + obj.drupal_filter_prefix.value + ':' + obj.image_id[i].value;
-					if (obj.alignment.value != 'none'){
-						htmlCode += ' class=' + obj.alignment.value;
-					}
-					if (obj.drupal_exactsize.value)
-						htmlCode += ' exactsize=' + obj.drupal_exactsize.value;
-					htmlCode += ']';
-				break;
-				default:
-				//**aob [A6]
-					if(typeof(insertFunctions[obj.imginsert.value])=="function"){
-						id = 0;
-						var imageObj = {}; // new Object()
-						imageObj.pos = i;
-						imageObj.id = image_id[i];
-						imageObj.image_url = image_url[i];
-						imageObj.album_url = obj.album_url.value;
-						imageObj.fullsize_img = fullsize_img[i];
-						imageObj.thumbnail_img = thumbnail_img[i];
-						imageObj.thumbw = thumbw[i];
-						imageObj.thumbh = thumbh[i];
-						imageObj.w = false; 			// to be done
-						imageObj.h =  false; 			// to be done
-						imageObj.item_title = item_title[i];
-						imageObj.item_summary = item_summary[i];
-						imageObj.description = item_description[i];
-						imageObj.album_id =  false; 		// to be done
-						imageObj.keywords =  false; 		// to be done
-						imageObj.derivatives =  false; 		// to be done
-						imageObj.siblings =  false; 		// to be done
-						imageObj.link_text_image = obj.link_text_image.value;
-						imageObj.link_text_album = obj.link_text_album.value;
-						imageObj.alignment = obj.alignment.value;
-						imageObj.class_mode = obj.class_mode.value;
-
-						htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
-				//**aob
-					}else{
-						alert(obj.imginsert.value);
-						htmlCode += 'Error';
-					}
-				break;
-			}
-		}
-	}
-	insertHtml(htmlCode,obj);
-}
-
 
 //**aob [A5]
 //**
