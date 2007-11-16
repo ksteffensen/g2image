@@ -20,20 +20,15 @@ $g2ic_version_array = array(3,1);
 
 // ====( Initialization Code )
 require_once('init.php');
+require_once('activemodules.php');
 session_start();
 g2ic_get_request_and_session_options();
 list($g2ic_album_info, $g2ic_gallery_items) = g2ic_get_gallery_items();
 $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
 
 // ====( Main HTML Generation Code )
-//**aob [B3]
-//**
-// i had problem with utf-8, maybe there is a better place
 header('content-type: text/html; charset=utf-8');
-//**
-//**aob
-
-echo g2ic_make_html_header();
+require_once('header.php');
 
 echo '        <table>' . "\n";
 echo '            <tr>' . "\n";
@@ -160,35 +155,13 @@ function g2ic_get_imginsert_selectoptions(){
 	$message = array();
 	$imginsert_selectoptions = array();
 
-	// These are the universal image insertion options
-	$message['thumbnail_album'] = T_('Thumbnail with link to parent album');
-	$message['thumbnail_lightbox'] = T_('Thumbnail with LightBox link to Fullsized Image');
-	$message['thumbnail_custom_url'] = T_('Thumbnail with link to custom URL (from text box below)');
-
-	// If using the WPG2 or Drupal Gallery Module append '(HTML)' to the end of the universal messages
-	if ($g2ic_options['wpg2_valid'] || $g2ic_options['drupal_g2_filter']) {
-		foreach($message as $key => $text) {
-			$message[$key] = $text . ' (' . T_('HTML') . ')';
-		}
-	}
-
 	// These are CMS-specific image insertion options
 	$message['wpg2_image'] = T_('WPG2 tag of image');
 	$message['drupal_g2_filter'] = T_('Drupal Gallery2 Module filter tag');
 
-	// Make the universal message array
-	$imginsert_selectoptions = array(
-		'thumbnail_album' => array(
-			'text'  => $message['thumbnail_album'] ),
-		'thumbnail_lightbox' => array(
-			'text'  => $message['thumbnail_lightbox'] ),
-		'thumbnail_custom_url' => array(
-			'text'  => $message['thumbnail_custom_url'] ),
-	);
-
 	//**aob mod [A2]
 	//**
-	foreach($g2ic_options['modules'] as $moduleName => $version){
+	foreach($g2ic_options['modules'] as $moduleName){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 	//**
@@ -543,46 +516,10 @@ function g2ic_make_html_controls(){
 	. '            <br />' . "\n";
 
 	$html .= "  \n";
-	//**aob [M4]
-	//**
-	foreach($g2ic_options['modules'] as $moduleName => $version){
+
+	foreach($g2ic_options['modules'] as $moduleName){
 		$html .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
 	}
-	//**
-	//**aob
-
-
-	// "Custom URL" textbox
-	$html .= '            <div name="custom_url_textbox"';
-	if ($g2ic_options['default_action'] == 'thumbnail_custom_url') {
-		$html .= ' class="displayed_textbox"';
-	}
-	else {
-		$html .= ' class="hidden_textbox"';
-	}
-	$html .= '>' . "\n"
-	. '            <label for="custom_url">' . T_('Custom URL') . '<br /></label>' . "\n"
-	. '            <input type="text" name="custom_url" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-	. '            <br />' . "\n"
-	. '            <br />' . "\n"
-	. '            </div>' . "\n"
-
-	// "LightBox Group" textbox
-	. '            <div name="lightbox_group_textbox"';
-	if ($g2ic_options['default_action'] == 'thumbnail_lightbox'){
-		$html .= ' class="displayed_textbox"';
-	}
-	else {
-		$html .= ' class="hidden_textbox"';
-	}
-	$html .= '>' . "\n"
-	. '            <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
-	. '            <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
-	. '            <br />' . "\n"
-	. '            <br />' . "\n"
-	. '            </div>' . "\n";
-
-	// WPG2 tag "size" box.
 
 	if ($g2ic_options['wpg2_valid']) {
 		GalleryCoreApi::requireOnce('modules/imageblock/module.inc');
@@ -778,46 +715,6 @@ function g2ic_make_html_empty_page() {
 }
 
 /**
- * Make the header
- *
- * @return string $html The HTML for the header
- */
-function g2ic_make_html_header(){
-	global $g2ic_options;
-	$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n"
-	. '<html xmlns="http://www.w3.org/1999/xhtml">' . "\n"
-	. '<head>' . "\n"
-	. '    <title>' . T_('Gallery2 Image Chooser') . '</title>' . "\n"
-	. '    <link rel="stylesheet" href="css/g2image.css" type="text/css" />' . "\n"
-	. '    <link rel="stylesheet" href="css/dtree.css" type="text/css" />' . "\n"
-	. '    <link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />' . "\n"
-	. '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' . "\n";
-	if($g2ic_options['tinymce'] && $g2ic_options['wpg2_valid']) {
-		$html .= "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
-	}
-	elseif($g2ic_options['tinymce'] && !$g2ic_options['wpg2_valid']) {
-		$html .= "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
-	}
-	$html .= '    <script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>' . "\n"
-	. '    <script language="javascript" type="text/javascript" src="jscripts/dtree.js"></script>' . "\n"
-	. '    <script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>' . "\n"
-	. '    <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>' . "\n"
-//**aob [A3] add all needed functions
-	. '    <script type="text/javascript">' . "\n";
-	foreach($g2ic_options['modules'] as $moduleName => $version){
-		 $html .= all_modules::call( $moduleName, "insert");
-	}
-	$html .= '    </script>' . "\n"
-//**aob
-
-	. '</head>' . "\n\n"
-	. '<body id="g2image">' . "\n\n"
-	. '    <form method="post">' . "\n";
-
-	return $html;
-}
-
-/**
  * Make the HTML for the image block
  *
  * @return string $html The HTML for the image block
@@ -872,9 +769,6 @@ function g2ic_make_html_image_navigation(){
 		// hidden fields
 		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item_info['thumbnail_img'] . '" />' . "\n"
 		. '    <input type="hidden" name="fullsize_img" value="' . $item_info['fullsize_img'] . '" />' . "\n"
-//		. '    <input type="hidden" name="item_title" value="' . $item_info['title'] . '" />' . "\n"
-//		. '    <input type="hidden" name="item_summary" value="' . $item_info['summary'] . '" />' . "\n"
-//		. '    <input type="hidden" name="item_description" value="' . $item_info['description'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_url" value="' . $item_info['image_url'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_id" value="' . $image_id . '" />' . "\n"
 		. '    <input type="hidden" name="thumbw" value="' . $item_info['thumbnail_width'] . '" />' . "\n"

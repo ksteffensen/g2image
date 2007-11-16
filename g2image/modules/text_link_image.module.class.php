@@ -45,9 +45,7 @@ class text_link_image{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
-		var str = "";
-		str += '<a href="' + imageObj['image_url'] + '">' + imageObj['link_text_image'] + '</a>\\n';
-		return str;
+		return '<a href="' + imageObj['image_url'] + '">' + imageObj['text_link_image'] + '</a>';
 	}
 //end module [{$name}]
 
@@ -65,15 +63,20 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '            <label for="link_text_image">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '            <input type="text" name="link_text_image" size="84" maxlength="150" value="" />' . "\n"
+		$html = '            <label for="text_link_image">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '            <input type="text" name="text_link_image" size="84" maxlength="150" value="" />' . "\n"
 		. '            <br />' . "\n"
-		. '            <br />' . "\n"
-		. '            </div>' . "\n";
+		. '            <br />' . "\n";
 		return $html;
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
+
+	/**
+	 * Set the javascript variables that this module requires.  Must be unique names among modules.
+	 *
+	 */
+	function javaScriptVariables(){
+		return "							imageObj.text_link_image = obj.text_link_image.value;\n";
+	}
 
 	/**
 	 * fill the select box to choose this renderer

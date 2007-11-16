@@ -81,6 +81,14 @@ SCRIPTSTUFF;
 	//------------------------------------------------------------
 
 	/**
+	 * Set the javascript variables that this module requires.  Must be unique names among modules.
+	 *
+	 */
+	function javaScriptVariables(){
+		return '';
+	}
+
+	/**
 	 * fill the select box to choose this renderer
 	 *
 	 */

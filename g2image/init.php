@@ -15,6 +15,7 @@
 */
 
 require_once('config.php');
+require_once('./modules/module.inc.php');
 
 // ====( Initialize Variables )=================================
 $g2ic_options = array();
@@ -39,13 +40,6 @@ $g2ic_options['default_action'] = $g2ic_default_action;
 $g2ic_options['sortby'] = $g2ic_sortby;
 $g2ic_options['drupal_g2_filter'] = $g2ic_drupal_g2_filter;
 $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
-
-//**aob mod [A1]
-$g2ic_options['path_to_modules'] = dirname(__FILE__)."/modules/"; //this def. shoud be in config.php
-require( $g2ic_options['path_to_modules']."module.inc.php" ); //maybe put ./../
-list( $g2ic_options['modules'], $hasErrModules) = all_modules::getModules($g2ic_options['path_to_modules']);
-//**aob
-
 
 // ==============================================================
 // WPG2 validation
