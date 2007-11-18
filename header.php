@@ -83,76 +83,42 @@ global $g2ic_options;
 				thumbw[i] = 'width="' + thumbw[i] + '" ';
 				thumbh[i] = 'height="' + thumbh[i] + '" ';
 
-				switch(obj.imginsert.value){
-					case 'wpg2_image':
-						if (obj.alignment.value != 'none'){
-							htmlCode += '<div class="' + obj.alignment.value + '">';
-						}
-						if(window.tinyMCE) {
-							htmlCode += '<img src="' + thumbnail_img[i]
-							+ '" alt="' + image_id[i];
-							if (obj.wpg2_tag_size.value)
-								htmlCode += '|' + obj.wpg2_tag_size.value;
-							htmlCode += '" title="' + image_id[i];
-							if (obj.wpg2_tag_size.value)
-								htmlCode += '|' + obj.wpg2_tag_size.value;
-							htmlCode += '" ' + thumbw[i] + thumbh[i]
-							+ 'id="mce_plugin_g2image_wpg2" />';
-						}
-						else {
-							htmlCode += '<wpg2>' + image_id[i];
-							if (obj.wpg2_tag_size.value)
-								htmlCode += '|' + obj.wpg2_tag_size.value;
-							htmlCode += '</wpg2>';
-						}
-						if (obj.alignment.value != 'none'){
-							htmlCode += '</div>';
-						}
-					break;
-					case 'drupal_g2_filter':
-						htmlCode += '[' + obj.drupal_filter_prefix.value + ':' + obj.image_id[i].value;
-						if (obj.alignment.value != 'none'){
-							htmlCode += ' class=' + obj.alignment.value;
-						}
-						if (obj.drupal_exactsize.value)
-							htmlCode += ' exactsize=' + obj.drupal_exactsize.value;
-						htmlCode += ']';
-					break;
-					default:
-						if(typeof(insertFunctions[obj.imginsert.value])=="function"){
-							id = 0;
-							var imageObj = {}; // new Object()
-							imageObj.pos = i;
-							imageObj.id = image_id[i];
-							imageObj.image_url = image_url[i];
-							imageObj.album_url = obj.album_url.value;
-							imageObj.fullsize_img = fullsize_img[i];
-							imageObj.thumbnail_img = thumbnail_img[i];
-							imageObj.thumbw = thumbw[i];
-							imageObj.thumbh = thumbh[i];
-							imageObj.w = false; 			// to be done
-							imageObj.h =  false; 			// to be done
-							imageObj.item_title = item_title[i];
-							imageObj.item_summary = item_summary[i];
-							imageObj.item_description = item_description[i];
-							imageObj.album_id =  false; 		// to be done
-							imageObj.keywords =  false; 		// to be done
-							imageObj.derivatives =  false; 		// to be done
-							imageObj.siblings =  false; 		// to be done
-							imageObj.alignment = obj.alignment.value;
-							imageObj.class_mode = obj.class_mode.value;
+				if(typeof(insertFunctions[obj.imginsert.value])=="function"){
+					id = 0;
+					var imageObj = {}; // new Object()
+
+					// Fixed core variables
+					imageObj.pos = i;
+					imageObj.image_id = image_id[i];
+					imageObj.image_url = image_url[i];
+					imageObj.album_url = obj.album_url.value;
+					imageObj.fullsize_img = fullsize_img[i];
+					imageObj.thumbnail_img = thumbnail_img[i];
+					imageObj.thumbw = thumbw[i];
+					imageObj.thumbh = thumbh[i];
+					imageObj.w = false; 			// to be done
+					imageObj.h =  false; 			// to be done
+					imageObj.item_title = item_title[i];
+					imageObj.item_summary = item_summary[i];
+					imageObj.item_description = item_description[i];
+					imageObj.album_id =  false; 		// to be done
+					imageObj.keywords =  false; 		// to be done
+					imageObj.derivatives =  false; 		// to be done
+					imageObj.siblings =  false; 		// to be done
+					imageObj.alignment = obj.alignment.value;
+					imageObj.class_mode = obj.class_mode.value;
+
+					// Module inserted variables
 <?php
 foreach($g2ic_options['modules'] as $moduleName){
-	 echo all_modules::call( $moduleName, "javaScriptVariables");
+echo all_modules::call( $moduleName, "javaScriptVariables");
 }
 ?>
 
-							htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
-						}else{
-							alert(obj.imginsert.value);
-							htmlCode += 'Error';
-						}
-					break;
+					htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
+				}else{
+					alert(obj.imginsert.value);
+					htmlCode += 'Error';
 				}
 			}
 		}

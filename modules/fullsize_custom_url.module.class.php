@@ -4,7 +4,7 @@
  *
  */
 
-class thumbnail_image{
+class fullsize_custom_url{
 
 	/**
 	 * See sample module for details
@@ -21,7 +21,7 @@ class thumbnail_image{
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
 			str += '<div class="' + imageObj['alignment'] + '">';
 		}
-		str += '<a href="' + imageObj['image_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		str += '<a href="' + imageObj['custom_url_fullsize'] + '"><img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
 			str += ' class="' + imageObj['alignment'] + '"';
 		}
@@ -45,7 +45,12 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
+		global $g2ic_options;
+		$html = '                <label for="custom_url_fullsize">' . T_('Custom URL') . '<br /></label>' . "\n"
+		. '                <input type="text" name="custom_url_fullsize" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
+		. '                <br />' . "\n"
+		. '                <br />' . "\n";
+		return $html;
 	}
 
 	/**
@@ -53,7 +58,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return '';
+		return "					imageObj.custom_url_fullsize = obj.custom_url_fullsize.value;\n";
 	}
 
 	/**
@@ -61,7 +66,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Thumbnail with link to image') . ' ' . T_('(HTML)');
+		return T_('Fullsized image with link to custom URL (from text box below)') . ' ' . T_('(HTML)');
 	}
 
 	/**

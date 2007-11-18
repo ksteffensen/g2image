@@ -71,20 +71,6 @@ function uncheckAllImages() {
 function toggleTextboxes() {
 	var obj = document.forms[0];
 
-	if (obj.g2ic_wpg2_valid.value == true) {
-		if (obj.imginsert.value == 'wpg2_image')
-			document.getElementsByName('wpg2_tag_size_textbox')[0].className = 'displayed_textbox';
-		else
-			document.getElementsByName('wpg2_tag_size_textbox')[0].className = 'hidden_textbox';
-	}
-
-	if (obj.drupal_g2_filter.value == true) {
-		if (obj.imginsert.value == 'drupal_g2_filter')
-			document.getElementsByName('drupal_exactsize_textbox')[0].className = 'displayed_textbox';
-		else
-			document.getElementsByName('drupal_exactsize_textbox')[0].className = 'hidden_textbox';
-	}
-
 	var pp = document.getElementById("a_"+obj.imginsert.value); // is there a new module selected?
 	var allFields = document.getElementById("additional_dialog").getElementsByTagName("DIV");
 	for(var i=0; i<allFields.length; i++){

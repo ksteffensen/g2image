@@ -152,33 +152,10 @@ function g2ic_get_gallery_items() {
 function g2ic_get_imginsert_selectoptions(){
 	GLOBAL $g2ic_options;
 
-	$message = array();
 	$imginsert_selectoptions = array();
 
-	// These are CMS-specific image insertion options
-	$message['wpg2_image'] = T_('WPG2 tag of image');
-	$message['drupal_g2_filter'] = T_('Drupal Gallery2 Module filter tag');
-
-	//**aob mod [A2]
-	//**
 	foreach($g2ic_options['modules'] as $moduleName){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
-	}
-	//**
-	//**aob
-
-	// If using the WPG2 or Drupal Gallery Module append their array to the beginning of the universal array
-	if ($g2ic_options['wpg2_valid']) {
-		$imginsert_selectoptions = array(
-			'wpg2_image' => array(
-				'text'  => $message['wpg2_image'] ),
-		) + $imginsert_selectoptions;
-	}
-	if($g2ic_options['drupal_g2_filter'])	{
-		$imginsert_selectoptions = array(
-			'drupal_g2_filter' => array(
-				'text' => $message['drupal_g2_filter'] ),
-		) + $imginsert_selectoptions;
 	}
 
 	$imginsert_selectoptions[$g2ic_options['default_action']]['selected'] = TRUE;
@@ -390,8 +367,6 @@ function g2ic_make_html_about($version){
 	. '    <input type="hidden" name="class_mode" value="' . $g2ic_options['class_mode'] . '" />' . "\n"
 	. '    <input type="hidden" name="g2ic_form" value="' . $g2ic_options['form'] . '" />' . "\n"
 	. '    <input type="hidden" name="g2ic_field" value="' . $g2ic_options['field'] . '" />' . "\n"
-	. '    <input type="hidden" name="g2ic_wpg2_valid" value="' . $g2ic_options['wpg2_valid'] . '" />' . "\n"
-	. '    <input type="hidden" name="drupal_g2_filter" value="' . $g2ic_options['drupal_g2_filter'] . '" />' . "\n"
 	. '    <input type="hidden" name="drupal_filter_prefix" value="' . $g2ic_options['drupal_g2_filter_prefix'] . '" />' . "\n"
 	. '</div>' . "\n";
 
@@ -506,8 +481,7 @@ function g2ic_make_html_alignment_select(){
 function g2ic_make_html_controls(){
 	global $gallery, $g2ic_imginsert_options, $g2ic_options;
 
-	// "How to insert:" radio buttons
-	//**aob [B4] added id
+	// "How to insert:" selector
 	$html = "        <fieldset id='additional_dialog'>\n"
 	. '            <legend>' . T_('Insertion Options') . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Image') . '</label>' . "\n"
@@ -516,63 +490,8 @@ function g2ic_make_html_controls(){
 	. '            <br />' . "\n";
 
 	$html .= "  \n";
-
 	foreach($g2ic_options['modules'] as $moduleName){
 		$html .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
-	}
-
-	if ($g2ic_options['wpg2_valid']) {
-		GalleryCoreApi::requireOnce('modules/imageblock/module.inc');
-		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
-		$plugin = new ImageBlockModule;
-		$version = $plugin->getVersion();
-		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
-		if ($version_comparison != 'older') {
-			$html .= '            <div name="wpg2_tag_size_textbox"';
-			if ($g2ic_options['default_action'] == 'wpg2_image'){
-				$html .= ' class="displayed_textbox"';
-			}
-			else {
-				$html .= ' class="hidden_textbox"';
-			}
-			$html .= '>' . "\n"
-			. '            <label for="wpg2_tag_size">' . T_('WPG2 tag "size" attribute (Leave blank for the default size of: ') . $g2ic_options['wpg2_tag_size']. 'px)' . '<br /></label>' . "\n"
-			. '            <input type="text" name="wpg2_tag_size" size="84" maxlength="150" value="" />' . "\n"
-			. '            <br />' . "\n"
-			. '            <br />' . "\n"
-			. '            </div>' . "\n";
-		}
-		else {
-			$html .= '            <input type="hidden" name="wpg2_tag_size" value="" />' . "\n";
-		}
-	}
-
-	// Drupal G2 Filter "exactsize" attribute box.
-
-	if ($g2ic_options['drupal_g2_filter']) {
-		GalleryCoreApi::requireOnce('modules/imageblock/module.inc');
-		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
-		$plugin = new ImageBlockModule;
-		$version = $plugin->getVersion();
-		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
-		if ($version_comparison != 'older') {
-			$html .= '            <div name="drupal_exactsize_textbox"';
-			if ($g2ic_options['default_action'] == 'drupal_g2_filter'){
-				$html .= ' class="displayed_textbox"';
-			}
-			else {
-				$html .= ' class="hidden_textbox"';
-			}
-			$html .= '>' . "\n"
-			. '            <label for="drupal_exactsize">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
-			. '            <input type="text" name="drupal_exactsize" size="84" maxlength="150" value="" />' . "\n"
-			. '            <br />' . "\n"
-			. '            <br />' . "\n"
-			. '            </div>' . "\n";
-		}
-		else {
-			$html .= '            <input type="hidden" name="drupal_exactsize" value="" />' . "\n";
-		}
 	}
 
 	// Alignment selection

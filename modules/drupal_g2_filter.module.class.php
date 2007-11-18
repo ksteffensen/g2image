@@ -4,7 +4,7 @@
  *
  */
 
-class thumbnail_image{
+class drupal_g2_filter{
 
 	/**
 	 * See sample module for details
@@ -18,17 +18,15 @@ class thumbnail_image{
 
 	function module_{$name}(stack, imageObj){
 		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
+
+		str += '[' + imageObj['drupal_filter_prefix'] + ':' + imageObj['image_id'];
+		if (imageObj['alignment'] != 'none'){
+			str += ' class=' + imageObj['alignment'];
 		}
-		str += '<a href="' + imageObj['image_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
-		}
-		str += ' /></a>';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '</div>';
-		}
+		if (imageObj['drupal_exactsize'])
+			str += ' exactsize=' + imageObj['drupal_exactsize'];
+		str += ']';
+
 		return str;
 	}
     //end module [{$name}]
@@ -45,7 +43,24 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
+		global $g2ic_options;
+
+		// Check that the ImageBlock module supports the exactsize attribure (requires module API 1.0.9 or later)
+		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
+		list($error, $plugin) = GalleryCoreApi::loadPlugin('module', 'ImageBlock');
+		$version = $plugin->getVersion();
+		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
+		if ($version_comparison != 'older') {
+			$html = '                <label for="drupal_exactsize">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
+			. '                <input type="text" name="drupal_exactsize" size="84" maxlength="150" value="" />' . "\n"
+			. '                <br />' . "\n"
+			. '                <br />' . "\n";
+		}
+		else {
+			$html = '                <input type="hidden" name="drupal_exactsize" value="" />' . "\n";
+		}
+
+		return $html;
 	}
 
 	/**
@@ -53,7 +68,9 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return '';
+		$html = "					imageObj.drupal_exactsize = obj.drupal_exactsize.value;\n"
+		. "					imageObj.drupal_filter_prefix = obj.drupal_filter_prefix.value;\n";
+		return $html;
 	}
 
 	/**
@@ -61,7 +78,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Thumbnail with link to image') . ' ' . T_('(HTML)');
+		return T_('Drupal Gallery2 Module filter tag');
 	}
 
 	/**

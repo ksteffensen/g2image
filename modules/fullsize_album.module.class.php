@@ -4,7 +4,7 @@
  *
  */
 
-class thumbnail_image{
+class fullsize_album{
 
 	/**
 	 * See sample module for details
@@ -21,7 +21,7 @@ class thumbnail_image{
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
 			str += '<div class="' + imageObj['alignment'] + '">';
 		}
-		str += '<a href="' + imageObj['image_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		str += '<a href="' + imageObj['album_url'] + '"><img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
 			str += ' class="' + imageObj['alignment'] + '"';
 		}
@@ -61,7 +61,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Thumbnail with link to image') . ' ' . T_('(HTML)');
+		return T_('Fullsized image with link to parent album') . ' ' . T_('(HTML)');
 	}
 
 	/**
@@ -102,7 +102,7 @@ SCRIPTSTUFF;
 	function extra($key=false){
 		$data = array();
 		$data["version"] = 1.0;
-		$data["description"] = "HTML for thumbnail image with a link to the image's page in Gallery2";
+		$data["description"] = "HTML for thumbnail image with a link to the image's parent album in Gallery2";
 		if($key and isset($data[$key])){
 			return $data[$key];
 		}else{
