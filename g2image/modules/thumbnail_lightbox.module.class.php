@@ -13,7 +13,7 @@ class thumbnail_lightbox{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-//module [{$name}]
+    //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
@@ -36,7 +36,7 @@ class thumbnail_lightbox{
 		}
 		return str;
 	}
-//end module [{$name}]
+    //end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -50,10 +50,10 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '            <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
-		. '            <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
-		. '            <br />' . "\n"
-		. '            <br />' . "\n";
+		$html = '                <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
+		. '                <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
+		. '                <br />' . "\n"
+		. '                <br />' . "\n";
 		return $html;
 	}
 
@@ -62,7 +62,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "							imageObj.lightbox_group = obj.lightbox_group.value;\n";
+		return "					imageObj.lightbox_group = obj.lightbox_group.value;\n";
 	}
 
 	/**

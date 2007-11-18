@@ -46,67 +46,73 @@ $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
 // ==============================================================
 
 // Determine if in a WordPress installation by checking for wp-config.php
-for ($count = 1; $count <= 7; $count++) {
-	$g2ic_wp_rel_path = $g2ic_wp_rel_path.'../';
-
-//**aob [B1] openbase_restricition
-	if (@file_exists($g2ic_wp_rel_path . 'wp-config.php')) {
-		require_once($g2ic_wp_rel_path.'wp-config.php');
-		require_once($g2ic_wp_rel_path.'wp-admin/admin.php');
-		$wpg2_g2ic = get_option('wpg2_g2ic');
-		$wpg2_g2paths = get_option('wpg2_g2paths');
-		$wpg2_options = get_option('wpg2_options');
-		$g2ic_language = get_locale();
-
-		// Assume WPG2 is active, or we wouldn't be here.
-		$g2ic_options['wpg2_valid'] = TRUE;
-		$g2ic_embedded_mode = TRUE;
-		$g2ic_use_full_path = TRUE;
-
-		// Call g2ic_init with WPG2 URI info
-		$g2ic_embed_uri = $wpg2_g2paths['g2_embeduri'];
-		$g2ic_gallery2_uri = $wpg2_g2paths['g2_url'];
-		$g2ic_gallery2_path = $wpg2_g2paths['g2_filepath'];
-
-		// Get the configurations options from the WPG2 admin panel
-		if(isset($wpg2_options['g2_tagimgsize']))
-			$g2ic_options['wpg2_tag_size'] = $wpg2_options['g2_tagimgsize'];
-		if(isset($wpg2_g2ic['g2ic_images_per_page']))
-			$g2ic_options['images_per_page'] = $wpg2_g2ic['g2ic_images_per_page'];
-		if(isset($wpg2_g2ic['g2ic_display_filenames'])){
-			if($wpg2_g2ic['g2ic_display_filenames']=='yes')
-				$g2ic_options['display_filenames'] = TRUE;
-			else
-				$g2ic_options['display_filenames'] = FALSE;
-		}
-		if(isset($wpg2_g2ic['g2ic_default_alignment']))
-			$g2ic_options['default_alignment'] = $wpg2_g2ic['g2ic_default_alignment'];
-		if(isset($wpg2_g2ic['g2ic_custom_class_1']))
-			$g2ic_options['custom_class_1'] = $wpg2_g2ic['g2ic_custom_class_1'];
-		if(isset($wpg2_g2ic['g2ic_custom_class_2']))
-			$g2ic_options['custom_class_2'] = $wpg2_g2ic['g2ic_custom_class_2'];
-		if(isset($wpg2_g2ic['g2ic_custom_class_3']))
-			$g2ic_options['custom_class_3'] = $wpg2_g2ic['g2ic_custom_class_3'];
-		if(isset($wpg2_g2ic['g2ic_custom_class_4']))
-			$g2ic_options['custom_class_4'] = $wpg2_g2ic['g2ic_custom_class_4'];
-		if(isset($wpg2_g2ic['g2ic_custom_url']))
-			$g2ic_options['custom_url'] = $wpg2_g2ic['g2ic_custom_url'];
-		if(isset($wpg2_g2ic['g2ic_class_mode']))
-			$g2ic_options['class_mode'] = $wpg2_g2ic['g2ic_class_mode'];
-		if(isset($wpg2_g2ic['g2ic_sortby']))
-			$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
-		if(isset($wpg2_g2ic['g2ic_default_action'])) {
-			// For backwards compatibility with old option value in WPG2 G2Image Options tab
-			if ($wpg2_g2ic['g2ic_default_action'] == 'wpg2')
-				$g2ic_options['default_action'] = 'wpg2_image';
-			else
-				$g2ic_options['default_action'] = $wpg2_g2ic['g2ic_default_action'];
-		}
-		else
-			$g2ic_options['default_action'] = 'wpg2_image';
-
-		break;
+if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
+	// G2Image being called from WPG2 directory
+	if (@file_exists('../wpg2.php')) {
+		require_once('../../../../wp-config.php');
+		require_once('../../../../wp-admin/admin.php');
 	}
+	// Otherwise G2Image being called by another editor.  E.g, FCKEditor
+	else {
+		for ($count = 1; $count <= 7; $count++) {
+			$g2ic_wp_rel_path = $g2ic_wp_rel_path.'../';
+			if (@file_exists('wp-config.php')) {
+				require_once($g2ic_wp_rel_path.'wp-config.php');
+				require_once($g2ic_wp_rel_path.'wp-admin/admin.php');
+			}
+		}
+	}
+	$wpg2_g2ic = get_option('wpg2_g2ic');
+	$wpg2_g2paths = get_option('wpg2_g2paths');
+	$wpg2_options = get_option('wpg2_options');
+	$g2ic_language = get_locale();
+
+	// Assume WPG2 is active, or we wouldn't be here.
+	$g2ic_options['wpg2_valid'] = TRUE;
+	$g2ic_embedded_mode = TRUE;
+	$g2ic_use_full_path = TRUE;
+
+	// Call g2ic_init with WPG2 URI info
+	$g2ic_embed_uri = $wpg2_g2paths['g2_embeduri'];
+	$g2ic_gallery2_uri = $wpg2_g2paths['g2_url'];
+	$g2ic_gallery2_path = $wpg2_g2paths['g2_filepath'];
+
+	// Get the configurations options from the WPG2 admin panel
+	if(isset($wpg2_options['g2_tagimgsize']))
+		$g2ic_options['wpg2_tag_size'] = $wpg2_options['g2_tagimgsize'];
+	if(isset($wpg2_g2ic['g2ic_images_per_page']))
+		$g2ic_options['images_per_page'] = $wpg2_g2ic['g2ic_images_per_page'];
+	if(isset($wpg2_g2ic['g2ic_display_filenames'])){
+		if($wpg2_g2ic['g2ic_display_filenames']=='yes')
+			$g2ic_options['display_filenames'] = TRUE;
+		else
+			$g2ic_options['display_filenames'] = FALSE;
+	}
+	if(isset($wpg2_g2ic['g2ic_default_alignment']))
+		$g2ic_options['default_alignment'] = $wpg2_g2ic['g2ic_default_alignment'];
+	if(isset($wpg2_g2ic['g2ic_custom_class_1']))
+		$g2ic_options['custom_class_1'] = $wpg2_g2ic['g2ic_custom_class_1'];
+	if(isset($wpg2_g2ic['g2ic_custom_class_2']))
+		$g2ic_options['custom_class_2'] = $wpg2_g2ic['g2ic_custom_class_2'];
+	if(isset($wpg2_g2ic['g2ic_custom_class_3']))
+		$g2ic_options['custom_class_3'] = $wpg2_g2ic['g2ic_custom_class_3'];
+	if(isset($wpg2_g2ic['g2ic_custom_class_4']))
+		$g2ic_options['custom_class_4'] = $wpg2_g2ic['g2ic_custom_class_4'];
+	if(isset($wpg2_g2ic['g2ic_custom_url']))
+		$g2ic_options['custom_url'] = $wpg2_g2ic['g2ic_custom_url'];
+	if(isset($wpg2_g2ic['g2ic_class_mode']))
+		$g2ic_options['class_mode'] = $wpg2_g2ic['g2ic_class_mode'];
+	if(isset($wpg2_g2ic['g2ic_sortby']))
+		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
+	if(isset($wpg2_g2ic['g2ic_default_action'])) {
+		// For backwards compatibility with old option value in WPG2 G2Image Options tab
+		if ($wpg2_g2ic['g2ic_default_action'] == 'wpg2')
+			$g2ic_options['default_action'] = 'wpg2_image';
+		else
+			$g2ic_options['default_action'] = $wpg2_g2ic['g2ic_default_action'];
+	}
+	else
+		$g2ic_options['default_action'] = 'wpg2_image';
 }
 
 // ==============================================================

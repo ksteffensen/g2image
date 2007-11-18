@@ -13,7 +13,7 @@ class thumbnail_custom_url{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-//module [{$name}]
+    //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
@@ -21,7 +21,7 @@ class thumbnail_custom_url{
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
 			str += '<div class="' + imageObj['alignment'] + '">';
 		}
-		str += '<a href="' + imageObj['custom_url'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
+		str += '<a href="' + imageObj['custom_url_thumbnail'] + '"><img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
 		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
 			str += ' class="' + imageObj['alignment'] + '"';
 		}
@@ -31,7 +31,7 @@ class thumbnail_custom_url{
 		}
 		return str;
 	}
-//end module [{$name}]
+    //end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -46,10 +46,10 @@ SCRIPTSTUFF;
 	 */
 	function dialog(){
 		global $g2ic_options;
-		$html = '            <label for="custom_url">' . T_('Custom URL') . '<br /></label>' . "\n"
-		. '            <input type="text" name="custom_url" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-		. '            <br />' . "\n"
-		. '            <br />' . "\n";
+		$html = '                <label for="custom_url_thumbnail">' . T_('Custom URL') . '<br /></label>' . "\n"
+		. '                <input type="text" name="custom_url_thumbnail" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
+		. '                <br />' . "\n"
+		. '                <br />' . "\n";
 		return $html;
 	}
 
@@ -58,7 +58,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "							imageObj.custom_url = obj.custom_url.value;\n";
+		return "					imageObj.custom_url_thumbnail = obj.custom_url_thumbnail.value;\n";
 	}
 
 	/**

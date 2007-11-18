@@ -15,13 +15,13 @@ class text_link_album{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-//module [{$name}]
+    //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
 		return '<a href="' + imageObj['album_url'] + '">' + imageObj['text_link_album'] + '</a>';
 	}
-//end module [{$name}]
+    //end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -35,10 +35,10 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '            <label for="text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '            <input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
-		. '            <br />' . "\n"
-		. '            <br />' . "\n";
+		$html = '                <label for="text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '                <input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
+		. '                <br />' . "\n"
+		. '                <br />' . "\n";
 		return $html;
 	}
 
@@ -47,7 +47,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "							imageObj.text_link_album = obj.text_link_album.value;\n";
+		return "					imageObj.text_link_album = obj.text_link_album.value;\n";
 	}
 
 	/**
