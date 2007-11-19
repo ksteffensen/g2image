@@ -11,6 +11,7 @@ $g2ic_options['modules'] = array(
 	'fullsize_only',
 	'text_link_image',
 	'text_link_album',
+	'bbcode_thumbnail_image',
 );
 
 if ($g2ic_options['wpg2_valid']) {
