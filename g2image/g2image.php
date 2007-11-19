@@ -154,7 +154,7 @@ function g2ic_get_imginsert_selectoptions(){
 
 	$imginsert_selectoptions = array();
 
-	foreach($g2ic_options['modules'] as $moduleName){
+	foreach($g2ic_options['image_modules'] as $moduleName){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
@@ -490,7 +490,7 @@ function g2ic_make_html_controls(){
 	. '            <br />' . "\n";
 
 	$html .= "  \n";
-	foreach($g2ic_options['modules'] as $moduleName){
+	foreach($g2ic_options['image_modules'] as $moduleName){
 		$html .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
 	}
 
