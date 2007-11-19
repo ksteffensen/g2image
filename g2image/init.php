@@ -36,7 +36,7 @@ $g2ic_options['custom_class_3'] = $g2ic_custom_class_3;
 $g2ic_options['custom_class_4'] = $g2ic_custom_class_4;
 $g2ic_options['custom_url'] = $g2ic_custom_url;
 $g2ic_options['class_mode'] = $g2ic_class_mode;
-$g2ic_options['default_action'] = $g2ic_default_action;
+$g2ic_options['default_image_action'] = $g2ic_default_image_action;
 $g2ic_options['sortby'] = $g2ic_sortby;
 $g2ic_options['drupal_g2_filter'] = $g2ic_drupal_g2_filter;
 $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
@@ -106,15 +106,15 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 		$g2ic_options['class_mode'] = $wpg2_g2ic['g2ic_class_mode'];
 	if(isset($wpg2_g2ic['g2ic_sortby']))
 		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
-	if(isset($wpg2_g2ic['g2ic_default_action'])) {
+	if(isset($wpg2_g2ic['g2ic_default_image_action'])) {
 		// For backwards compatibility with old option value in WPG2 G2Image Options tab
-		if ($wpg2_g2ic['g2ic_default_action'] == 'wpg2')
-			$g2ic_options['default_action'] = 'wpg2_image';
+		if ($wpg2_g2ic['g2ic_default_image_action'] == 'wpg2')
+			$g2ic_options['default_image_action'] = 'wpg2_image';
 		else
-			$g2ic_options['default_action'] = $wpg2_g2ic['g2ic_default_action'];
+			$g2ic_options['default_image_action'] = $wpg2_g2ic['g2ic_default_image_action'];
 	}
 	else
-		$g2ic_options['default_action'] = 'wpg2_image';
+		$g2ic_options['default_image_action'] = 'wpg2_image';
 }
 
 // ==============================================================

@@ -88,7 +88,8 @@ $g2ic_class_mode = 'img';
 // 'link_image', 'link_album', 'drupal_g2_filter', 'thumbnail_lightbox',
 // 'fullsize_image', and 'fullsize_only'.
 
-$g2ic_default_action = 'thumbnail_image';
+$g2ic_default_album_action = 'flash_mini_slideshow_album';
+$g2ic_default_image_action = 'thumbnail_image';
 
 // Change this to change the default sort order.  Valid options are 'title_asc',
 // 'title_desc', 'orig_time_desc' (origination time, newest first),
@@ -147,7 +148,7 @@ $g2ic_embed_uri = 'http://www.domain.com/wordpress/wp-gallery2.php';
 // DRUPAL GALLERY2 FILTER OPERATIONS
 // If you are using Drupal and have the Gallery2 Filter module activated, you
 // can insert a G2 Filter in the simplest format: [G2:itemid].  If you want to
-// make this the default action, set $g2ic_default_action to 'drupal_g2_filter'.
+// make this the default action, set $g2ic_default_image_action to 'drupal_g2_filter'.
 // Set this to TRUE to enable.
 
 $g2ic_drupal_g2_filter = FALSE;

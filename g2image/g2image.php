@@ -62,6 +62,12 @@ echo '                </td>' . "\n";
 echo '            </tr>' . "\n";
 echo '        </table>' . "\n";
 echo '    </form>' . "\n";
+echo '    <script language="javascript" type="text/javascript">' . "\n";
+echo '    <!--' . "\n";
+echo '	// Hack to fix conflict between Slimbox and TinyMCE' . "\n";
+echo '	window.addEvent("domready", Lightbox.init.bind(Lightbox));' . "\n";
+echo '    // -->' . "\n";
+echo '    </script>' . "\n";
 echo '</body>' . "\n\n";
 echo '</html>';
 
@@ -147,6 +153,24 @@ function g2ic_get_gallery_items() {
 /**
  * Make the array of selection options for the "How to Insert?" select element
  *
+ * @return array $albuminsert_selectoptions The array of selection options for the "How to Insert?" select element
+ */
+function g2ic_get_albuminsert_selectoptions(){
+	GLOBAL $g2ic_options;
+
+	$albuminsert_selectoptions = array();
+
+	foreach($g2ic_options['image_modules'] as $moduleName){
+		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
+	}
+
+	$albuminsert_selectoptions[$g2ic_options['default_album_action']]['selected'] = TRUE;
+	return $imginsert_selectoptions;
+}
+
+/**
+ * Make the array of selection options for the "How to Insert?" select element
+ *
  * @return array $imginsert_selectoptions The array of selection options for the "How to Insert?" select element
  */
 function g2ic_get_imginsert_selectoptions(){
@@ -158,7 +182,7 @@ function g2ic_get_imginsert_selectoptions(){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
-	$imginsert_selectoptions[$g2ic_options['default_action']]['selected'] = TRUE;
+	$imginsert_selectoptions[$g2ic_options['default_image_action']]['selected'] = TRUE;
 	return $imginsert_selectoptions;
 }
 
@@ -491,7 +515,7 @@ function g2ic_make_html_controls(){
 
 	$html .= "  \n";
 	foreach($g2ic_options['image_modules'] as $moduleName){
-		$html .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
+		$html .= all_modules::renderOptions($g2ic_options['default_image_action'], $moduleName);
 	}
 
 	// Alignment selection

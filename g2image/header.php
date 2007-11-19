@@ -9,21 +9,23 @@ global $g2ic_options;
     <link rel="stylesheet" href="css/dtree.css" type="text/css" />
     <link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<?php	if($g2ic_options['tinymce'] && $g2ic_options['wpg2_valid']) {
-		echo "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
-	}
-	elseif($g2ic_options['tinymce'] && !$g2ic_options['wpg2_valid']) {
-		echo "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
-	}
+<?php
+if($g2ic_options['tinymce'] && $g2ic_options['wpg2_valid']) {
+	echo "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
+}
+elseif($g2ic_options['tinymce'] && !$g2ic_options['wpg2_valid']) {
+	echo "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
+}
 ?>
     <script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/dtree.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>
     <script type="text/javascript">
-<?php	foreach($g2ic_options['image_modules'] as $moduleName){
-		 echo all_modules::call( $moduleName, "insert");
-	}
+<?php
+foreach($g2ic_options['image_modules'] as $moduleName){
+	 echo all_modules::call( $moduleName, "insert");
+}
 ?>
     </script>
     <script language="javascript" type="text/javascript">
@@ -109,6 +111,9 @@ global $g2ic_options;
 					imageObj.class_mode = obj.class_mode.value;
 
 					// Module inserted variables
+					// Album modules
+
+					// Image modules
 <?php
 foreach($g2ic_options['image_modules'] as $moduleName){
 echo all_modules::call( $moduleName, "javaScriptVariables");
