@@ -45,7 +45,7 @@ $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
 // WPG2 validation
 // ==============================================================
 
-// Determine if in a WordPress installation by checking for wp-config.php
+// Determine if in a WordPress installation by checking for wpg2.php or $g2ic_in_wordpress being set
 if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 	// G2Image being called from WPG2 directory
 	if (@file_exists('../wpg2.php')) {
