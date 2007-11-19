@@ -65,7 +65,7 @@ $g2ic_options['default_action'] = 'text_link_album';
 
 	$str .= "<div style='border:solid 1px red' id='additional_dialog'>";
 
-	foreach($g2ic_options['modules'] as $moduleName => $version){
+	foreach($g2ic_options['image_modules'] as $moduleName => $version){
 		$str .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
 	}
 	$str .= "</div>";
@@ -119,7 +119,7 @@ class test_modules{
 	function init(){
 		global $g2ic_options;
 		//**aob mod [A1] test in init.php
-		list( $g2ic_options['modules'], $hasErrModules)  = all_modules::getModules(dirname(__FILE__)."/modules/");
+		list( $g2ic_options['image_modules'], $hasErrModules)  = all_modules::getModules(dirname(__FILE__)."/modules/");
 		if(count($hasErrModules)>0){
 			echo "following Modules are not correct:";
 			print_r ($hasErrModules);
@@ -130,7 +130,7 @@ class test_modules{
 	function g2ic_get_imginsert_selectoptions(){
 		global $g2ic_options;
 			//**aob mod [A2] test
-			foreach($g2ic_options['modules'] as $moduleName => $version){
+			foreach($g2ic_options['image_modules'] as $moduleName => $version){
 				 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 			}
 
@@ -141,7 +141,7 @@ class test_modules{
 		global $g2ic_options;
 //**aob [A3] add all needed functions
 		$html = '    <script type="text/javascript">' . "\n";
-		foreach($g2ic_options['modules'] as $moduleName => $void){
+		foreach($g2ic_options['image_modules'] as $moduleName => $void){
 			 $html .= all_modules::call( $moduleName, "insert" );
 		}
 		$html .= '    </script>' . "\n";

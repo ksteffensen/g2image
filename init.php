@@ -40,6 +40,8 @@ $g2ic_options['default_action'] = $g2ic_default_action;
 $g2ic_options['sortby'] = $g2ic_sortby;
 $g2ic_options['drupal_g2_filter'] = $g2ic_drupal_g2_filter;
 $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
+$g2ic_options['bbcode_enabled'] = $g2ic_bbcode_enabled;
+$g2ic_options['bbcode_only'] = $g2ic_bbcode_only;
 
 // ==============================================================
 // WPG2 validation

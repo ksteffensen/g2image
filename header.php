@@ -21,7 +21,7 @@ global $g2ic_options;
     <script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>
     <script type="text/javascript">
-<?php	foreach($g2ic_options['modules'] as $moduleName){
+<?php	foreach($g2ic_options['image_modules'] as $moduleName){
 		 echo all_modules::call( $moduleName, "insert");
 	}
 ?>
@@ -110,7 +110,7 @@ global $g2ic_options;
 
 					// Module inserted variables
 <?php
-foreach($g2ic_options['modules'] as $moduleName){
+foreach($g2ic_options['image_modules'] as $moduleName){
 echo all_modules::call( $moduleName, "javaScriptVariables");
 }
 ?>

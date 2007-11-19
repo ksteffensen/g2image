@@ -13,7 +13,7 @@
     See README.HTML for installation info.
     See CHANGELOG.HTML for a history of changes.
 */
-
+$g2ic_in_wordpress = FALSE;
 // WORDPRESS USERS STOP HERE!!!
 // WORDPRESS USERS STOP HERE!!!
 // WORDPRESS USERS STOP HERE!!!
@@ -156,4 +156,9 @@ $g2ic_drupal_g2_filter = FALSE;
 
 $g2ic_drupal_g2_filter_prefix = 'G2';
 
+// BBCODE OPERATIONS
+// Add documentation...
+$g2ic_bbcode_enabled = FALSE;
+
+$g2ic_bbcode_only = FALSE;
 ?>
