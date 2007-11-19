@@ -43,12 +43,12 @@ T_bind_textdomain_codeset('default', 'UTF-8');
 T_textdomain('default');
 
 $g2ic_options = array();
-$g2ic_options['default_action'] = 'text_link_album';
+$g2ic_options['default_image_action'] = 'text_link_album';
 
 require_once("./modules/module.inc.php");
 
 $g2ic_options = array();
-$g2ic_options['default_action'] = 'text_link_album';
+$g2ic_options['default_image_action'] = 'text_link_album';
 //** test part in init.php
 	test_modules::init();
 	$str  = "";
@@ -66,7 +66,7 @@ $g2ic_options['default_action'] = 'text_link_album';
 	$str .= "<div style='border:solid 1px red' id='additional_dialog'>";
 
 	foreach($g2ic_options['image_modules'] as $moduleName => $version){
-		$str .= all_modules::renderOptions($g2ic_options['default_action'], $moduleName);
+		$str .= all_modules::renderOptions($g2ic_options['default_image_action'], $moduleName);
 	}
 	$str .= "</div>";
 	$str .= "<button onclick='doInsert()'>insert</button><br/><textarea id='show' style='width:100%; height:400px;color:white;background-color:black'></textarea>";
