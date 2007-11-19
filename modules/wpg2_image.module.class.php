@@ -60,7 +60,7 @@ SCRIPTSTUFF;
 	 */
 	function dialog(){
 		global $g2ic_options;
-
+echo "here";
 		// Check that the ImageBlock module supports the exactsize attribure (requires module API 1.0.9 or later)
 		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
 		list($error, $plugin) = GalleryCoreApi::loadPlugin('module', 'ImageBlock');
@@ -75,7 +75,7 @@ SCRIPTSTUFF;
 		else {
 			$html = '                <input type="hidden" name="wpg2_tag_size" value="" />' . "\n";
 		}
-
+echo "here2";
 		return $html;
 	}
 
