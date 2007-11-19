@@ -62,8 +62,9 @@ SCRIPTSTUFF;
 		global $g2ic_options;
 echo "here";
 		// Check that the ImageBlock module supports the exactsize attribure (requires module API 1.0.9 or later)
+		GalleryCoreApi::requireOnce('modules/imageblock/module.inc');
 		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
-		list($error, $plugin) = GalleryCoreApi::loadPlugin('module', 'ImageBlock');
+		$plugin = new ImageBlockModule;
 		$version = $plugin->getVersion();
 		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
 		if ($version_comparison != 'older') {
