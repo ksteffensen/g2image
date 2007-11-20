@@ -734,7 +734,7 @@ function g2ic_make_html_img($item_info) {
 	if ($item_info['number_resizes'] === 'non-image') {
 	}
 	else {
-		$html .= '        <a title="' . $item_info['title'] .  '" rel="lightbox[g2image]" onclick="Lightbox.click(this)" href="';
+		$html .= '        <a title="' . $item_info['title'] .  '" rel="lightbox[g2image]" href="';
 		if ($item_info['number_resizes'] != 0) {
 			if ($item_info['fullsize_width'] < 700 && $item_info['fullsize_height'] < 500) {
 				$html .= $item_info['fullsize_img'];
