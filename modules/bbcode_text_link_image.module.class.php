@@ -6,7 +6,7 @@
  * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
  */
 
-class text_link_image{
+class bbcode_text_link_image{
 
 	//------------------------------------------------------------
 	/**
@@ -45,7 +45,7 @@ class text_link_image{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
-		return '<a href="' + imageObj['image_url'] + '">' + imageObj['text_link_image'] + '</a>';
+		return '[url=' + imageObj['image_url'] + ']' + imageObj['bbcode_text_link_image'] + '[/url]';
 	}
     //end module [{$name}]
 
@@ -63,8 +63,8 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '                <label for="text_link_image">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '                <input type="text" name="text_link_image" size="84" maxlength="150" value="" />' . "\n"
+		$html = '                <label for="bbcode_text_link_image">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '                <input type="text" name="bbcode_text_link_image" size="84" maxlength="150" value="" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
 	}
@@ -74,7 +74,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "					imageObj.text_link_image = obj.text_link_image.value;\n";
+		return "					imageObj.bbcode_text_link_image = obj.bbcode_text_link_image.value;\n";
 	}
 
 	/**
@@ -82,7 +82,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Textlink to image') . ' ' . T_('(HTML)');
+		return T_('Textlink to image') . ' ' . T_('(BBCode)');
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------

@@ -20,7 +20,7 @@ class drupal_g2_filter_album{
 		var str = "";
 
 		str += '[' + imageObj['drupal_filter_prefix'] + ':' + imageObj['current_album'];
-		if (imageObj['alignment'] != 'none'){
+		if (imageObj['album_alignment'] != 'none'){
 			str += ' class=' + imageObj['album_alignment'];
 		}
 		if (imageObj['drupal_exactsize_album'])

@@ -19,7 +19,7 @@ class wpg2_album{
 	function module_{$name}(stack, imageObj){
 		var str = "";
 
-		if (imageObj['alignment'] != 'none'){
+		if (imageObj['album_alignment'] != 'none'){
 			str += '<div class="' + imageObj['album_alignment'] + '">';
 		}
 		if(window.tinyMCE) {

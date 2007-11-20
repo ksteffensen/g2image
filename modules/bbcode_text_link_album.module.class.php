@@ -6,10 +6,10 @@
  * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
  */
 
-class thumbnail_only{
+class bbcode_text_link_album{
 
 	/**
-	 * See the sample prototype for details
+	 * See sample module for details
 	 */
 	function insert($name){
 		// caution: \n in javascript strings: \\n
@@ -19,19 +19,7 @@ class thumbnail_only{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj){
-		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
-		}
-		str += '<img src="' + imageObj['thumbnail_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
-		}
-		str += ' />';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '</div>';
-		}
-		return str;
+		return '[url=' + imageObj['album_url'] + ']' + imageObj['bbcode_text_link_album'] + '[/url]';
 	}
     //end module [{$name}]
 
@@ -47,7 +35,10 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
+		$html = '                <label for="bbcode_text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '                <input type="text" name="bbcode_text_link_album" size="84" maxlength="150" value="" />' . "\n"
+		. '                <br />' . "\n";
+		return $html;
 	}
 
 	/**
@@ -55,7 +46,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return '';
+		return "					imageObj.bbcode_text_link_album = obj.bbcode_text_link_album.value;\n";
 	}
 
 	/**
@@ -63,7 +54,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Thumbnail only - no link') . ' ' . T_('(HTML)');
+		return T_('Textlink to parent album') . ' ' . T_('(BBCode)');
 	}
 
 	/**
@@ -103,8 +94,8 @@ SCRIPTSTUFF;
 	 */
 	function extra($key=false){
 		$data = array();
-		$data["version"] = 1.0;
-		$data["description"] = "HTML for thumbnail only - no link";
+		$data["version"] = "sample V.0.1";
+		$data["description"] = "this is the prototype";
 		if($key and isset($data[$key])){
 			return $data[$key];
 		}else{

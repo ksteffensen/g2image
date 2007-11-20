@@ -62,7 +62,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function icon(){
-		return "sample";
+		return '';
 	}
 
 	/**
@@ -83,7 +83,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function setup(){
-		return "sample Setup";
+		return '';
 	}
 
 	/**

@@ -88,7 +88,7 @@ $g2ic_class_mode = 'img';
 // 'link_image', 'link_album', 'drupal_g2_filter', 'thumbnail_lightbox',
 // 'fullsize_image', and 'fullsize_only'.
 
-$g2ic_default_album_action = 'wpg2_album';
+$g2ic_default_album_action = 'flash_slideshow_album';
 $g2ic_default_image_action = 'thumbnail_image';
 
 // Change this to change the default sort order.  Valid options are 'title_asc',
