@@ -1,10 +1,11 @@
-﻿<?php
+<?php
 // +---------------------------------------------------------------------------+
-// |   XML Mini Slideshow for Gallery2                               |
+// |   XML Mini Slideshow for Gallery2                                         |
 // +---------------------------------------------------------------------------+
-// | xml.php     [v.2.0.1]                                                              |
+// | xml.php     [v.2.0.1]                                                     |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007Wayne Patterson [suprsidr@gmail.com]                  |
+// | Copyright (C) 2007Wayne Patterson [suprsidr@gmail.com]                    |
+// | Modified by Kirk Steffensen for use with G2Image
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -24,10 +25,38 @@
 // +---------------------------------------------------------------------------+
 //
 error_reporting(E_ERROR | E_PARSE);
-    function init () // connect to gallery
+// Get the g2image config variables
+require_once('../config.php');
+// ====( Initialize Variables )=================================
+$g2ic_options = array();
+$g2ic_wp_rel_path = '';
+$g2ic_base_path = str_repeat("../", substr_count(dirname($_SERVER['PHP_SELF']), "/"));
+// Determine if in a WordPress installation by checking for wp-config.php
+for ($count = 1; $count <= 7; $count++) {
+	$g2ic_wp_rel_path = $g2ic_wp_rel_path.'../';
+	if (file_exists($g2ic_wp_rel_path . 'wp-config.php')) {
+		require_once($g2ic_wp_rel_path.'wp-config.php');
+		require_once($g2ic_wp_rel_path.'wp-admin/admin.php');
+		$wpg2_g2paths = get_option('wpg2_g2paths');
+		$g2ic_embedded_mode = TRUE;
+		$g2ic_use_full_path = TRUE;
+		$g2ic_embed_uri = $wpg2_g2paths['g2_embeduri'];
+		$g2ic_gallery2_uri = $wpg2_g2paths['g2_url'];
+		$g2ic_gallery2_path = $wpg2_g2paths['g2_filepath'];
+	}
+}
+if(!$g2ic_embedded_mode) {
+	$g2ic_embed_uri = '/' . $g2ic_gallery2_path . 'main.php';
+	$g2ic_gallery2_uri = '/' . $g2ic_gallery2_path . '/';
+}
+if(!$g2ic_use_full_path)
+	$g2ic_gallery2_path = $g2ic_base_path.$g2ic_gallery2_path;
+
+function init () // connect to gallery
     {
-        require_once( 'C:\Program Files\xampp\htdocs\fred\embed.php');
-        $ret = GalleryEmbed::init(array('fullInit' => true, 'embedUri' => '/gallery2/main.php', 'g2Uri' => '/gallery2/'));
+	global $g2ic_gallery2_path, $g2ic_embed_uri, $g2ic_gallery2_uri;
+        require_once( $g2ic_gallery2_path . 'embed.php');
+        $ret = GalleryEmbed::init(array('fullInit' => true, 'embedUri' => $g2ic_embed_uri, 'g2Uri' => $g2ic_gallery2_uri));
         if ($ret) {
             print 'GalleryEmbed::init failed, here is the error message: ' . $ret->getAsHtml();
             exit;
@@ -621,3 +650,4 @@ function xml() {
 
 xml();
 ?>
+
