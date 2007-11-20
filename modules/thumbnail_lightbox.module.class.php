@@ -52,7 +52,6 @@ SCRIPTSTUFF;
 	function dialog(){
 		$html = '                <label for="lightbox_group">' . T_('LightBox Group (Leave blank to not group with other images)') . '<br /></label>' . "\n"
 		. '                <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
-		. '                <br />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
 	}

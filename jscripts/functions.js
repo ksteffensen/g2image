@@ -68,6 +68,21 @@ function uncheckAllImages() {
 	document.forms[0].insert_button.disabled = true;
 }
 
+function toggleAlbumTextboxes() {
+	var obj = document.forms[0];
+
+	var pp = document.getElementById("a_"+obj.albuminsert.value); // is there a new module selected?
+	var allFields = document.getElementById("album_additional_dialog").getElementsByTagName("DIV");
+	for(var i=0; i<allFields.length; i++){
+		if(allFields[i].getAttribute("module") != ""){
+			allFields[i].className = 'hidden_textbox';
+		}
+	}
+	if(pp && pp.getAttribute("module") ){
+		pp.className = 'displayed_textbox';
+	}
+}
+
 function toggleTextboxes() {
 	var obj = document.forms[0];
 

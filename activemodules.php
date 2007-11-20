@@ -2,7 +2,7 @@
 $g2ic_options['album_modules'] = array(
 	'wpg2_album',
 	'drupal_g2_filter_album',
-	'flash_mini_slideshow_album',
+//	'flash_mini_slideshow_album',
 );
 
 $g2ic_options['image_modules'] = array(
@@ -44,6 +44,10 @@ if($g2ic_options['drupal_g2_filter'])	{
 
 if ($g2ic_options['bbcode_only']) {
 	$g2ic_options['image_modules'] = $g2ic_options['bbcode_modules'];
+}
+
+foreach($g2ic_options['album_modules'] as $module ){
+	require_once('./modules/' . $module . '.module.class.php');
 }
 
 foreach($g2ic_options['image_modules'] as $module ){

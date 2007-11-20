@@ -24,6 +24,7 @@ require_once('activemodules.php');
 session_start();
 g2ic_get_request_and_session_options();
 list($g2ic_album_info, $g2ic_gallery_items) = g2ic_get_gallery_items();
+$g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions();
 $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
 
 // ====( Main HTML Generation Code )
@@ -40,8 +41,7 @@ echo '                <td valign="top">' . "\n";
 
 echo '                    <div class="main">' . "\n";
 
-if ($g2ic_options['wpg2_valid']) echo g2ic_make_html_wpg2_album_insert_button();
-if ($g2ic_options['drupal_g2_filter']) echo g2ic_make_html_drupal_album_insert_button();
+echo g2ic_make_html_album_insert_controls();
 
 if (empty($g2ic_gallery_items)) {
 	echo g2ic_make_html_empty_page();
@@ -49,7 +49,7 @@ if (empty($g2ic_gallery_items)) {
 else {
 	$g2ic_page_navigation = g2ic_make_html_page_navigation();
 	echo g2ic_make_html_display_options();
-	echo g2ic_make_html_controls();
+	echo g2ic_make_html_image_insert_controls();
 	print_r($g2ic_page_navigation);
 	echo g2ic_make_html_image_navigation();
 	print_r($g2ic_page_navigation);
@@ -154,12 +154,12 @@ function g2ic_get_albuminsert_selectoptions(){
 
 	$albuminsert_selectoptions = array();
 
-	foreach($g2ic_options['image_modules'] as $moduleName){
-		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
+	foreach($g2ic_options['album_modules'] as $moduleName){
+		 $albuminsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
 	$albuminsert_selectoptions[$g2ic_options['default_album_action']]['selected'] = TRUE;
-	return $imginsert_selectoptions;
+	return $albuminsert_selectoptions;
 }
 
 /**
@@ -374,6 +374,8 @@ function g2ic_magic_quotes_remove(&$array) {
 function g2ic_make_html_about($version){
 	global $g2ic_options, $g2ic_album_info;
 
+	$album_info = g2ic_get_item_info($g2ic_options['current_album']);
+
 	$html = '<div class="about_button">' . "\n"
 	. '    <input type="button" onclick="alert(\'' . T_('Gallery2 Image Chooser') . '\n' . T_('Version') . ' ' . $version
 	. '\n' . T_('Documentation:') .  ' http://g2image.steffensenfamily.com/\')" '
@@ -381,6 +383,10 @@ function g2ic_make_html_about($version){
 	. '    <input type="hidden" name="current_album" value="' . $g2ic_options['current_album'] . '">' . "\n"
 	. '    <input type="hidden" name="album_name" value="' . $g2ic_album_info['title'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_url" value="' . $g2ic_album_info['url'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_summary" value="' . $album_info['summary'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_thumbh" value="' . $album_info['thumbnail_height'] . '" />' . "\n"
 	. '    <input type="hidden" name="g2ic_page" value="' . $g2ic_options['current_page'] . '" />' . "\n"
 	. '    <input type="hidden" name="class_mode" value="' . $g2ic_options['class_mode'] . '" />' . "\n"
 	. '    <input type="hidden" name="g2ic_form" value="' . $g2ic_options['form'] . '" />' . "\n"
@@ -458,7 +464,7 @@ function g2ic_make_html_album_tree_branches($current_album, $parent, &$node) {
  *
  * @return string $html The alignment selection HTML
  */
-function g2ic_make_html_alignment_select(){
+function g2ic_make_html_alignment_select($name){
 	GLOBAL $g2ic_options;
 
 	// array for output
@@ -486,7 +492,7 @@ function g2ic_make_html_alignment_select(){
 
 	$align_options[$g2ic_options['default_alignment']]['selected'] = TRUE;
 
-	$html = g2ic_make_html_select('alignment',$align_options);
+	$html = g2ic_make_html_select($name,$align_options);
 
 	return $html;
 }
@@ -496,15 +502,51 @@ function g2ic_make_html_alignment_select(){
  *
  * @return string $html The HTML for the image controls
  */
-function g2ic_make_html_controls(){
+function g2ic_make_html_album_insert_controls(){
+	global $gallery, $g2ic_albuminsert_options, $g2ic_options, $g2ic_album_info;
+
+	// "How to insert:" selector
+	$html = "        <fieldset id='album_additional_dialog'>\n"
+	. '            <legend>' . T_('Album Insertion Options - Applies to the entire current album: ') . $g2ic_album_info['title'] . '</legend>' . "\n"
+	. '            <label for="alignment">' . T_('How to Insert Album') . '</label>' . "\n"
+	. g2ic_make_html_select('albuminsert', $g2ic_albuminsert_options, 'toggleAlbumTextboxes();')
+	. '            <br />' . "\n";
+
+	$html .= "  \n";
+	foreach($g2ic_options['album_modules'] as $moduleName){
+		$html .= all_modules::renderOptions($g2ic_options['default_album_action'], $moduleName);
+	}
+
+	// Alignment selection
+	$html .= '            <label for="album_alignment">' . T_('G2Image Alignment Class') . '</label>' . "\n"
+	. g2ic_make_html_alignment_select('album_alignment')
+	. '            <br />' . "\n"
+
+	// "Insert" button
+	. '            <label for="album_insert_button">' . T_('Press button to insert the current album') . '</label>' . "\n"
+	. "            <input type='button'\n"
+	. "            name='album_insert_button'\n"
+	. '            onclick="insertAlbum();"' . "\n"
+	. '            value="' . T_('Insert') . '"' . "\n"
+	. '            />' . "\n"
+	. "        </fieldset>\n\n";
+
+	return $html;
+}
+
+/**
+ * Create the HTML for the image controls
+ *
+ * @return string $html The HTML for the image controls
+ */
+function g2ic_make_html_image_insert_controls(){
 	global $gallery, $g2ic_imginsert_options, $g2ic_options;
 
 	// "How to insert:" selector
 	$html = "        <fieldset id='additional_dialog'>\n"
-	. '            <legend>' . T_('Insertion Options') . '</legend>' . "\n"
+	. '            <legend>' . T_('Individual Image Insertion Options - Applies to the images below') . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Image') . '</label>' . "\n"
 	. g2ic_make_html_select('imginsert', $g2ic_imginsert_options, 'toggleTextboxes();')
-	. '            <br />' . "\n"
 	. '            <br />' . "\n";
 
 	$html .= "  \n";
@@ -514,7 +556,7 @@ function g2ic_make_html_controls(){
 
 	// Alignment selection
 	$html .= '            <label for="alignment">' . T_('G2Image Alignment Class') . '</label>' . "\n"
-	. g2ic_make_html_alignment_select()
+	. g2ic_make_html_alignment_select('alignment')
 	. "        </fieldset>\n\n";
 
 	// "Insert" button
@@ -596,44 +638,6 @@ function g2ic_make_html_display_options(){
 	.  '>' . T_('Thumbnails with info') . '</input>' . "\n";
 
 	$html .= "    </fieldset>\n"
-	. "</div>\n\n";
-
-	return $html;
-}
-
-/**
- * Creates the HTML for inserting an album Drupal Filter Tag
- *
- * @return string $html The HTML for for inserting an album Drupal Filter Tag
- */
-function g2ic_make_html_drupal_album_insert_button(){
-
-	GLOBAL $g2ic_options, $g2ic_album_info, $g2ic_gallery_items;
-	$html = '';
-
-	// Create the form
-	$html .= "<div>\n"
-	. "    <fieldset>\n"
-	. '        <legend>' . T_('Insert a Drupal G2 Filter tag for the current album:') . ' ' . $g2ic_album_info['title'] . '</legend>' . "\n";
-
-	if (empty($g2ic_gallery_items)) {
-		$html .= '            ' . T_('G2Image Alignment Class') . ' ' . "\n"
-		. g2ic_make_html_alignment_select()
-		. '            <br />' . "\n";
-	}
-
-	// "Insert" button
-	$html .= "            <input type='button'\n"
-	. "            onclick='insertDrupalFilter()'\n"
-	. '            value="' . T_('Insert') . '"' . "\n"
-	. "            />\n";
-
-	if (!empty($g2ic_gallery_items)) {
-		$html .= '            ' . T_('Set the Alignment Class in "Insertion Options" below') . ' ' . "\n";
-	}
-
-	$html .= '            <input type="hidden" name="drupal_image_id" value="' . $g2ic_options['current_album'] . '" />' . "\n"
-	. "    </fieldset>\n"
 	. "</div>\n\n";
 
 	return $html;
@@ -844,50 +848,6 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 		$html .= ">{$option['text']}</option>\n";
 	}
 	$html .= "            </select>\n";
-
-	return $html;
-}
-
-/**
- * Creates the HTML for inserting an album WPG2 Tag
- *
- * @return string $html The HTML for for inserting an album WPG2 Tag
- */
-function g2ic_make_html_wpg2_album_insert_button(){
-
-	GLOBAL $g2ic_options, $g2ic_gallery_items;
-	$html = '';
-
-	$album_info = g2ic_get_item_info($g2ic_options['current_album']);
-
-	// Create the form
-	$html .= "<div>\n"
-	. "    <fieldset>\n"
-	. '        <legend>' . T_('Insert a WPG2 tag for the current album:') . ' ' . $album_info['title'] . '</legend>' . "\n";
-
-	if (empty($g2ic_gallery_items)) {
-		$html .= '            ' . T_('G2Image Alignment Class') . ' ' . "\n"
-		. g2ic_make_html_alignment_select()
-		. '            <br />' . "\n";
-	}
-
-	// "Insert" button
-	$html .= '            <input type="button"' . "\n"
-	. '            onclick="insertWpg2Tag()"' . "\n"
-	. '            value="' . T_('Insert') . '"' . "\n"
-	. '            />' . "\n";
-
-	if (!empty($g2ic_gallery_items)) {
-		$html .= '            ' . T_('Set the Alignment Class in "Insertion Options" below') . ' ' . "\n";
-	}
-
-	$html .= '            <input type="hidden" name="wpg2_id" value="' . $g2ic_options['current_album'] . '" />' . "\n"
-	. '            <input type="hidden" name="wpg2_summary" value="' . $album_info['summary'] . '" />' . "\n"
-	. '            <input type="hidden" name="wpg2_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
-	. '            <input type="hidden" name="wpg2_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
-	. '            <input type="hidden" name="wpg2_thumbh" value="' . $album_info['thumbnail_height'] . '" />' . "\n"
-	. '    </fieldset>' . "\n"
-	. '</div>' . "\n\n";
 
 	return $html;
 }

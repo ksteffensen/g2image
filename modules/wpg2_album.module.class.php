@@ -4,7 +4,7 @@
  *
  */
 
-class fullsize_custom_url{
+class wpg2_album{
 
 	/**
 	 * See sample module for details
@@ -18,17 +18,24 @@ class fullsize_custom_url{
 
 	function module_{$name}(stack, imageObj){
 		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
+
+		if (imageObj['alignment'] != 'none'){
+			str += '<div class="' + imageObj['album_alignment'] + '">';
 		}
-		str += '<a href="' + imageObj['custom_url_fullsize'] + '"><img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
+		if(window.tinyMCE) {
+			str += '<img src="' + imageObj['album_thumbnail']
+			+ '" alt="' + imageObj['current_album'];
+			str += '" title="' + imageObj['current_album'];
+			str += '" width="' + imageObj['album_thumbw'] + '" height="' + imageObj['album_thumbh']
+			+ '" id="mce_plugin_g2image_wpg2" />';
 		}
-		str += ' /></a>';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+		else {
+			str += '<wpg2>' + imageObj['current_album'] + '</wpg2>';
+		}
+		if (imageObj['album_alignment'] != 'none'){
 			str += '</div>';
 		}
+
 		return str;
 	}
     //end module [{$name}]
@@ -45,11 +52,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		global $g2ic_options;
-		$html = '                <label for="custom_url_fullsize">' . T_('Custom URL') . '<br /></label>' . "\n"
-		. '                <input type="text" name="custom_url_fullsize" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-		. '                <br />' . "\n";
-		return $html;
+		return '';
 	}
 
 	/**
@@ -57,7 +60,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "					imageObj.custom_url_fullsize = obj.custom_url_fullsize.value;\n";
+		return '';
 	}
 
 	/**
@@ -65,7 +68,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Fullsized image with link to custom URL (from text box below)') . ' ' . T_('(HTML)');
+		return T_('WPG2 tag of album');
 	}
 
 	/**

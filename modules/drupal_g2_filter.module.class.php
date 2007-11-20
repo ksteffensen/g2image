@@ -54,7 +54,6 @@ SCRIPTSTUFF;
 		if ($version_comparison != 'older') {
 			$html = '                <label for="drupal_exactsize">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
 			. '                <input type="text" name="drupal_exactsize" size="84" maxlength="150" value="" />' . "\n"
-			. '                <br />' . "\n"
 			. '                <br />' . "\n";
 		}
 		else {
