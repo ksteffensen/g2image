@@ -107,6 +107,8 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 		$g2ic_options['class_mode'] = $wpg2_g2ic['g2ic_class_mode'];
 	if(isset($wpg2_g2ic['g2ic_sortby']))
 		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
+	if(isset($wpg2_g2ic['g2ic_default_album_action']))
+		$g2ic_options['default_album_action'] = $wpg2_g2ic['g2ic_default_album_action'];
 	if(isset($wpg2_g2ic['g2ic_default_image_action'])) {
 		// For backwards compatibility with old option value in WPG2 G2Image Options tab
 		if ($wpg2_g2ic['g2ic_default_image_action'] == 'wpg2')

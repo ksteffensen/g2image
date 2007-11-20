@@ -95,6 +95,9 @@ function g2ic_get_gallery_items() {
 		foreach ($albums as $album) {
 			$album_info['url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $album->getid()), array('forceFullUrl' => true));
 			$album_info['title'] = $album->getTitle();
+			if(empty($album_info['title'])) {
+				$album_info['title'] = $album->getPathComponent();
+			}
 			list($error, $data_item_ids) = GalleryCoreApi::fetchChildDataItemIds($album);
 			foreach ($data_item_ids as $data_item_id) {
 				$item_ids[] = $data_item_id;
@@ -158,7 +161,9 @@ function g2ic_get_albuminsert_selectoptions(){
 		 $albuminsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
-	$albuminsert_selectoptions[$g2ic_options['default_album_action']]['selected'] = TRUE;
+	if ($albuminsert_selectoptions[$g2ic_options['default_album_action']]) {
+		$albuminsert_selectoptions[$g2ic_options['default_album_action']]['selected'] = TRUE;
+	}
 	return $albuminsert_selectoptions;
 }
 
@@ -176,7 +181,9 @@ function g2ic_get_imginsert_selectoptions(){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
-	$imginsert_selectoptions[$g2ic_options['default_image_action']]['selected'] = TRUE;
+	if ($imginsert_selectoptions[$g2ic_options['default_image_action']]) {
+		$imginsert_selectoptions[$g2ic_options['default_image_action']]['selected'] = TRUE;
+	}
 	return $imginsert_selectoptions;
 }
 
@@ -507,7 +514,7 @@ function g2ic_make_html_album_insert_controls(){
 
 	// "How to insert:" selector
 	$html = "        <fieldset id='album_additional_dialog'>\n"
-	. '            <legend>' . T_('Album Insertion Options - Applies to the entire current album: ') . $g2ic_album_info['title'] . '</legend>' . "\n"
+	. '            <legend>' . T_('Album Insertion Options for the entire current album: ') . $g2ic_album_info['title'] . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Album') . '</label>' . "\n"
 	. g2ic_make_html_select('albuminsert', $g2ic_albuminsert_options, 'toggleAlbumTextboxes();')
 	. '            <br />' . "\n";
@@ -544,7 +551,7 @@ function g2ic_make_html_image_insert_controls(){
 
 	// "How to insert:" selector
 	$html = "        <fieldset id='additional_dialog'>\n"
-	. '            <legend>' . T_('Individual Image Insertion Options - Applies to the images below') . '</legend>' . "\n"
+	. '            <legend>' . T_('Individual Image Insertion Options for the images below') . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Image') . '</label>' . "\n"
 	. g2ic_make_html_select('imginsert', $g2ic_imginsert_options, 'toggleTextboxes();')
 	. '            <br />' . "\n";
