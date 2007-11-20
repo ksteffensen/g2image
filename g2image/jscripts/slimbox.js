@@ -2,6 +2,7 @@
 	Slimbox v1.41 - The ultimate lightweight Lightbox clone
 	by Christophe Beyls (http://www.digitalia.be) - MIT-style license.
 	Inspired by the original Lightbox v2 by Lokesh Dhakar.
+	Modified for G2Image by Kirk Steffensen (with much help from Andres Obrero)
 */
 
 var Lightbox = {
@@ -189,4 +190,11 @@ var Lightbox = {
 	}
 };
 
+// Hack to make Slimbox work within a TinyMCE popup window
+window.addEvent("load", initLightbox);
+function initLightbox(){
+	Lightbox.init();
+}
+// End hack
 
+window.addEvent('domready', Lightbox.init.bind(Lightbox));

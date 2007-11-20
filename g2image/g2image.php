@@ -62,12 +62,6 @@ echo '                </td>' . "\n";
 echo '            </tr>' . "\n";
 echo '        </table>' . "\n";
 echo '    </form>' . "\n";
-echo '    <script language="javascript" type="text/javascript">' . "\n";
-echo '    <!--' . "\n";
-echo '	// Hack to fix conflict between Slimbox and TinyMCE' . "\n";
-echo '	window.addEvent("domready", Lightbox.init.bind(Lightbox));' . "\n";
-echo '    // -->' . "\n";
-echo '    </script>' . "\n";
 echo '</body>' . "\n\n";
 echo '</html>';
 
@@ -740,7 +734,7 @@ function g2ic_make_html_img($item_info) {
 	if ($item_info['number_resizes'] === 'non-image') {
 	}
 	else {
-		$html .= '        <a title="' . $item_info['title'] .  '" rel="lightbox[g2image]" href="';
+		$html .= '        <a title="' . $item_info['title'] .  '" rel="lightbox[g2image]" onclick="Lightbox.click(this)" href="';
 		if ($item_info['number_resizes'] != 0) {
 			if ($item_info['fullsize_width'] < 700 && $item_info['fullsize_height'] < 500) {
 				$html .= $item_info['fullsize_img'];
