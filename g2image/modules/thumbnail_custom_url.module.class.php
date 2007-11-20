@@ -48,7 +48,6 @@ SCRIPTSTUFF;
 		global $g2ic_options;
 		$html = '                <label for="custom_url_thumbnail">' . T_('Custom URL') . '<br /></label>' . "\n"
 		. '                <input type="text" name="custom_url_thumbnail" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-		. '                <br />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
 	}

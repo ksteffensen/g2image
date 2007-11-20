@@ -70,7 +70,6 @@ SCRIPTSTUFF;
 		if ($version_comparison != 'older') {
 			$html = '                <label for="wpg2_tag_size">' . T_('WPG2 tag "size" attribute (Leave blank for the default size of: ') . $g2ic_options['wpg2_tag_size']. 'px)<br /></label>' . "\n"
 			. '                <input type="text" name="wpg2_tag_size" size="84" maxlength="150" value="" />' . "\n"
-			. '                <br />' . "\n"
 			. '                <br />' . "\n";
 		}
 		else {

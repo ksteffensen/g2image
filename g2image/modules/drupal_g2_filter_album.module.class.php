@@ -4,7 +4,7 @@
  *
  */
 
-class fullsize_custom_url{
+class drupal_g2_filter_album{
 
 	/**
 	 * See sample module for details
@@ -18,17 +18,15 @@ class fullsize_custom_url{
 
 	function module_{$name}(stack, imageObj){
 		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
+
+		str += '[' + imageObj['drupal_filter_prefix'] + ':' + imageObj['current_album'];
+		if (imageObj['alignment'] != 'none'){
+			str += ' class=' + imageObj['album_alignment'];
 		}
-		str += '<a href="' + imageObj['custom_url_fullsize'] + '"><img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
-		}
-		str += ' /></a>';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '</div>';
-		}
+		if (imageObj['drupal_exactsize_album'])
+			str += ' exactsize=' + imageObj['drupal_exactsize_album'];
+		str += ']';
+
 		return str;
 	}
     //end module [{$name}]
@@ -46,9 +44,22 @@ SCRIPTSTUFF;
 	 */
 	function dialog(){
 		global $g2ic_options;
-		$html = '                <label for="custom_url_fullsize">' . T_('Custom URL') . '<br /></label>' . "\n"
-		. '                <input type="text" name="custom_url_fullsize" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-		. '                <br />' . "\n";
+
+		// Check that the ImageBlock module supports the exactsize attribure (requires module API 1.0.9 or later)
+		GalleryCoreApi::requireOnce('modules/imageblock/module.inc');
+		GalleryCoreApi::requireOnce('modules/core/classes/GalleryRepositoryUtilities.class');
+		$plugin = new ImageBlockModule;
+		$version = $plugin->getVersion();
+		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
+		if ($version_comparison != 'older') {
+			$html = '                <label for="drupal_exactsize_album">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
+			. '                <input type="text" name="drupal_exactsize_album" size="84" maxlength="150" value="" />' . "\n"
+			. '                <br />' . "\n";
+		}
+		else {
+			$html = '                <input type="hidden" name="drupal_exactsize_album" value="" />' . "\n";
+		}
+
 		return $html;
 	}
 
@@ -57,7 +68,9 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
-		return "					imageObj.custom_url_fullsize = obj.custom_url_fullsize.value;\n";
+		$html = "					imageObj.drupal_exactsize_album = obj.drupal_exactsize_album.value;\n"
+		. "					imageObj.drupal_filter_prefix = obj.drupal_filter_prefix.value;\n";
+		return $html;
 	}
 
 	/**
@@ -65,7 +78,7 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function select(){
-		return T_('Fullsized image with link to custom URL (from text box below)') . ' ' . T_('(HTML)');
+		return T_('Drupal Gallery2 Module filter tag');
 	}
 
 	/**

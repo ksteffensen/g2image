@@ -23,6 +23,9 @@ elseif($g2ic_options['tinymce'] && !$g2ic_options['wpg2_valid']) {
     <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>
     <script type="text/javascript">
 <?php
+foreach($g2ic_options['album_modules'] as $moduleName){
+	 echo all_modules::call( $moduleName, "insert");
+}
 foreach($g2ic_options['image_modules'] as $moduleName){
 	 echo all_modules::call( $moduleName, "insert");
 }
@@ -30,6 +33,42 @@ foreach($g2ic_options['image_modules'] as $moduleName){
     </script>
     <script language="javascript" type="text/javascript">
     <!--
+	function insertAlbum(){
+		var obj = document.forms[0];
+		var htmlCode = '';
+
+		if(typeof(insertFunctions[obj.imginsert.value])=="function"){
+			id = 0;
+			var imageObj = {}; // new Object()
+
+			// Fixed core variables
+			imageObj.current_album = obj.current_album.value;
+			imageObj.album_name = obj.album_name.value;
+			imageObj.album_url = obj.album_url.value;
+			imageObj.album_summary = obj.album_summary.value;
+			imageObj.album_thumbnail = obj.album_thumbnail.value;
+			imageObj.album_thumbw = obj.album_thumbw.value;
+			imageObj.album_thumbh = obj.album_thumbh.value;
+			imageObj.album_alignment = obj.album_alignment.value;
+			imageObj.class_mode = obj.class_mode.value;
+
+			// Module inserted variables
+			// Album modules
+<?php
+foreach($g2ic_options['album_modules'] as $moduleName){
+echo all_modules::call( $moduleName, "javaScriptVariables");
+}
+?>
+
+			htmlCode += insertFunctions[obj.albuminsert.value]( [obj.albuminsert.value], imageObj );
+		}else{
+			alert(obj.albuminsert.value);
+			htmlCode += 'Error';
+		}
+
+		insertHtml(htmlCode,obj);
+	}
+
 	function insertItems(){
 		var obj = document.forms[0];
 		var htmlCode = '';
@@ -80,8 +119,6 @@ foreach($g2ic_options['image_modules'] as $moduleName){
 		for (var i=0;i<loop;i++) {
 			if ((loop == 1) || obj.images[i].checked) {
 
-				imgtitle = ' title="' + item_summary[i] + '"';
-				imgalt = ' alt="' + item_title[i] + '"';
 				thumbw[i] = 'width="' + thumbw[i] + '" ';
 				thumbh[i] = 'height="' + thumbh[i] + '" ';
 
@@ -111,8 +148,6 @@ foreach($g2ic_options['image_modules'] as $moduleName){
 					imageObj.class_mode = obj.class_mode.value;
 
 					// Module inserted variables
-					// Album modules
-
 					// Image modules
 <?php
 foreach($g2ic_options['image_modules'] as $moduleName){

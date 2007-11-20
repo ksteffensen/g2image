@@ -37,6 +37,7 @@ $g2ic_options['custom_class_4'] = $g2ic_custom_class_4;
 $g2ic_options['custom_url'] = $g2ic_custom_url;
 $g2ic_options['class_mode'] = $g2ic_class_mode;
 $g2ic_options['default_image_action'] = $g2ic_default_image_action;
+$g2ic_options['default_album_action'] = $g2ic_default_album_action;
 $g2ic_options['sortby'] = $g2ic_sortby;
 $g2ic_options['drupal_g2_filter'] = $g2ic_drupal_g2_filter;
 $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
