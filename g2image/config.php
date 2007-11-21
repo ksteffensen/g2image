@@ -13,6 +13,8 @@
     See README.HTML for installation info.
     See CHANGELOG.HTML for a history of changes.
 */
+$g2ic_options = array();
+
 $g2ic_in_wordpress = FALSE;
 // WORDPRESS USERS STOP HERE!!!
 // WORDPRESS USERS STOP HERE!!!
@@ -162,4 +164,41 @@ $g2ic_drupal_g2_filter_prefix = 'G2';
 $g2ic_bbcode_enabled = FALSE;
 
 $g2ic_bbcode_only = FALSE;
+
+// Default Flash Slideshow configuration values
+// See http://www.flashyourweb.com/dokukiki/doku.php/xmlmini:2.0 for details on options
+
+// Height and width of flash player window in pixels
+$g2ic_options['flash_slideshow_height'] = 150;
+$g2ic_options['flash_slideshow_width'] = 150;
+
+// Delay in seconds
+$g2ic_options['flash_slideshow_delay'] = 3;
+
+// true or false
+$g2ic_options['flash_slideshow_shuffle'] = 'false';
+
+// true or false
+$g2ic_options['flash_slideshow_drop_shadow'] = 'false';
+
+// Case sensitive: Blinds Fade Fly Iris Photo PixelDissolve Rotate Squeeze Wipe Zoom Random
+$g2ic_options['flash_slideshow_transition_in'] = 'Fade';
+$g2ic_options['flash_slideshow_transition_out'] = 'Fade';
+
+// Whether to have a link over the photos: true or false
+$g2ic_options['flash_slideshow_no_link'] = 'false';
+
+// false or a URL.  If set, replaces ALL of the links with this one URL
+$g2ic_options['flash_slideshow_alt_link'] = 'false';
+
+// Target for links: _parent _blank _self _top or your own custom target for a named frame
+$g2ic_options['flash_slideshow_link_target'] = '_parent';
+
+// false, top, or bottom
+$g2ic_options['flash_slideshow_show_title'] = 'false';
+$g2ic_options['flash_slideshow_title_color'] = 'FFFFFF';
+$g2ic_options['flash_slideshow_title_bg_color'] = '333333';
+
+// none starMask roundedMask circleMask
+$g2ic_options['flash_slideshow_masks'] = 'none';
 ?>

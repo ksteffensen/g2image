@@ -18,7 +18,6 @@ require_once('config.php');
 require_once('./modules/module.inc.php');
 
 // ====( Initialize Variables )=================================
-$g2ic_options = array();
 $g2ic_options['current_page'] = 1;
 $g2ic_options['wpg2_valid'] = FALSE;
 $g2ic_wp_rel_path = '';
@@ -50,12 +49,12 @@ $g2ic_options['bbcode_only'] = $g2ic_bbcode_only;
 
 // Determine if in a WordPress installation by checking for wpg2.php or $g2ic_in_wordpress being set
 if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
-	// G2Image being called from WPG2 directory
+	// G2Image is being called from WPG2 directory
 	if (@file_exists('../wpg2.php')) {
 		require_once('../../../../wp-config.php');
 		require_once('../../../../wp-admin/admin.php');
 	}
-	// Otherwise G2Image being called by another editor.  E.g, FCKEditor
+	// Otherwise user has set $g2ic_in_wordpress == TRUE because G2Image is being called by another editor.  E.g, FCKEditor
 	else {
 		for ($count = 1; $count <= 10; $count++) {
 			$g2ic_wp_rel_path = $g2ic_wp_rel_path . '../';
@@ -117,6 +116,8 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
 	if(isset($wpg2_g2ic['g2ic_default_album_action']))
 		$g2ic_options['default_album_action'] = $wpg2_g2ic['g2ic_default_album_action'];
+	else
+		$g2ic_options['default_album_action'] = 'wpg2_album';
 	if(isset($wpg2_g2ic['g2ic_default_image_action'])) {
 		// For backwards compatibility with old option value in WPG2 G2Image Options tab
 		if ($wpg2_g2ic['g2ic_default_image_action'] == 'wpg2')

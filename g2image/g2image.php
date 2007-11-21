@@ -513,7 +513,7 @@ function g2ic_make_html_album_insert_controls(){
 	global $gallery, $g2ic_albuminsert_options, $g2ic_options, $g2ic_album_info;
 
 	// "How to insert:" selector
-	$html = "        <fieldset id='album_additional_dialog'>\n"
+	$html = '        <fieldset id="album_additional_dialog">' . "\n"
 	. '            <legend>' . T_('Album Insertion Options for the entire current album: ') . $g2ic_album_info['title'] . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Album') . '</label>' . "\n"
 	. g2ic_make_html_select('albuminsert', $g2ic_albuminsert_options, 'toggleAlbumTextboxes();')
@@ -531,12 +531,12 @@ function g2ic_make_html_album_insert_controls(){
 
 	// "Insert" button
 	. '            <label for="album_insert_button">' . T_('Press button to insert the current album') . '</label>' . "\n"
-	. "            <input type='button'\n"
-	. "            name='album_insert_button'\n"
+	. '            <input type="button"' . "\n"
+	. '            name="album_insert_button"' . "\n"
 	. '            onclick="insertAlbum();"' . "\n"
 	. '            value="' . T_('Insert') . '"' . "\n"
 	. '            />' . "\n"
-	. "        </fieldset>\n\n";
+	. '        </fieldset>' . "\n\n";
 
 	return $html;
 }
@@ -550,7 +550,7 @@ function g2ic_make_html_image_insert_controls(){
 	global $gallery, $g2ic_imginsert_options, $g2ic_options;
 
 	// "How to insert:" selector
-	$html = "        <fieldset id='additional_dialog'>\n"
+	$html = '        <fieldset id="additional_dialog">' . "\n"
 	. '            <legend>' . T_('Individual Image Insertion Options for the images below') . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Image') . '</label>' . "\n"
 	. g2ic_make_html_select('imginsert', $g2ic_imginsert_options, 'toggleTextboxes();')
