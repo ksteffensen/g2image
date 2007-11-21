@@ -57,11 +57,19 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 	}
 	// Otherwise G2Image being called by another editor.  E.g, FCKEditor
 	else {
-		for ($count = 1; $count <= 7; $count++) {
-			$g2ic_wp_rel_path = $g2ic_wp_rel_path.'../';
-			if (@file_exists('wp-config.php')) {
-				require_once($g2ic_wp_rel_path.'wp-config.php');
-				require_once($g2ic_wp_rel_path.'wp-admin/admin.php');
+		for ($count = 1; $count <= 10; $count++) {
+			$g2ic_wp_rel_path = $g2ic_wp_rel_path . '../';
+			if (@file_exists($g2ic_wp_rel_path . 'wp-config.php')) {
+				require_once($g2ic_wp_rel_path . 'wp-config.php');
+				require_once($g2ic_wp_rel_path . 'wp-admin/admin.php');
+				break;
+			}
+			elseif ($count == 10) {
+				// Die on fatal error of not finding wp-config.php
+				print ('<h3>Fatal Error: Cannot locate wp-config.php.</h3><br />You have set $g2ic_in_wordpress to TRUE, but G2Image cannot locate wp-config.php in any parent directory.');
+				print '</body>' . "\n\n";
+				print '</html>';
+				die;
 			}
 		}
 	}
@@ -183,7 +191,9 @@ if(file_exists($g2ic_gallery2_path.'embed.php')) {
 }
 // Else die on a fatal error
 else {
-	print g2ic_make_html_header();
+	$g2ic_options['tinymce'] = FALSE;
+	$g2ic_options['wpg2_valid'] = FALSE;
+	require_once('header.php');
 	print T_('<h3>Fatal Gallery2 Error: Cannot activate the Gallery2 Embedded functions.</h3><br />For WordPress users, Validate WPG2 in the Options Admin panel.<br /><br />For other platforms, please verify your Gallery2 path in config.php.');
 	print '</body>' . "\n\n";
 	print '</html>';
@@ -216,7 +226,9 @@ function g2ic_init($option, $embedded_mode) {
 		);
 	}
 	if ($error) {
-		print g2ic_make_html_header();
+		$g2ic_options['tinymce'] = FALSE;
+		$g2ic_options['wpg2_valid'] = FALSE;
+		require_once('header.php');
 		print T_('<h3>Fatal Gallery2 error:</h3><br />Here\'s the error from G2:') . ' ' . $error->getAsHtml() . "\n";
 		print "</body>\n\n";
 		print "</html>";
