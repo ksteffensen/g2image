@@ -385,7 +385,12 @@ function getItems ($id) {
 
 //the big display function
 function getDisplay($item){
+
 	$item = getPreferred($item);
+	list ($ret, $bestFit) = getBestImageId($item->getId());
+	if ($ret) {
+		print 'Error getting best-fit image: ' . $ret->getAsHtml();
+	}
 	$itemId = $item->getId();
 	$display = '';
 	if(hasPermission($itemId)) {
@@ -397,10 +402,10 @@ function getDisplay($item){
 		$display .= "			<title>" . getTitle($item) . "</title>\n";
 		$display .= "			<id>" . $itemId . "</id>\n";
 		$display .= "			<link>" . getLink($item) . "</link>\n";
-		$display .= "			<view>" . getView($item, 320, 320) . "</view>\n";
+		$display .= "			<view>" . getView($bestFit) . "</view>\n";
 		$display .= "			<thumbUrl>" . getThumbUrl($item) . "</thumbUrl>\n";
-		$display .= "			<width>" . getWidth($item) . "</width>\n";
-		$display .= "			<height>" . getHeight($item) . "</height>\n";
+		$display .= "			<width>" . getWidth($bestFit) . "</width>\n";
+		$display .= "			<height>" . getHeight($bestFit) . "</height>\n";
 		$display .= "			<mime>" . getMime($item) . "</mime>\n";
 		if (!$ret && !empty($thumbnailList)) {
 			$display .= "			<description>". cdata("<a href=\"" . getLink($item) . "\"><img border=\"0\" src=\"" . getThumbUrl($item) . "\" width=\"" . getWidth($thumbnailList[$itemId]) . "\" height=\"" . getHeight($thumbnailList[$itemId]) . "\"/></a><br/>" . getTitle($item)) ."</description>\n";
@@ -565,23 +570,26 @@ function getPreferredLink($item) {
 	return $link;
 }
 
-function getView($item, $height, $width) {
+function getView($item) {
 	global $gallery;
+
 	$urlGenerator =& $gallery->getUrlGenerator();
-	list ($ret, $bestFit) = getBestImageId($item->getId(), $height, $width);
-	if ($ret) {
-		print T_('<h3>Fatal Gallery2 error:</h3><br />Here\'s the error from G2:') . ' ' . $ret->getAsHtml() . "\n";
-		die;
-	}
 	$view = $urlGenerator->generateUrl(
-		array('view' => 'core.DownloadItem', 'itemId' => $bestFit->getId(),
-		'serialNumber' => $bestFit->getSerialNumber()),
+		array('view' => 'core.DownloadItem', 'itemId' => $item->getId(),
+		'serialNumber' => $item->getSerialNumber()),
 		array('forceFullUrl' => true, 'forceSessionId' => true, 'htmlEntities' => true));
 	return $view;
 }
 
-function getBestImageId($masterId, $maxImageHeight, $maxImageWidth) {
+function getBestImageId($masterId) {
 	global $gallery;
+
+	if (isset ($_REQUEST['maxImageHeight'])) {
+		$maxImageHeight = $_REQUEST['maxImageHeight'];
+	}
+	if (isset ($_REQUEST['maxImageWidth'])) {
+		$maxImageWidth = $_REQUEST['maxImageWidth'];
+	}
 
 	$potentialImages = array();
 

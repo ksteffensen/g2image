@@ -28,18 +28,30 @@ class flash_slideshow_album{
 		str += '<embed src="' + g2imageUrl + '/minislideshow/minislideshow.swf" '
 		+ 'flashvars="xmlUrl=/wordpress/wp-content/plugins/wpg2/g2image/minislideshow/xml.php?g2_itemId='
 		+ imageObj['current_album']
+		+ '&maxImageHeight=' + imageObj['flash_slideshow_height']
+		+ '&maxImageWidth=' + imageObj['flash_slideshow_width']
 		+ '&useFull=' + imageObj['flash_slideshow_use_full']
-		+ '&delay=' + imageObj['flash_slideshow_delay']
-		+ '&shuffle=' + imageObj['flash_slideshow_shuffle']
-		+ '&showDropShadow=' + imageObj['flash_slideshow_drop_shadow']
-		+ '&transInType=' + imageObj['flash_slideshow_transition_in']
-		+ '&transOutType=' + imageObj['flash_slideshow_transition_out']
-		+ '&noLink=' + imageObj['flash_slideshow_no_link']
-		+ '&altLink=' + imageObj['flash_slideshow_alt_link']
-		+ '&linkTarget=' + imageObj['flash_slideshow_link_target']
-		+ '&showTitle=' + imageObj['flash_slideshow_show_title']
-		+ '&titleColor=' + imageObj['flash_slideshow_title_color']
-		+ '&titleBgColor=' + imageObj['flash_slideshow_title_bg_color'];
+		+ '&delay=' + imageObj['flash_slideshow_delay'];
+		if (imageObj['flash_slideshow_shuffle'] == 'true') {
+			str += '&shuffle=true';
+		}
+		if (imageObj['flash_slideshow_drop_shadow'] == 'true') {
+			str += '&showDropShadow=true';
+		}
+		str += '&transInType=' + imageObj['flash_slideshow_transition_in']
+		+ '&transOutType=' + imageObj['flash_slideshow_transition_out'];
+		if (imageObj['flash_slideshow_no_link'] == 'true') {
+			str += '&noLink=true';
+		}
+		if (imageObj['flash_slideshow_drop_shadow'] != 'false') {
+			str += '&altLink=' + imageObj['flash_slideshow_alt_link'];
+		}
+		str += '&linkTarget=' + imageObj['flash_slideshow_link_target'];
+		if (imageObj['flash_slideshow_show_title'] == 'true') {
+			str += '&showTitle=true'
+			+ '&titleColor=' + imageObj['flash_slideshow_title_color']
+			+ '&titleBgColor=' + imageObj['flash_slideshow_title_bg_color'];
+		}
 		if (imageObj['masks'] == 'circleMask') {
 			str += '&circleMask=true';
 		}
