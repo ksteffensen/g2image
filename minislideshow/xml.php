@@ -412,7 +412,7 @@ function getDisplay($item){
 		}
 		$display .= "			<guid isPermaLink=\"false\">" . getLink($item) . "</guid>\n";
 		$display .= "			<pubDate>" . date('r', $item->getModificationTimestamp()) . "</pubDate>\n";
-		$display .= "			<preferred>" . getPreferredLink($item) . "</preferred>\n";
+		$display .= "			<preferred>" . getView($bestFit) . "</preferred>\n";
 		$display .= "		</item>\n";
 	}
 	return $display;
