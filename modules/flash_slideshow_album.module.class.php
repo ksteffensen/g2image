@@ -26,7 +26,7 @@ class flash_slideshow_album{
 			str += '<div class="' + imageObj['album_alignment'] + '">';
 		}
 		str += '<embed src="' + g2imageUrl + '/minislideshow/minislideshow.swf" '
-		+ 'flashvars="xmlUrl=/wordpress/wp-content/plugins/wpg2/g2image/minislideshow/xml.php?g2_itemId='
+		+ 'flashvars="xmlUrl=' + g2imageUrl + '/minislideshow/xml.php?g2_itemId='
 		+ imageObj['current_album']
 		+ '&maxImageHeight=' + imageObj['flash_slideshow_height']
 		+ '&maxImageWidth=' + imageObj['flash_slideshow_width']
