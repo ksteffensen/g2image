@@ -584,11 +584,11 @@ function getView($item) {
 function getBestImageId($masterId) {
 	global $gallery;
 
-	if (isset ($_REQUEST['maxImageHeight'])) {
-		$maxImageHeight = $_REQUEST['maxImageHeight'];
+	if (isset ($_REQUEST['g2_maxImageHeight'])) {
+		$maxImageHeight = $_REQUEST['g2_maxImageHeight'];
 	}
-	if (isset ($_REQUEST['maxImageWidth'])) {
-		$maxImageWidth = $_REQUEST['maxImageWidth'];
+	if (isset ($_REQUEST['g2_maxImageWidth'])) {
+		$maxImageWidth = $_REQUEST['g2_maxImageWidth'];
 	}
 
 	$potentialImages = array();
