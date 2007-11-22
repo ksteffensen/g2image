@@ -410,9 +410,9 @@ function getDisplay($item){
 		if (!$ret && !empty($thumbnailList)) {
 			$display .= "			<description>". cdata("<a href=\"" . getLink($item) . "\"><img border=\"0\" src=\"" . getThumbUrl($item) . "\" width=\"" . getWidth($thumbnailList[$itemId]) . "\" height=\"" . getHeight($thumbnailList[$itemId]) . "\"/></a><br/>" . getTitle($item)) ."</description>\n";
 		}
-		$display .= "			<guid isPermaLink=\"false\">" . getLink($bestFit) . "</guid>\n";
+		$display .= "			<guid isPermaLink=\"false\">" . getLink($item) . "</guid>\n";
 		$display .= "			<pubDate>" . date('r', $item->getModificationTimestamp()) . "</pubDate>\n";
-		$display .= "			<preferred>" . getView($bestFit) . "</preferred>\n";
+		$display .= "			<preferred>" . getPreferredLink($item) . "</preferred>\n";
 		$display .= "		</item>\n";
 	}
 	return $display;
@@ -587,8 +587,14 @@ function getBestImageId($masterId) {
 	if (isset ($_REQUEST['g2_maxImageHeight'])) {
 		$maxImageHeight = $_REQUEST['g2_maxImageHeight'];
 	}
+	else {
+		$maxImageHeight = 640;
+	}
 	if (isset ($_REQUEST['g2_maxImageWidth'])) {
 		$maxImageWidth = $_REQUEST['g2_maxImageWidth'];
+	}
+	else {
+		$maxImageWidth = 640;
 	}
 
 	$potentialImages = array();
