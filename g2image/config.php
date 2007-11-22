@@ -172,6 +172,10 @@ $g2ic_bbcode_only = FALSE;
 $g2ic_options['flash_slideshow_height'] = 150;
 $g2ic_options['flash_slideshow_width'] = 150;
 
+// Use thumbnails (false) or fullsize images (true)
+// The fullsize image will be the next larger of available resizes or the original
+$g2ic_options['flash_slideshow_use_full'] = 'true';
+
 // Delay in seconds
 $g2ic_options['flash_slideshow_delay'] = 3;
 

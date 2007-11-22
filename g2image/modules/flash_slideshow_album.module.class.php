@@ -28,6 +28,7 @@ class flash_slideshow_album{
 		str += '<embed src="' + g2imageUrl + '/minislideshow/minislideshow.swf" '
 		+ 'flashvars="xmlUrl=/wordpress/wp-content/plugins/wpg2/g2image/minislideshow/xml.php?g2_itemId='
 		+ imageObj['current_album']
+		+ '&useFull=' + imageObj['flash_slideshow_use_full']
 		+ '&delay=' + imageObj['flash_slideshow_delay']
 		+ '&shuffle=' + imageObj['flash_slideshow_shuffle']
 		+ '&showDropShadow=' + imageObj['flash_slideshow_drop_shadow']
@@ -90,6 +91,11 @@ SCRIPTSTUFF;
 		. '                    <input type="text" name="flash_slideshow_height" size="4" maxlength="4" value="' . $g2ic_options['flash_slideshow_height'] . '" />' . "\n"
 		. '                    ' . T_('Width') . "\n"
 		. '                    <input type="text" name="flash_slideshow_width" size="4" maxlength="4" value="' . $g2ic_options['flash_slideshow_width'] . '" /><br />' . "\n"
+		. '                    ' . T_('Use Fullsized Images') . "\n"
+		. '                    <select name="flash_slideshow_use_full" size="1">' . "\n"
+		. '                        <option value="true">' . T_('True (Use Fullsized Image)') . '</option>' . "\n"
+		. '                        <option value="false"' . flash_slideshow_album::selected('flash_slideshow_use_fullsize', 'false') . '>' . T_('False (Use Thumbnails)') . '</option>' . "\n"
+		. '                    </select><br />' . "\n"
 		. '                    ' . T_('Delay (in seconds)') . "\n"
 		. '                    <input type="text" name="flash_slideshow_delay" size="4" maxlength="4" value="' . $g2ic_options['flash_slideshow_delay'] . '" /><br />' . "\n"
 		. '                    ' . T_('Shuffle') . "\n"
@@ -173,6 +179,7 @@ SCRIPTSTUFF;
 	function javaScriptVariables(){
 		$html = "					imageObj.flash_slideshow_width = obj.flash_slideshow_width.value;\n"
 		. "					imageObj.flash_slideshow_height = obj.flash_slideshow_height.value;\n"
+		. "					imageObj.flash_slideshow_use_full = obj.flash_slideshow_use_full.value;\n"
 		. "					imageObj.flash_slideshow_delay = obj.flash_slideshow_delay.value;\n"
 		. "					imageObj.flash_slideshow_shuffle = obj.flash_slideshow_shuffle.value;\n"
 		. "					imageObj.flash_slideshow_drop_shadow = obj.flash_slideshow_drop_shadow.value;\n"
@@ -248,7 +255,7 @@ SCRIPTSTUFF;
 		$html = '';
 
 		if ($g2ic_options[$name] == $value) {
-			$html = ' selected="selected"';
+			$html = ' SELECTED';
 		}
 
 		return $html;
