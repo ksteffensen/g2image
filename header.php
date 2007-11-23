@@ -37,7 +37,7 @@ foreach($g2ic_options['image_modules'] as $moduleName){
 		var obj = document.forms[0];
 		var htmlCode = '';
 
-		if(typeof(insertFunctions[obj.imginsert.value])=="function"){
+		if(typeof(insertFunctions[obj.albuminsert.value])=="function"){
 			id = 0;
 			var imageObj = {}; // new Object()
 
