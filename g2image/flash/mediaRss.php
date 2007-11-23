@@ -206,8 +206,8 @@ function getKeywordChildIds($userId, $keyword) {
 			}
 			// we need to check the disabledFlag for each in dynamic mode
 			$disabled = getDisabledFlag($childItem->getId());
-			if(!$disabled){
-				if(!($childItem->entityType == "GalleryAlbumItem")){
+			if(!$disabled) {
+				if(!($childItem->entityType == "GalleryAlbumItem")) {
 					$display .= getDisplay($childItem);
 				}
 			}
@@ -219,6 +219,7 @@ function getKeywordChildIds($userId, $keyword) {
 
 /**
  * Dynamic query for dynamic items
+     * @param int $userId
  * @return array object GalleryStatus a status code
  *         array of item ids
  * @static
@@ -307,8 +308,8 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 			}
 			// we need to check the disabledFlag for each in dynamic mode
 			$disabled = getDisabledFlag($childItem->getId());
-			if(!$disabled){
-				if(!($childItem->entityType == "GalleryAlbumItem")){
+			if(!$disabled) {
+				if(!($childItem->entityType == "GalleryAlbumItem")) {
 					$display .= getDisplay($childItem);
 				}
 			}
@@ -318,20 +319,20 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 // end item display loop
 }
 
-function getRoot(){
+function getRoot() {
 	global $gallery;
 	if (GalleryUtilities::isCompatibleWithApi(array(7,5), GalleryCoreApi::getApiVersion())) {
 		list($ret, $defaultId) = GalleryCoreApi::getDefaultAlbumId();
 		if ($ret) {
 			return array($ret, null);
-		}else{
+		} else {
 			return $defaultId;
 		}
 	} else {
 		list ($ret, $defaultId) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
 		if ($ret) {
 			return array($ret, null);
-		}else{
+		} else {
 			return $defaultId;
 		}
 	}
@@ -340,12 +341,12 @@ function getRoot(){
 function getAlbumList ($id) {
 	global $gallery;
 	$display = "";
-	if(!isset($defaultId)){
+	if(!isset($defaultId)) {
 		$defaultId = getRoot();
 	}
 	list ($ret, $Albums) = GalleryCoreApi::fetchAlbumTree();
 	list ($ret, $Albums) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($Albums), 'GalleryAlbumItem');
-	if(isset ($defaultId)){
+	if(isset ($defaultId)) {
 		list ($ret, $rootAlbum) = GalleryCoreApi::loadEntitiesById( $defaultId, 'GalleryAlbumItem' );
 		if ($ret) {
 			print "Error loading rootAlbum:" . $ret->getAsHtml();
@@ -378,7 +379,7 @@ function getItems ($id) {
 	}
 	// we can check for disabledFlag for the whole album
 	$disabled = getDisabledFlag($id);
-	if(!$disabled){
+	if(!$disabled) {
 		list ($ret, $childIds) = GalleryCoreApi::fetchChildItemIds($entity);
 		if ($ret) {
 			print "Error finding child item ids:" . $ret->getAsHtml();
@@ -389,7 +390,7 @@ function getItems ($id) {
 				if ($ret) {
 					print "Error loading childItems:" . $ret->getAsHtml();
 				}
-				if(!($childItem->entityType == "GalleryAlbumItem")){
+				if(!($childItem->entityType == "GalleryAlbumItem")) {
 					$display .= getDisplay($childItem);
 				}
 			}
@@ -399,7 +400,7 @@ function getItems ($id) {
 }
 
 //the big display function
-function getDisplay($item){
+function getDisplay($item) {
 	$item = getPreferred($item);
 	list ($ret, $bestFit) = getBestImageId($item->getId());
 	if ($ret) {
@@ -427,7 +428,7 @@ function getDisplay($item){
 		$display .= "            <guid isPermaLink=\"false\">" . getLink($item) . "</guid>\n";
 		$display .= "            <pubDate>" . date('r', $item->getModificationTimestamp()) . "</pubDate>\n";
 		// start new media rss
-		$display .= "            <media:content url=\"" . getView($item) . "\" type=\"" . getMime($item) . "\" width=\"" . getWidth($item) . "\" height=\"" . getHeight($item) . "\">\n";
+		$display .= "            <media:content url=\"" . getView($bestFit) . "\" type=\"" . getMime($bestFit) . "\" width=\"" . getWidth($bestFit) . "\" height=\"" . getHeight($bestFit) . "\">\n";
 		$display .= "                <media:title type=\"plain\">" . cdata(getTitle($item)) . "</media:title>\n";
 		$display .= "                <media:thumbnail url=\"" . getThumbUrl($item) . "\" width=\"" . getWidth($thumbnailList[$itemId]) . "\" height=\"" . getHeight($thumbnailList[$itemId]) . "\" time=\"" . date('r', $item->getModificationTimestamp()) . "\"/>\n";
 		if (!$ret && !empty($thumbnailList)) {
@@ -440,7 +441,7 @@ function getDisplay($item){
 }
 
 //check if current user has view permissions
-function hasPermission($itemId){
+function hasPermission($itemId) {
 	global $gallery;
 	if (!isset($userId)) {
 		$userId = $gallery->getActiveUserId();
@@ -451,28 +452,28 @@ function hasPermission($itemId){
 	list ($ret, $ok) = GalleryCoreApi::hasItemPermission($itemId, 'core.view', $userId);
 	if ($ret || !$ok) {
 		return false;
-	}else{
+	} else {
 		return true;
 	}
 }
 
 //check to see if a module is available
-function pluginCheck($plugin){
+function pluginCheck($plugin) {
 	list ($ret, $modules) = GalleryCoreApi::fetchPluginStatus('module');
 	if ($ret)
 	{
 		print "checking plugin:". $plugin . " - " . $ret->getAsHtml();
 	}
-	if($modules[$plugin]['active'] && $modules[$plugin]['available']){
+	if($modules[$plugin]['active'] && $modules[$plugin]['available']) {
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
 //check to see if the "Prevent this album from being displayed in the Image Block" is checked
 function getDisabledFlag($itemId) {
 	$isActive = pluginCheck('imageblock');
-	if($isActive){
+	if($isActive) {
 		list ($ret, $searchResults) = GalleryCoreApi::getMapEntry('ImageBlockDisabledMap',
 			array('itemId'), array('itemId' => (int)$itemId));
 		if ($ret) {
@@ -483,7 +484,7 @@ function getDisabledFlag($itemId) {
 			$result = (bool)$rec[0];
 		}
 		return $result;
-	}else{
+	} else {
 		//we want to return false if the imageBlock module is not active
 		return false;
 	}
@@ -494,9 +495,9 @@ function getPreferred($item) {
 	if ($ret) {
 		return array($ret, null);
 	}
-	if(isset($preferred[$id])) {
+	if (isset($preferred[$id])) {
 		return $preferred[$id];
-	}else {
+	} else {
 		return $item;
 	}
 }
@@ -521,7 +522,7 @@ function stripTags($tostrip) {
 }
 
 function getMime($item) {
-	if(!($item->entityType == "GalleryAlbumItem")){
+	if (!($item->entityType == "GalleryAlbumItem")) {
 		return $item->getMimeType();
 	} else {
 		return "Album";
@@ -529,7 +530,7 @@ function getMime($item) {
 }
 
 function getWidth($item) {
-	if(($item->entityType == "GalleryAnimationItem" || $item->entityType == "GalleryPhotoItem" || $item->entityType == "ThumbnailImage" || $item->entityType == "GalleryMovieItem" || $item->entityType == "GalleryDerivativeImage")){
+	if(($item->entityType == "GalleryAnimationItem" || $item->entityType == "GalleryPhotoItem" || $item->entityType == "ThumbnailImage" || $item->entityType == "GalleryMovieItem" || $item->entityType == "GalleryDerivativeImage")) {
 		return $item->getWidth();
 	} else {
 		return 480;
@@ -537,7 +538,7 @@ function getWidth($item) {
 }
 
 function getHeight($item) {
-	if(($item->entityType == "GalleryAnimationItem" || $item->entityType == "GalleryPhotoItem" || $item->entityType == "ThumbnailImage" || $item->entityType == "GalleryMovieItem" || $item->entityType == "GalleryDerivativeImage")){
+	if(($item->entityType == "GalleryAnimationItem" || $item->entityType == "GalleryPhotoItem" || $item->entityType == "ThumbnailImage" || $item->entityType == "GalleryMovieItem" || $item->entityType == "GalleryDerivativeImage")) {
 		return $item->getHeight();
 	} else {
 		return 160;
@@ -546,12 +547,12 @@ function getHeight($item) {
 
 function getRating($item) {
 	$isActive = pluginCheck('rating');
-	if($isActive){
+	if($isActive) {
 		$itemId = $item->getId();
 		$rating = '';
 		GalleryCoreApi::requireOnce('modules/rating/classes/RatingHelper.class');
 		list ($ret, $Ratings) = RatingHelper::fetchRatings($itemId, '');
-		if(!empty ($Ratings)){
+		if(!empty ($Ratings)) {
 			$rating = $Ratings[$id]['rating'];
 			return "            <rating>" . $rating . "</rating>\n";
 		} else {
@@ -702,7 +703,7 @@ function xml() {
 			print "Error loading initial item:" . $ret->getAsHtml();
 		}
 		$title = getTitle($item);
-	}else{
+	} else {
 		$title = "XML Mini SlideShow for Gallery2";
 	}
 
@@ -754,9 +755,9 @@ function xml() {
 			}
 		break;
 		default:
-			if(isset($g2_itemId)){
+			if(isset($g2_itemId)) {
 				$xml .= getItems($g2_itemId);
-			}else{
+			} else {
 				$xml .= getItems(getRoot());
 			}
 	}

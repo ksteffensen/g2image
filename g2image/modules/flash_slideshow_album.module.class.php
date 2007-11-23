@@ -25,8 +25,8 @@ class flash_slideshow_album{
 		if (imageObj['album_alignment'] != 'none'){
 			str += '<div class="' + imageObj['album_alignment'] + '">';
 		}
-		str += '<embed src="' + g2imageUrl + '/minislideshow/minislideshow.swf" '
-		+ 'flashvars="xmlUrl=' + g2imageUrl + '/minislideshow/mediaRss.php?g2_itemId='
+		str += '<embed src="' + g2imageUrl + '/flash/minislideshow.swf" '
+		+ 'flashvars="xmlUrl=' + g2imageUrl + '/flash/mediaRss.php?g2_itemId='
 		+ imageObj['current_album']
 		+ '%26g2_maxImageHeight=' + imageObj['flash_slideshow_height']
 		+ '%26g2_maxImageWidth=' + imageObj['flash_slideshow_width']
