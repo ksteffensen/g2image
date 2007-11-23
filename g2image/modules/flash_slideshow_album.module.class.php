@@ -28,8 +28,8 @@ class flash_slideshow_album{
 		str += '<embed src="' + g2imageUrl + '/minislideshow/minislideshow.swf" '
 		+ 'flashvars="xmlUrl=' + g2imageUrl + '/minislideshow/xml.php?g2_itemId='
 		+ imageObj['current_album']
-		+ '&g2_maxImageHeight=' + imageObj['flash_slideshow_height']
-		+ '&g2_maxImageWidth=' + imageObj['flash_slideshow_width']
+		+ '%26g2_maxImageHeight=' + imageObj['flash_slideshow_height']
+		+ '%26g2_maxImageWidth=' + imageObj['flash_slideshow_width']
 		+ '&useFull=' + imageObj['flash_slideshow_use_full']
 		+ '&delay=' + imageObj['flash_slideshow_delay'];
 		if (imageObj['flash_slideshow_shuffle'] == 'true') {
