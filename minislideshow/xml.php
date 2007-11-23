@@ -1,6 +1,6 @@
 <?php
 // +---------------------------------------------------------------------------+
-// |   XML Mini Slideshow for Gallery2                                         |
+// | XML Mini Slideshow for Gallery2                                           |
 // +---------------------------------------------------------------------------+
 // | xml.php     [v.2.0.1]                                                     |
 // +---------------------------------------------------------------------------+
@@ -24,7 +24,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-error_reporting(E_ERROR | E_PARSE);
+
 // Get the g2image config variables
 require_once('../config.php');
 // ====( Initialize Variables )=================================
@@ -88,7 +88,7 @@ function init () { // connect to gallery
  * @param int $userId
  * @param string $keyword (optional) keyword for query; get from request if not specified
  * @return array object GalleryStatus a status code
- *			   array of item ids
+ *         array of item ids
  * @static
  */
 function getTagChildIds($userId, $tagName=null) {
@@ -127,10 +127,8 @@ function getTagChildIds($userId, $tagName=null) {
 		$itemIds[] = $result[0];
 	}
 	// start item display loop
-	if (!empty($itemIds))
-	{
-		foreach( $itemIds as $value )
-		{
+	if (!empty($itemIds)) {
+		foreach( $itemIds as $value ) {
 			list ($ret, $childItem) = GalleryCoreApi::loadEntitiesById($value, 'GalleryItem');
 			if ($ret) {
 				print "Error loading childItems:" . $ret->getAsHtml();
@@ -145,7 +143,7 @@ function getTagChildIds($userId, $tagName=null) {
 		}
 		return $display;
 	}
-	// end item display loop
+// end item display loop
 }
 
 /**
@@ -153,7 +151,7 @@ function getTagChildIds($userId, $tagName=null) {
  * @param int $userId
  * @param string $keyword (optional) keyword for query; get from request if not specified
  * @return array GalleryStatus a status code
- *			   array of item ids
+ *         array of item ids
  * @static
  */
 function getKeywordChildIds($userId, $keyword) {
@@ -200,13 +198,10 @@ function getKeywordChildIds($userId, $keyword) {
 		$itemIds[] = $result[0];
 	}
 	// start item display loop
-	if (!empty($itemIds))
-	{
-		foreach( $itemIds as $value )
-		{
+	if (!empty($itemIds)) {
+		foreach( $itemIds as $value ) {
 			list ($ret, $childItem) = GalleryCoreApi::loadEntitiesById($value, 'GalleryItem');
-			if ($ret)
-			{
+			if ($ret) {
 				print "Error loading childItems:" . $ret->getAsHtml();
 			}
 			// we need to check the disabledFlag for each in dynamic mode
@@ -219,14 +214,14 @@ function getKeywordChildIds($userId, $keyword) {
 		}
 		return $display;
 	}
-	// end item display loop
+// end item display loop
 }
 
 /**
  * Dynamic query for dynamic items
  * @param int $userId
  * @return array object GalleryStatus a status code
- *			   array of item ids
+ *         array of item ids
  * @static
  */
 function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp',
@@ -250,13 +245,13 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 	switch ($type) {
 	case 'data':
 		$class = 'GalleryDataItem';
-		break;
+	break;
 	case 'all':
 		$class = 'GalleryItem';
-		break;
+	break;
 	case 'album':
 		$class = 'GalleryAlbumItem';
-		break;
+	break;
 	default:
 		return array(GalleryCoreApi::error(ERROR_BAD_PARAMETER), null);
 	}
@@ -268,15 +263,15 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 	if (!empty($albumId)) {
 		list ($ret, $sequence) = GalleryCoreApi::fetchParentSequence($albumId);
 		if ($ret) {
-		return array($ret, null);
+			return array($ret, null);
 		}
 		if (!empty($sequence)) {
-		$sequence = implode('/', $sequence) . '/' . (int)$albumId . '/%';
-		$query = '[GalleryItemAttributesMap::parentSequence] LIKE ?';
-		$table = 'GalleryItemAttributesMap';
-		$id = 'itemId';
+			$sequence = implode('/', $sequence) . '/' . (int)$albumId . '/%';
+			$query = '[GalleryItemAttributesMap::parentSequence] LIKE ?';
+			$table = 'GalleryItemAttributesMap';
+			$id = 'itemId';
 		} else {
-		$query = '[' . $table . '::' . $id . '] <> ' . (int)$albumId;
+			$query = '[' . $table . '::' . $id . '] <> ' . (int)$albumId;
 		}
 	}
 	if ($table == $class) {
@@ -305,13 +300,10 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 		$itemIds[] = $result[0];
 	}
 // start item display loop
-	if (!empty($itemIds))
-	{
-		foreach( $itemIds as $value )
-		{
+	if (!empty($itemIds)) {
+		foreach( $itemIds as $value ) {
 			list ($ret, $childItem) = GalleryCoreApi::loadEntitiesById($value, 'GalleryItem');
-			if ($ret)
-			{
+			if ($ret) {
 				print "Error loading childItems:" . $ret->getAsHtml();
 			}
 			// we need to check the disabledFlag for each in dynamic mode
@@ -333,15 +325,14 @@ function getAlbumList ($id) {
 	$urlGenerator =& $gallery->getUrlGenerator();
 	list ($ret, $Albums) = GalleryCoreApi::fetchAlbumTree();
 	list ($ret, $Albums) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($Albums), 'GalleryAlbumItem');
-	foreach ($Albums as $Albums){
-		if (($Albums->canContainChildren == 1 && $Albums->parentId == $id) || ($Albums->canContainChildren == 1 && $Albums->getId() == $id) || ($Albums->canContainChildren == 1 && $Albums->parentId == 418) || empty($id))
-		{
-			$display .="		<album>\n";
-			$display .= "		   <title>" . cdata($Albums->getTitle()) . "</title>\n";
-			$display .= "		   <parentId>" . cdata($Albums->parentId) . "</parentId>\n";
-			$display .= "		   <owner>" . cdata(getOwner($Albums->ownerId)) . "</owner>\n";
-			$display .= "			<id>" . cdata($Albums->getId()) . "</id>\n";
-			$display .="		</album>\n";
+	foreach ($Albums as $Albums) {
+		if (($Albums->canContainChildren == 1 && $Albums->parentId == $id) || ($Albums->canContainChildren == 1 && $Albums->getId() == $id) || ($Albums->canContainChildren == 1 && $Albums->parentId == 418) || empty($id)) {
+			$display .= "        <album>\n";
+			$display .= "            <title>" . cdata($Albums->getTitle()) . "</title>\n";
+			$display .= "            <parentId>" . cdata($Albums->parentId) . "</parentId>\n";
+			$display .= "            <owner>" . cdata(getOwner($Albums->ownerId)) . "</owner>\n";
+			$display .= "            <id>" . cdata($Albums->getId()) . "</id>\n";
+			$display .= "        </album>\n";
 		}
 	}
 
@@ -353,25 +344,20 @@ function getItems ($id) {
 	$display = "";
 
 	list ($ret, $entity) = GalleryCoreApi::loadEntitiesById( $id, 'GalleryItem' );
-	if ($ret)
-	{
+	if ($ret) {
 		print "Error loading Entity:" . $ret->getAsHtml();
 	}
 	// we can check for disabledFlag for the whole album
 	$disabled = getDisabledFlag($id);
 	if(!$disabled){
 		list ($ret, $childIds) = GalleryCoreApi::fetchChildItemIds($entity);
-		if ($ret)
-		{
-		   print "Error finding child item ids:" . $ret->getAsHtml();
+		if ($ret) {
+			print "Error finding child item ids:" . $ret->getAsHtml();
 		}
-		if (!empty($childIds))
-		{
-			foreach( $childIds as $value )
-			{
+		if (!empty($childIds)) {
+			foreach( $childIds as $value ) {
 				list ($ret, $childItem) = GalleryCoreApi::loadEntitiesById($value, 'GalleryItem');
-				if ($ret)
-				{
+				if ($ret) {
 					print "Error loading childItems:" . $ret->getAsHtml();
 				}
 				if(!($childItem->entityType == "GalleryAlbumItem")){
@@ -385,7 +371,6 @@ function getItems ($id) {
 
 //the big display function
 function getDisplay($item){
-
 	$item = getPreferred($item);
 	list ($ret, $bestFit) = getBestImageId($item->getId());
 	if ($ret) {
@@ -398,22 +383,22 @@ function getDisplay($item){
 		if ($ret) {
 			return array($ret->wrap(__FILE__, __LINE__), null);
 		}
-		$display .= "		<item>\n";
-		$display .= "			<title>" . getTitle($item) . "</title>\n";
-		$display .= "			<id>" . $itemId . "</id>\n";
-		$display .= "			<link>" . getLink($item) . "</link>\n";
-		$display .= "			<view>" . getView($bestFit) . "</view>\n";
-		$display .= "			<thumbUrl>" . getThumbUrl($item) . "</thumbUrl>\n";
-		$display .= "			<width>" . getWidth($bestFit) . "</width>\n";
-		$display .= "			<height>" . getHeight($bestFit) . "</height>\n";
-		$display .= "			<mime>" . getMime($item) . "</mime>\n";
+		$display .= "        <item>\n";
+		$display .= "            <title>" . getTitle($item) . "</title>\n";
+		$display .= "            <id>" . $itemId . "</id>\n";
+		$display .= "            <link>" . getLink($item) . "</link>\n";
+		$display .= "            <view>" . getView($bestFit) . "</view>\n";
+		$display .= "            <thumbUrl>" . getThumbUrl($item) . "</thumbUrl>\n";
+		$display .= "            <width>" . getWidth($bestFit) . "</width>\n";
+		$display .= "            <height>" . getHeight($bestFit) . "</height>\n";
+		$display .= "            <mime>" . getMime($bestFit) . "</mime>\n";
 		if (!$ret && !empty($thumbnailList)) {
-			$display .= "			<description>". cdata("<a href=\"" . getLink($item) . "\"><img border=\"0\" src=\"" . getThumbUrl($item) . "\" width=\"" . getWidth($thumbnailList[$itemId]) . "\" height=\"" . getHeight($thumbnailList[$itemId]) . "\"/></a><br/>" . getTitle($item)) ."</description>\n";
+			$display .= "            <description>". cdata("<a href=\"" . getLink($item) . "\"><img border=\"0\" src=\"" . getThumbUrl($item) . "\" width=\"" . getWidth($thumbnailList[$itemId]) . "\" height=\"" . getHeight($thumbnailList[$itemId]) . "\"/></a><br/>" . getTitle($item)) ."</description>\n";
 		}
-		$display .= "			<guid isPermaLink=\"false\">" . getLink($item) . "</guid>\n";
-		$display .= "			<pubDate>" . date('r', $item->getModificationTimestamp()) . "</pubDate>\n";
-		$display .= "			<preferred>" . getPreferredLink($item) . "</preferred>\n";
-		$display .= "		</item>\n";
+		$display .= "            <guid isPermaLink=\"false\">" . getLink($item) . "</guid>\n";
+		$display .= "            <pubDate>" . date('r', $item->getModificationTimestamp()) . "</pubDate>\n";
+		$display .= "            <preferred>" . getPreferredLink($item) . "</preferred>\n";
+		$display .= "        </item>\n";
 	}
 	return $display;
 }
@@ -425,7 +410,7 @@ function hasPermission($itemId){
 		$userId = $gallery->getActiveUserId();
 	}
 	if (!isset($userId)) {
-	$userId = GalleryCoreApi::getAnonymousUserId();
+		$userId = GalleryCoreApi::getAnonymousUserId();
 	}
 	list ($ret, $ok) = GalleryCoreApi::hasItemPermission($itemId, 'core.view', $userId);
 	if ($ret || !$ok) {
@@ -475,7 +460,7 @@ function getPreferred($item) {
 	}
 	if(isset($preferred[$id])) {
 		return $preferred[$id];
-	}else{
+	}else {
 		return $item;
 	}
 }
@@ -529,9 +514,9 @@ function getRating($item) {
 		list ($ret, $Ratings) = RatingHelper::fetchRatings($itemId, '');
 		if(!empty ($Ratings)){
 			$rating = $Ratings[$id]['rating'];
-			return "			<rating>" . $rating . "</rating>\n";
+			return "            <rating>" . $rating . "</rating>\n";
 		} else {
-			return "			<rating>0</rating>\n";
+			return "            <rating>0</rating>\n";
 		}
 	}
 }
@@ -544,7 +529,7 @@ function getThumbUrl($item) {
 	if (!$ret && !empty($thumbnail)) {
 		$thumbUrl = $urlGenerator->generateUrl(
 			array('view' => 'core.DownloadItem', 'itemId' => $thumbnail[$itemId]->getId(),
-			'serialNumber' => $thumbnail[$itemId]->getSerialNumber()),
+				'serialNumber' => $thumbnail[$itemId]->getSerialNumber()),
 			array('forceFullUrl' => true, 'forceSessionId' => true, 'htmlEntities' => true));
 	} else {
 		$thumbUrl = "";
@@ -572,11 +557,10 @@ function getPreferredLink($item) {
 
 function getView($item) {
 	global $gallery;
-
 	$urlGenerator =& $gallery->getUrlGenerator();
 	$view = $urlGenerator->generateUrl(
 		array('view' => 'core.DownloadItem', 'itemId' => $item->getId(),
-		'serialNumber' => $item->getSerialNumber()),
+			'serialNumber' => $item->getSerialNumber()),
 		array('forceFullUrl' => true, 'forceSessionId' => true, 'htmlEntities' => true));
 	return $view;
 }
@@ -660,7 +644,6 @@ function byWidth($a, $b) {
 		return ($a->width < $b->width ) ? -1 : 1;
 }
 
-
 function cdata($text) {
 	return '<![CDATA[' . $text . ']]>';
 }
@@ -691,14 +674,14 @@ function xml() {
 	}
 	echo "<?xml version=\"1.0\"?>\n";
 	$xml .= "<rss version=\"2.0\">\n";
-	$xml .= "	<channel>\n";
-	$xml .= "		<title><![CDATA[ XML Mini SlideShow for Gallery2 ]]></title>\n";
-	$xml .= "		<link>" . $link . "</link>\n";
-	$xml .= "		<description>XML Mini SlideShow for Gallery2</description>\n";
-	$xml .= "		<language>" .$language. "</language>\n";
-	$xml .= "		<generator>FlashYourWeb RSS Generator version 2.0.1</generator>\n";
-	$xml .= "		<lastBuildDate>" . date('r', $vm->time()) . "</lastBuildDate>\n";
-	$xml .= "		<ttl>120</ttl>\n";
+	$xml .= "    <channel>\n";
+	$xml .= "        <title><![CDATA[ XML Mini SlideShow for Gallery2 ]]></title>\n";
+	$xml .= "        <link>" . $link . "</link>\n";
+	$xml .= "        <description>XML Mini SlideShow for Gallery2</description>\n";
+	$xml .= "        <language>" .$language. "</language>\n";
+	$xml .= "        <generator>FlashYourWeb RSS Generator version 2.0.1</generator>\n";
+	$xml .= "        <lastBuildDate>" . date('r', $vm->time()) . "</lastBuildDate>\n";
+	$xml .= "        <ttl>120</ttl>\n";
 	$xml .= getAlbumList ($g2_itemId);
 	switch ($mode) {
 		case 'dynamic':
@@ -725,11 +708,10 @@ function xml() {
 		default:
 			$xml .= getItems($g2_itemId);
 	}
-	$xml .= "	</channel>\n";
-	$xml .= "</rss>\n";
+	$xml .= "    </channel>\n";
+	$xml .= "</rss>";
 	echo $xml;
 }
 
 xml();
 ?>
-
