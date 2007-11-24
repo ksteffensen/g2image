@@ -43,7 +43,7 @@ class flash_slideshow_album{
 		if (imageObj['flash_slideshow_no_link'] == 'true') {
 			str += '&noLink=true';
 		}
-		if (imageObj['flash_slideshow_drop_shadow'] != 'false') {
+		if (imageObj['flash_slideshow_alt_link'] != 'false') {
 			str += '&altLink=' + imageObj['flash_slideshow_alt_link'];
 		}
 		str += '&linkTarget=' + imageObj['flash_slideshow_link_target'];
