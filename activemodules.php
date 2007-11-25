@@ -8,6 +8,7 @@ $g2ic_options['image_modules'] = array(
 	'thumbnail_image',
 	'thumbnail_album',
 	'thumbnail_lightbox',
+  'thumbnail_lightbox_resized',
 	'thumbnail_custom_url',
 	'thumbnail_only',
 	'fullsize_image',
