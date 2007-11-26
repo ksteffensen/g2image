@@ -30,7 +30,9 @@ class flash_slideshow_album{
 		+ imageObj['current_album']
 		+ '%26g2_maxImageHeight=' + imageObj['flash_slideshow_height']
 		+ '%26g2_maxImageWidth=' + imageObj['flash_slideshow_width']
-		+ '&useFull=' + imageObj['flash_slideshow_use_full']
+		if (imageObj['flash_slideshow_use_full'] == 'true') {
+			str += '&useFull=true';
+		}
 		+ '&delay=' + imageObj['flash_slideshow_delay'];
 		if (imageObj['flash_slideshow_shuffle'] == 'true') {
 			str += '&shuffle=true';
@@ -52,16 +54,29 @@ class flash_slideshow_album{
 			+ '&titleColor=' + imageObj['flash_slideshow_title_color']
 			+ '&titleBgColor=' + imageObj['flash_slideshow_title_bg_color'];
 		}
-		if (imageObj['masks'] == 'circleMask') {
+		if (imageObj['flash_slideshow_masks'] == 'circleMask') {
 			str += '&circleMask=true';
 		}
-		if (imageObj['masks'] == 'roundedMask') {
+		if (imageObj['flash_slideshow_masks'] == 'roundedMask') {
 			str += '&roundedMask=true';
 		}
-		if (imageObj['masks'] == 'starMask') {
+		if (imageObj['flash_slideshow_masks'] == 'starMask') {
 			str += '&starMask=true';
 		}
-		str += '" quality="high" wmode="transparent" name="minislide" '
+		if (imageObj['flash_slideshow_site_info_text']) {
+			str += '&siteInfoText=' + imageObj['flash_slideshow_site_info_text'];
+		}
+		if (imageObj['flash_slideshow_site_info_url']) {
+			str += '&siteInfoUrl=' + imageObj['flash_slideshow_site_info_url'];
+		}
+		str += '" quality="high" ';
+		if (imageObj['flash_slideshow_use_full'] == 'true') {
+			str += 'allowfullscreen=true ';
+		}
+		else {
+			str += 'wmode="transparent" ';
+		}
+		str += 'name="minislide" '
 		+ 'type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" '
 		+ 'align="middle" height="' + imageObj['flash_slideshow_height'] + '" width="' + imageObj['flash_slideshow_width'] + '"></embed>';
 		if (imageObj['album_alignment'] != 'none'){
@@ -189,6 +204,8 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function javaScriptVariables(){
+		global $g2ic_options;
+
 		$html = "					imageObj.flash_slideshow_width = obj.flash_slideshow_width.value;\n"
 		. "					imageObj.flash_slideshow_height = obj.flash_slideshow_height.value;\n"
 		. "					imageObj.flash_slideshow_use_full = obj.flash_slideshow_use_full.value;\n"
@@ -203,7 +220,9 @@ SCRIPTSTUFF;
 		. "					imageObj.flash_slideshow_show_title = obj.flash_slideshow_show_title.value;\n"
 		. "					imageObj.flash_slideshow_title_color = obj.flash_slideshow_title_color.value;\n"
 		. "					imageObj.flash_slideshow_title_bg_color = obj.flash_slideshow_title_bg_color.value;\n"
-		. "					imageObj.flash_slideshow_title_masks = obj.flash_slideshow_title_bg_color.masks;\n";
+		. "					imageObj.flash_slideshow_masks = obj.flash_slideshow_masks.value;\n"
+		. "					imageObj.flash_slideshow_site_info_text = '" . $g2ic_options['flash_slideshow_site_info_text'] . "';\n"
+		. "					imageObj.flash_slideshow_site_info_url = '" . $g2ic_options['flash_slideshow_site_info_url'] . "';\n";
 		return $html;
 	}
 

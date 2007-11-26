@@ -205,4 +205,13 @@ $g2ic_options['flash_slideshow_title_bg_color'] = '333333';
 
 // none starMask roundedMask circleMask
 $g2ic_options['flash_slideshow_masks'] = 'none';
+
+// Site information text for right-click menu.  If empty, nothing shows on that menu.
+// Example 'Copyright 2007 4WiseGuys.com'
+$g2ic_options['flash_slideshow_site_info_text'] = '';
+
+// Site information URL for right-click menu.  If not empty, this will be the link behind
+// the site info text in the right-click menu.
+// Example 'http://www.4wiseguys.com'
+$g2ic_options['flash_slideshow_site_info_url'] = '';
 ?>
