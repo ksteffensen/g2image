@@ -135,7 +135,7 @@ function getTagChildIds($userId, $tagName=null) {
 			$disabled = getDisabledFlag($childItem->getId());
 			if (!$disabled) {
 				if (!($childItem->entityType == "GalleryAlbumItem")) {
-					$display .= getDisplay($childItem);
+					$display .= getDisplay($userId, $childItem);
 				}
 			}
 		}
@@ -206,7 +206,7 @@ function getKeywordChildIds($userId, $keyword) {
 			$disabled = getDisabledFlag($childItem->getId());
 			if(!$disabled) {
 				if(!($childItem->entityType == "GalleryAlbumItem")) {
-					$display .= getDisplay($childItem);
+					$display .= getDisplay($userId, $childItem);
 				}
 			}
 		}
@@ -308,7 +308,7 @@ function getDynamicChildIds($userId, $param='date', $orderBy='creationTimestamp'
 			$disabled = getDisabledFlag($childItem->getId());
 			if(!$disabled) {
 				if(!($childItem->entityType == "GalleryAlbumItem")) {
-					$display .= getDisplay($childItem);
+					$display .= getDisplay($userId, $childItem);
 				}
 			}
 		}
@@ -339,7 +339,7 @@ function getRoot() {
 function getAlbumList ($id) {
 	global $gallery;
 	$display = "";
-	if(!isset($defaultId)) {
+	if(empty($id)) {
 		$defaultId = getRoot();
 	}
 	list ($ret, $Albums) = GalleryCoreApi::fetchAlbumTree();
@@ -367,7 +367,7 @@ function getAlbumList ($id) {
 	return $display;
 }
 
-function getItems ($id) {
+function getItems ($userId, $id) {
 	global $gallery;
 	$display = "";
 
@@ -389,7 +389,7 @@ function getItems ($id) {
 					print "Error loading childItems:" . $ret->getAsHtml();
 				}
 				if(!($childItem->entityType == "GalleryAlbumItem")) {
-					$display .= getDisplay($childItem);
+					$display .= getDisplay($userId, $childItem);
 				}
 			}
 		}
@@ -398,7 +398,7 @@ function getItems ($id) {
 }
 
 //the big display function
-function getDisplay($item) {
+function getDisplay($userId, $item) {
 	$item = getPreferred($item);
 	list ($ret, $bestFit) = getBestImageId($item->getId());
 	if ($ret) {
@@ -406,7 +406,7 @@ function getDisplay($item) {
 	}
 	$itemId = $item->getId();
 	$display = '';
-	if(hasPermission($itemId)) {
+	if(hasPermission($userId, $itemId)) {
 		list ($ret, $thumbnailList) = GalleryCoreApi::fetchThumbnailsByItemIds(array($itemId));
 		if ($ret) {
 			return array($ret->wrap(__FILE__, __LINE__), null);
@@ -439,14 +439,8 @@ function getDisplay($item) {
 }
 
 //check if current user has view permissions
-function hasPermission($itemId) {
+function hasPermission($userId, $itemId) {
 	global $gallery;
-	if (!isset($userId)) {
-		$userId = $gallery->getActiveUserId();
-	}
-	if (!isset($userId)) {
-		$userId = GalleryCoreApi::getAnonymousUserId();
-	}
 	list ($ret, $ok) = GalleryCoreApi::hasItemPermission($itemId, 'core.view', $userId);
 	if ($ret || !$ok) {
 		return false;
@@ -691,6 +685,9 @@ function xml() {
 	global $gallery;
 	$title = '';
 	$userId = $gallery->getActiveUserId();
+	if (!isset($userId)) {
+		$userId = GalleryCoreApi::getAnonymousUserId();
+	}
 	if (isset ($_REQUEST['mode'])) {
 		$mode = $_REQUEST['mode'];
 	}
@@ -754,9 +751,9 @@ function xml() {
 		break;
 		default:
 			if(isset($g2_itemId)) {
-				$xml .= getItems($g2_itemId);
+				$xml .= getItems($userId, $g2_itemId);
 			} else {
-				$xml .= getItems(getRoot());
+				$xml .= getItems($userId, getRoot());
 			}
 	}
 	$xml .= "    </channel>\n";
