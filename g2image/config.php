@@ -200,6 +200,8 @@ $g2ic_options['flash_slideshow_link_target'] = '_parent';
 
 // false, top, or bottom
 $g2ic_options['flash_slideshow_show_title'] = 'false';
+
+// FFFFFF = White  333333 = Charcoal  000000 = Black
 $g2ic_options['flash_slideshow_title_color'] = 'FFFFFF';
 $g2ic_options['flash_slideshow_title_bg_color'] = '333333';
 
