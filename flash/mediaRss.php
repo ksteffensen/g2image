@@ -36,7 +36,6 @@ if (@file_exists('../../wpg2.php') || $g2ic_in_wordpress) {
 	// G2Image is being called from WPG2 directory
 	if (@file_exists('../../wpg2.php')) {
 		require_once('../../../../../wp-config.php');
-		require_once('../../../../../wp-admin/admin.php');
 	}
 	// Otherwise user has set $g2ic_in_wordpress == TRUE because G2Image is being called by another editor.  E.g, FCKEditor
 	else {
@@ -44,7 +43,6 @@ if (@file_exists('../../wpg2.php') || $g2ic_in_wordpress) {
 			$g2ic_wp_rel_path = $g2ic_wp_rel_path . '../';
 			if (@file_exists($g2ic_wp_rel_path . 'wp-config.php')) {
 				require_once($g2ic_wp_rel_path . 'wp-config.php');
-				require_once($g2ic_wp_rel_path . 'wp-admin/admin.php');
 				break;
 			}
 			elseif ($count == 10) {
