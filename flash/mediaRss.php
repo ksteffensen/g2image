@@ -685,7 +685,7 @@ function xml() {
 	global $gallery;
 	$title = '';
 	$userId = $gallery->getActiveUserId();
-	if (!isset($userId)) {
+	if (empty($userId)) {
 		$userId = GalleryCoreApi::getAnonymousUserId();
 	}
 	if (isset ($_REQUEST['mode'])) {
