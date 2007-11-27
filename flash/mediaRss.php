@@ -339,12 +339,12 @@ function getRoot() {
 function getAlbumList ($id) {
 	global $gallery;
 	$display = "";
-	if(empty($id)) {
+	if (empty($id)) {
 		$defaultId = getRoot();
 	}
 	list ($ret, $Albums) = GalleryCoreApi::fetchAlbumTree();
 	list ($ret, $Albums) = GalleryCoreApi::loadEntitiesById(GalleryUtilities::arrayKeysRecursive($Albums), 'GalleryAlbumItem');
-	if(isset ($defaultId)) {
+	if (isset ($defaultId)) {
 		list ($ret, $rootAlbum) = GalleryCoreApi::loadEntitiesById( $defaultId, 'GalleryAlbumItem' );
 		if ($ret) {
 			print "Error loading rootAlbum:" . $ret->getAsHtml();
@@ -376,8 +376,8 @@ function getItems ($userId, $id) {
 		print "Error loading Entity:" . $ret->getAsHtml();
 	}
 	// we can check for disabledFlag for the whole album
-	$disabled = getDisabledFlag($id);
-	if(!$disabled) {
+//	$disabled = getDisabledFlag($id);
+//	if(!$disabled) {
 		list ($ret, $childIds) = GalleryCoreApi::fetchChildItemIds($entity);
 		if ($ret) {
 			print "Error finding child item ids:" . $ret->getAsHtml();
@@ -394,7 +394,7 @@ function getItems ($userId, $id) {
 			}
 		}
 		return $display;
-	}
+//	}
 }
 
 //the big display function

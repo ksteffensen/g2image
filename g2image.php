@@ -20,7 +20,6 @@ $g2ic_version_array = array(3,1);
 
 // ====( Initialization Code )
 require_once('init.php');
-require_once('activemodules.php');
 session_start();
 g2ic_get_request_and_session_options();
 list($g2ic_album_info, $g2ic_gallery_items) = g2ic_get_gallery_items();
@@ -67,7 +66,7 @@ echo '</html>';
 
 $_SESSION['g2ic_last_album_visited'] = $g2ic_options['current_album'];
 
-GalleryEmbed::done();
+BackendApi::finished();
 
 // ====( Functions - Alphabetical by Function Name)
 
@@ -90,29 +89,20 @@ function g2ic_get_gallery_items() {
 
 	$urlGenerator =& $gallery->getUrlGenerator();
 
-	list ($error,$albums) = GalleryCoreApi::loadEntitiesById(array($g2ic_options['current_album']));
-	if(!$error) {
-		foreach ($albums as $album) {
-			$album_info['url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $album->getid()), array('forceFullUrl' => true));
-			$album_info['title'] = $album->getTitle();
-			if(empty($album_info['title'])) {
-				$album_info['title'] = $album->getPathComponent();
-			}
-			list($error, $data_item_ids) = GalleryCoreApi::fetchChildDataItemIds($album);
-			foreach ($data_item_ids as $data_item_id) {
-				$item_ids[] = $data_item_id;
-				list($error, $items) = GalleryCoreApi::loadEntitiesById(array($data_item_id));
-				foreach ($items as $item) {
-					$item_titles[] = $item->getTitle();
-					$item_mod_times[] = $item->getModificationTimestamp( );
-					$item_orig_times[] = $item->getOriginationTimestamp( );
-					$item_create_times[] = $item->getOriginationTimestamp( );
-				}
-			}
-		}
+	$album = BackendApi::loadEntityById($g2ic_options['current_album']);
+	$album_info['url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $album->getid()), array('forceFullUrl' => true));
+	$album_info['title'] = $album->getTitle();
+	if(empty($album_info['title'])) {
+		$album_info['title'] = $album->getPathComponent();
 	}
-	else {
-		print T_('Error loading album entity');
+	$data_item_ids = BackendApi::fetchChildDataItemIds($album);
+	foreach ($data_item_ids as $data_item_id) {
+		$item_ids[] = $data_item_id;
+		$item = BackendApi::loadEntityById($data_item_id);
+		$item_titles[] = $item->getTitle();
+		$item_mod_times[] = $item->getModificationTimestamp( );
+		$item_orig_times[] = $item->getOriginationTimestamp( );
+		$item_create_times[] = $item->getOriginationTimestamp( );
 	}
 
 	// Sort directories and files
@@ -198,68 +188,50 @@ function g2ic_get_item_info($item_id) {
 
 	$urlGenerator =& $gallery->getUrlGenerator();
 
-	list ($error,$items) = GalleryCoreApi::loadEntitiesById(array($item_id));
-	if(!$error) {
-		foreach ($items as $item) {
-			$item_info['id'] = $item_id;
-			$item_info['title'] = $item->getTitle();
-			$item_info['description'] = $item->getDescription();
-			$item_info['summary'] = $item->getSummary();
+	$item = BackendApi::loadEntityById($item_id);
+	$item_info['id'] = $item_id;
+	$item_info['title'] = $item->getTitle();
+	$item_info['description'] = $item->getDescription();
+	$item_info['summary'] = $item->getSummary();
 
-			list ($error, $preferred) = GalleryCoreApi::fetchPreferredsByItemIds(array($item_id));
-			if(!$error) {
-				if (!empty($preferred[$item_id])) {
-					$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $preferred[$item_id]->getid()), array('forceFullUrl' => true));
-				}
-				else {
-					$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
-				}
-			}
-			else {
-				print T_('Error loading preferred image');
-			}
-
-			list($error, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array($item_id));
-			if(!$error) {
-				foreach($thumbnails as $thumbnail) {
-					$item_info['thumbnail_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $thumbnail->getid()), array('forceFullUrl' => true));
-					$item_info['image_url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
-					$item_info['thumbnail_width'] = $thumbnail->getWidth();
-					$item_info['thumbnail_height'] = $thumbnail->getHeight();
-				}
-			}
-			else {
-				print T_('Error loading thumbnails');
-			}
-			// If $item can contain children, it is an album and doesn't have width, height, or resizes.
-			if (!$item->getCanContainChildren()) {
-				$item_mime_type = $item->getMimeType();
-				if (preg_match('/image/', $item_mime_type)) {
-					$item_info['fullsize_width'] = $item->getWidth();
-					$item_info['fullsize_height'] = $item->getHeight();
-					list($error, $resizes_array) = GalleryCoreApi::fetchResizesByItemIds(array($item_id));
-					if(!$error) {
-						foreach($resizes_array as $resizes) {
-							$item_info['number_resizes'] = count($resizes);
-							for($i=0; $i<$item_info['number_resizes']; $i++) {
-								$item_info['resize_src'][$i] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $resizes[$i]->getid()), array('forceFullUrl' => true));
-								$item_info['resize_width'][$i] = $resizes[$i]->getWidth();
-								$item_info['resize_height'][$i] = $resizes[$i]->getHeight();
-							}
-						}
-					}
-					if (count($resizes_array)==0) {
-						$item_info['number_resizes'] = 0;
-					}
-				}
-				else {
-					$item_info['number_resizes'] = 'non-image';
-				}
-			}
-		}
+	$preferred = BackendApi::fetchPreferredsByItemId($item_id);
+	if (!empty($preferred[$item_id])) {
+		$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $preferred[$item_id]->getid()), array('forceFullUrl' => true));
 	}
 	else {
-		print T_('Error loading album items');
+		$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
+	}
+
+	$thumbnails = BackendApi::fetchThumbnailsByItemId($item_id);
+	foreach($thumbnails as $thumbnail) {
+		$item_info['thumbnail_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $thumbnail->getid()), array('forceFullUrl' => true));
+		$item_info['image_url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
+		$item_info['thumbnail_width'] = $thumbnail->getWidth();
+		$item_info['thumbnail_height'] = $thumbnail->getHeight();
+	}
+
+	// If $item can contain children, it is an album and doesn't have width, height, or resizes.
+	if (!$item->getCanContainChildren()) {
+		$item_mime_type = $item->getMimeType();
+		if (preg_match('/image/', $item_mime_type)) {
+			$item_info['fullsize_width'] = $item->getWidth();
+			$item_info['fullsize_height'] = $item->getHeight();
+			$resizes_array = BackendApi::fetchResizesByItemId($item_id);
+			foreach($resizes_array as $resizes) {
+				$item_info['number_resizes'] = count($resizes);
+				for($i=0; $i<$item_info['number_resizes']; $i++) {
+					$item_info['resize_src'][$i] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $resizes[$i]->getid()), array('forceFullUrl' => true));
+					$item_info['resize_width'][$i] = $resizes[$i]->getWidth();
+					$item_info['resize_height'][$i] = $resizes[$i]->getHeight();
+				}
+			}
+			if (count($resizes_array)==0) {
+				$item_info['number_resizes'] = 0;
+			}
+		}
+		else {
+			$item_info['number_resizes'] = 'non-image';
+		}
 	}
 
 	if(empty($item_info['summary']))
@@ -277,16 +249,8 @@ function g2ic_get_request_and_session_options(){
 
 	global $g2ic_options;
 
-	// Get the root album
-
-	// Check for G2 Core API >= 7.5.  getDefaultAlbumId only available at 7.5 or above
-	if (GalleryUtilities::isCompatibleWithApi(array(7,5), GalleryCoreApi::getApiVersion())) {
-		list($error, $g2ic_options['root_album']) = GalleryCoreApi::getDefaultAlbumId();
-	}
-	// Otherwise use a Gallery2 2.1 method to get the root album
-	else {
-		list($error, $g2ic_options['root_album']) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
-	}
+	// Get the root album ID
+	$g2ic_options['root_album'] = BackendApi::getRootAlbumId();
 
 	g2ic_magic_quotes_remove($_REQUEST);
 
@@ -438,20 +402,16 @@ function g2ic_make_html_album_tree($root_album){
 function g2ic_make_html_album_tree_branches($current_album, $parent, &$node) {
 	global $g2ic_options;
 
-	list ($error,$items) = GalleryCoreApi::loadEntitiesById(array($current_album));
-	if(!$error){
-		foreach ($items as $item) {
-			$album_title = $item->getTitle();
-			if(empty($album_title)) {
-				$album_title = $item->getPathComponent();
-			}
-		}
-		$html = '        d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
-		. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sortby']
-		. '&images_per_page=' . $g2ic_options['images_per_page'] . '");' . "\n";
+	$item = BackendApi::loadEntityById($current_album);
+	$album_title = $item->getTitle();
+	if(empty($album_title)) {
+		$album_title = $item->getPathComponent();
 	}
+	$html = '        d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
+	. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sortby']
+	. '&images_per_page=' . $g2ic_options['images_per_page'] . '");' . "\n";
 
-	list($error, $sub_albums) = GalleryCoreApi::fetchAlbumTree($current_album,1);
+	$sub_albums = BackendApi::fetchAlbumTree($current_album, 1);
 
 	$albums = array_keys($sub_albums);
 
@@ -510,7 +470,7 @@ function g2ic_make_html_alignment_select($name){
  * @return string $html The HTML for the image controls
  */
 function g2ic_make_html_album_insert_controls(){
-	global $gallery, $g2ic_albuminsert_options, $g2ic_options, $g2ic_album_info;
+	global $g2ic_albuminsert_options, $g2ic_options, $g2ic_album_info;
 
 	// "How to insert:" selector
 	$html = '        <fieldset id="album_additional_dialog">' . "\n"
@@ -547,7 +507,7 @@ function g2ic_make_html_album_insert_controls(){
  * @return string $html The HTML for the image controls
  */
 function g2ic_make_html_image_insert_controls(){
-	global $gallery, $g2ic_imginsert_options, $g2ic_options;
+	global $g2ic_imginsert_options, $g2ic_options;
 
 	// "How to insert:" selector
 	$html = '        <fieldset id="additional_dialog">' . "\n"
