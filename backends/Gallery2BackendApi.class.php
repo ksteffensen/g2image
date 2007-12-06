@@ -178,7 +178,7 @@ class Gallery2BackendApi{
 	  */
 	 /*public*/ function getItems($albumID, $sort_by, $current_page, $images_per_page){
 
-		list($nodes, $albumID) = $this->getChildren($albumID, $sort_by, $current_page, $images_per_page);
+		list($nodes, $id) = $this->getChildren($albumID, $sort_by, $current_page, $images_per_page);
 		$items = self::normalize($nodes, "GalleryPhotoItem", false);
 	 	return $items;
 	 }
@@ -320,7 +320,6 @@ class Gallery2BackendApi{
 		return array($typed_child_items, $id); // id may differ if it is a derivative $id given as param
 	}
 
-
 	/**	*************************
 	  * fetch all $items derivatives of an array of ids
 	  * *************************
@@ -328,21 +327,27 @@ class Gallery2BackendApi{
 	/*private */ function getDerivatives($child_ids){
 		list ($ret, $derivatives) = GalleryCoreApi::fetchDerivativesByItemIds($child_ids);
 		self::check($ret);
-		list ($ret, $items) =GalleryCoreApi::loadEntitiesById($child_ids);
-		self::check($ret);
-
-		// create reusable array with items separated by type (albums, images, mp3 ...)
-		$all = array();
-		$siblings = array();
-		$cnt =0;
-		foreach($items as $id=>$item){
-				// this hack may lead in some future to probles, if gallery2 add an same_name xxxderivatives object!!
-					$item->xxxderivatives = $derivatives[$item->getId()]; // merge derivatives to each item
-
-				$all[$item->getEntityType()][] = $item;
-
-				$iid = $item->getId();
-				$siblings[$iid] = array( "pos"=>$cnt++, "id"=>$iid, "entityType"=>$item->getEntityType());
+		if (!empty($derivatives)) {
+			list ($ret, $items) =GalleryCoreApi::loadEntitiesById($child_ids);
+			self::check($ret);
+	
+			// create reusable array with items separated by type (albums, images, mp3 ...)
+			$all = array();
+			$siblings = array();
+			$cnt =0;
+			foreach($items as $id=>$item){
+					// this hack may lead in some future to probles, if gallery2 add an same_name xxxderivatives object!!
+						$item->xxxderivatives = $derivatives[$item->getId()]; // merge derivatives to each item
+	
+					$all[$item->getEntityType()][] = $item;
+	
+					$iid = $item->getId();
+					$siblings[$iid] = array( "pos"=>$cnt++, "id"=>$iid, "entityType"=>$item->getEntityType());
+			}
+		}
+		else {
+			$all = array();
+			$siblings = array();
 		}
 		return array($all, $siblings);
 
