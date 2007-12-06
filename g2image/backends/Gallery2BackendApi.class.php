@@ -447,7 +447,7 @@ class Gallery2BackendApi{
 		}
 //**mm
 		// fetch all albums and images together
-		list ($ret, $child_ids) = GalleryCoreApi::fetchChildItemIds($sid, $offset, $amount, $userID ); //TODO fix offset/amount call
+		list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($sid, $offset, $amount, $userID ); //TODO fix offset/amount call
 		self::check($ret);
 		// now all sizes for speed up all together
 		list ($typed_child_items, $siblings) = $this->getDerivatives($child_ids);
@@ -539,14 +539,18 @@ class Gallery2BackendApi{
 				}
 
 				list($err, $preferred) = GalleryCoreApi::fetchPreferredsByItemIds(array($data["id"]));
-				$urlArray = $this->generateUrlArray["download"];
+				$urlArrayImage = $this->generateUrlArray["download"];
+				$urlArrayPageLink = $this->generateUrlArray["show"];
 				if (!empty($preferred[$data["id"]])) {
-					$urlArray['itemId'] = $preferred[$data["id"]]->getid();
+					$urlArrayImage['itemId'] = $preferred[$data["id"]]->getid();
+					$urlArrayPageLink['itemId'] = $preferred[$data["id"]]->getid();
 				}else {
-					$urlArray['itemId'] = $data["id"];
+					$urlArrayImage['itemId'] = $data["id"];
+					$urlArrayPageLink['itemId'] = $data["id"];
 				}
-				$data['fullsize_img'] = $urlGenerator->generateUrl($urlArray);
-//**mm
+				$data['fullsize_img'] = $urlGenerator->generateUrl($urlArrayImage);
+				$data['image_url'] = $urlGenerator->generateUrl($urlArrayPageLink);
+				//**mm
 				if($type == "GalleryAlbumItem"){ // better take the largest todo!!!
 					$data['fullsize_width'] = $node->xxxderivatives[0]->getWidth();
 					$data['fullsize_height'] = $node->xxxderivatives[0]->getheight();

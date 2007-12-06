@@ -457,9 +457,7 @@ function g2ic_make_html_image_navigation($g2obj){
 
 		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item['thumbnail_img'] . '" />' . "\n"
 		. '    <input type="hidden" name="fullsize_img" value="' . $item['fullsize_img'] . '" />' . "\n"
-//**hm** where did you get this?
-//		. '    <input type="hidden" name="image_url" value="' . $item['image_url'] . '" />' . "\n"
-//**hm**
+		. '    <input type="hidden" name="image_url" value="' . $item['image_url'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_id" value="' . $item['id'] . '" />' . "\n"
 		. '    <input type="hidden" name="thumbw" value="' . $item["thumbnail_width"] . '" />' . "\n"
 		. '    <input type="hidden" name="thumbh" value="' . $item["thumbnail_height"] . '" />' . "\n"
