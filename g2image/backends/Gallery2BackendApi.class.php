@@ -313,7 +313,7 @@ class Gallery2BackendApi{
 		}
 //**mm
 		// fetch all albums and images together
-		list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($sid, $offset, $amount, $userID ); //TODO fix offset/amount call
+		list ($ret, $child_ids) = GalleryCoreApi::fetchChildItemIds($sid, $offset, $amount, $userID ); //TODO fix offset/amount call
 		self::check($ret);
 		// now all sizes for speed up all together
 		list ($typed_child_items, $siblings) = $this->getDerivatives($child_ids);
