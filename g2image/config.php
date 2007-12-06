@@ -33,8 +33,14 @@ $g2ic_in_wordpress = FALSE;
 // the full directory path to your Gallery2 directory.
 // Example: /usr/username/public_html/gallery2/
 // Make sure you include the trailing forward slash.
-
-$g2ic_gallery2_path = "gallery2/";
+$configFile = realpath($_SERVER["DOCUMENT_ROOT"]."/config/g2image.preset.php");
+echo $configFile;
+if(@file_exists($configFile)){
+    require_once($configFile);
+}
+if(!isset($g2ic_gallery2_path)){
+    $g2ic_gallery2_path = "gallery2/";
+}
 
 // Set the language for the main g2image popup window.
 // There must be a corresponding xx.mo file in the g2image/langs/ directory.
@@ -137,7 +143,9 @@ $g2ic_use_full_path = FALSE;
 // then
 // $g2ic_gallery2_uri = 'http://www.domain.com/gallery2/main.php';
 
-$g2ic_gallery2_uri = 'http://www.domain.com/gallery2/main.php';
+$protocol = ($_SERVER["SERVER_PROTOCOL"] == "HTTP/1.1" ) ? "http://" : "https://" ; //** or else ???
+$g2ic_gallery2_uri = $protocol.$_SERVER["HTTP_HOST"]."/{$g2ic_gallery2_path}main.php"; //**
+//$g2ic_gallery2_uri = 'http://www.domain.com/gallery2/main.php';
 
 // $g2ic_embed_uri is the URL of your embedded page.
 // For example, if your embedded page is

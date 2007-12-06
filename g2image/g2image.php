@@ -19,123 +19,62 @@ $g2ic_version_text = '3.1 Alpha';
 $g2ic_version_array = array(3,1);
 
 // ====( Initialization Code )
+g2ic_magic_quotes_remove($_REQUEST);
 require_once('init.php');
-session_start();
-g2ic_get_request_and_session_options();
-list($g2ic_album_info, $g2ic_gallery_items) = g2ic_get_gallery_items();
+require_once('modules/module.inc.php');
+require_once('activemodules.php');
+require_once('backends/' . 'Gallery2' . 'BackendApi.class.php');
+require_once('debug.inc.php');
+require_once('header.class.php');
+
+$BackendApiClass = 'Gallery2' . 'BackendApi';
+
+$g2obj = new $BackendApiClass( $g2ic_options );
+
 $g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions();
 $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
 
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');
-require_once('header.php');
+$header = new g2ic_header($g2ic_options);
+$html = $header->html;
 
-echo '        <table>' . "\n";
-echo '            <tr>' . "\n";
-echo '                <td width="200px" valign="top">' . "\n";
+$html .= g2ic_make_html_album_tree($g2obj->tree, $g2obj->root);
+$html .= '                </td>
+                <td valign="top">
+                    <div class="main">
+';
 
-echo g2ic_make_html_album_tree($g2ic_options['root_album']);
-echo '                </td>' . "\n";
-echo '                <td valign="top">' . "\n";
+$html .= g2ic_make_html_album_insert_controls();
 
-echo '                    <div class="main">' . "\n";
-
-echo g2ic_make_html_album_insert_controls();
-
-if (empty($g2ic_gallery_items)) {
-	echo g2ic_make_html_empty_page();
+if (empty($g2obj->items)) {
+	$html .= g2ic_make_html_empty_page();
 }
 else {
-	$g2ic_page_navigation = g2ic_make_html_page_navigation();
-	echo g2ic_make_html_display_options();
-	echo g2ic_make_html_image_insert_controls();
-	print_r($g2ic_page_navigation);
-	echo g2ic_make_html_image_navigation();
-	print_r($g2ic_page_navigation);
+	$g2ic_page_navigation = g2ic_make_html_page_navigation($g2obj);
+	$html .= g2ic_make_html_display_options();
+	$html .= g2ic_make_html_image_insert_controls();
+	$html .= $g2ic_page_navigation;
+	$html .= g2ic_make_html_image_navigation($g2obj);
+	$html .= $g2ic_page_navigation;
+	
 }
 
-echo g2ic_make_html_about($g2ic_version_text);
+$html .= g2ic_make_html_about($g2obj, $g2ic_version_text);
 
-echo '                    </div>' . "\n";
-echo '                </td>' . "\n";
-echo '            </tr>' . "\n";
-echo '        </table>' . "\n";
-echo '    </form>' . "\n";
-echo '</body>' . "\n\n";
-echo '</html>';
+$html .= '                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>';
 
-$_SESSION['g2ic_last_album_visited'] = $g2ic_options['current_album'];
+echo $html;
 
-BackendApi::finished();
+//$BackendApiClass::finished();
 
 // ====( Functions - Alphabetical by Function Name)
-
-/**
- * Get all of the Gallery2 items
- *
- * @return array $album_info Album Title and URL for the current album
- * @return array $gallery_items Sorted array of IDs and Titles for all Gallery2 Data Items in the current album
- */
-function g2ic_get_gallery_items() {
-	GLOBAL $gallery, $g2ic_options;
-
-	$gallery_items = array();
-	$item_mod_times = array();
-	$item_orig_times = array();
-	$item_create_times = array();
-	$item_titles = array();
-	$item_ids = array();
-	$album_info = array();
-
-	$urlGenerator =& $gallery->getUrlGenerator();
-
-	$album = BackendApi::loadEntityById($g2ic_options['current_album']);
-	$album_info['url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $album->getid()), array('forceFullUrl' => true));
-	$album_info['title'] = $album->getTitle();
-	if(empty($album_info['title'])) {
-		$album_info['title'] = $album->getPathComponent();
-	}
-	$data_item_ids = BackendApi::fetchChildDataItemIds($album);
-	foreach ($data_item_ids as $data_item_id) {
-		$item_ids[] = $data_item_id;
-		$item = BackendApi::loadEntityById($data_item_id);
-		$item_titles[] = $item->getTitle();
-		$item_mod_times[] = $item->getModificationTimestamp( );
-		$item_orig_times[] = $item->getOriginationTimestamp( );
-		$item_create_times[] = $item->getOriginationTimestamp( );
-	}
-
-	// Sort directories and files
-	$count_files = count($item_ids);
-
-	if($count_files>0){
-		switch ($g2ic_options['sortby']) {
-			case 'title_asc' :
-				array_multisort($item_titles, $item_ids);
-				break;
-			case 'title_desc' :
-				array_multisort($item_titles, SORT_DESC, $item_ids);
-				break;
-			case 'orig_time_asc' :
-				array_multisort($item_orig_times, $item_titles, $item_ids);
-				break;
-			case 'orig_time_desc' :
-				array_multisort($item_orig_times, SORT_DESC, $item_titles, $item_ids);
-				break;
-			case 'mtime_asc' :
-				array_multisort($item_mod_times, $item_titles, $item_ids);
-				break;
-			case 'mtime_desc' :
-				array_multisort($item_mod_times, SORT_DESC, $item_titles, $item_ids);
-		}
-		for($i=0; $i<$count_files; $i++) {
-			$gallery_items[$i] = array('title'=>$item_titles[$i],'id'=>$item_ids[$i]);
-		}
-	}
-
-	return array($album_info, $gallery_items);
-
-}
 
 /**
  * Make the array of selection options for the "How to Insert?" select element
@@ -178,150 +117,6 @@ function g2ic_get_imginsert_selectoptions(){
 }
 
 /**
- * Get info about an item from Gallery2
- *
- * @param int $item_id The Gallery2 ID of the item
- * @return array $item_info The array of information about the item
- */
-function g2ic_get_item_info($item_id) {
-	global $gallery;
-
-	$urlGenerator =& $gallery->getUrlGenerator();
-
-	$item = BackendApi::loadEntityById($item_id);
-	$item_info['id'] = $item_id;
-	$item_info['title'] = $item->getTitle();
-	$item_info['description'] = $item->getDescription();
-	$item_info['summary'] = $item->getSummary();
-
-	$preferred = BackendApi::fetchPreferredsByItemId($item_id);
-	if (!empty($preferred[$item_id])) {
-		$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $preferred[$item_id]->getid()), array('forceFullUrl' => true));
-	}
-	else {
-		$item_info['fullsize_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
-	}
-
-	$thumbnails = BackendApi::fetchThumbnailsByItemId($item_id);
-	foreach($thumbnails as $thumbnail) {
-		$item_info['thumbnail_img'] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $thumbnail->getid()), array('forceFullUrl' => true));
-		$item_info['image_url'] = $urlGenerator->generateUrl(array('view' => 'core.ShowItem', 'itemId' => $item->getid()), array('forceFullUrl' => true));
-		$item_info['thumbnail_width'] = $thumbnail->getWidth();
-		$item_info['thumbnail_height'] = $thumbnail->getHeight();
-	}
-
-	// If $item can contain children, it is an album and doesn't have width, height, or resizes.
-	if (!$item->getCanContainChildren()) {
-		$item_mime_type = $item->getMimeType();
-		if (preg_match('/image/', $item_mime_type)) {
-			$item_info['fullsize_width'] = $item->getWidth();
-			$item_info['fullsize_height'] = $item->getHeight();
-			$resizes_array = BackendApi::fetchResizesByItemId($item_id);
-			foreach($resizes_array as $resizes) {
-				$item_info['number_resizes'] = count($resizes);
-				for($i=0; $i<$item_info['number_resizes']; $i++) {
-					$item_info['resize_src'][$i] = $urlGenerator->generateUrl(array('view' => 'core.DownloadItem', 'itemId' => $resizes[$i]->getid()), array('forceFullUrl' => true));
-					$item_info['resize_width'][$i] = $resizes[$i]->getWidth();
-					$item_info['resize_height'][$i] = $resizes[$i]->getHeight();
-				}
-			}
-			if (count($resizes_array)==0) {
-				$item_info['number_resizes'] = 0;
-			}
-		}
-		else {
-			$item_info['number_resizes'] = 'non-image';
-		}
-	}
-
-	if(empty($item_info['summary']))
-		$item_info['summary'] = $item_info['title'];
-	if(empty($item_info['description']))
-		$item_info['description'] = $item_info['summary'];
-
-	return $item_info;
-}
-
-/**
- * Get all of the options set in $_REQUEST and/or $_SESSION
- */
-function g2ic_get_request_and_session_options(){
-
-	global $g2ic_options;
-
-	// Get the root album ID
-	$g2ic_options['root_album'] = BackendApi::getRootAlbumId();
-
-	g2ic_magic_quotes_remove($_REQUEST);
-
-	// Is this a TinyMCE window?
-	if(isset($_REQUEST['g2ic_tinymce'])){
-		$g2ic_options['tinymce'] = $_REQUEST['g2ic_tinymce'];
-		$_SESSION['g2ic_tinymce'] = $_REQUEST['g2ic_tinymce'];
-	}
-	else if (isset($_SESSION['g2ic_tinymce']))
-		$g2ic_options['tinymce'] = $_SESSION['g2ic_tinymce'];
-	else $g2ic_options['tinymce'] = 0;
-
-	// Get the form name (if set) for insertion (not TinyMCE or FCKEditor)
-	if(isset($_REQUEST['g2ic_form'])){
-		$g2ic_options['form'] = $_REQUEST['g2ic_form'];
-		$_SESSION['g2ic_form'] = $_REQUEST['g2ic_form'];
-	}
-	else if (isset($_SESSION['g2ic_form']))
-		$g2ic_options['form'] = $_SESSION['g2ic_form'];
-	else $g2ic_options['form'] = '';
-
-	// Get the field name (if set) for insertion (not TinyMCE or FCKEditor)
-	if(isset($_REQUEST['g2ic_field'])){
-		$g2ic_options['field'] = $_REQUEST['g2ic_field'];
-		$_SESSION['g2ic_field'] = $_REQUEST['g2ic_field'];
-	}
-	else if (isset($_SESSION['g2ic_field']))
-		$g2ic_options['field'] = $_SESSION['g2ic_field'];
-	else $g2ic_options['field'] = '';
-
-	// Get the last album visited
-	if(isset($_SESSION['g2ic_last_album_visited'])) {
-		$g2ic_options['last_album'] = $_SESSION['g2ic_last_album_visited'];
-	}
-	else {
-		$g2ic_options['last_album'] = $g2ic_options['root_album'];
-	}
-
-	// Get the current album
-	if(IsSet($_REQUEST['current_album'])){
-		$g2ic_options['current_album'] = $_REQUEST['current_album'];
-	}
-	else {
-		$g2ic_options['current_album'] = $g2ic_options['last_album'];
-	}
-
-	// Get the current page
-	if (isset($_REQUEST['g2ic_page']) and is_numeric($_REQUEST['g2ic_page'])) {
-		$g2ic_options['current_page'] = floor($_REQUEST['g2ic_page']);
-	}
-	else {
-		$g2ic_options['current_page'] = 1;
-	}
-
-	// Get the current sort method
-	if(IsSet($_REQUEST['sortby']))
-		$g2ic_options['sortby'] = $_REQUEST['sortby'];
-
-	// Determine whether to display the titles or keep them hidden
-	if(IsSet($_REQUEST['display']))
-		if ($_REQUEST['display'] == 'filenames')
-			$g2ic_options['display_filenames'] = TRUE;
-
-	// Determine how many images to display per page
-	if(IsSet($_REQUEST['images_per_page']))
-		$g2ic_options['images_per_page'] = $_REQUEST['images_per_page'];
-
-	return;
-}
-
-/**
  * Remove "Magic Quotes"
  *
  * @param array &$array POST or GET with magic quotes
@@ -342,18 +137,18 @@ function g2ic_magic_quotes_remove(&$array) {
  *
  * @return string $html The "About" alert HTML
  */
-function g2ic_make_html_about($version){
-	global $g2ic_options, $g2ic_album_info;
+function g2ic_make_html_about($g2obj, $version){
+	global $g2ic_options;
 
-	$album_info = g2ic_get_item_info($g2ic_options['current_album']);
+	$album_info = $g2obj->album;
 
 	$html = '<div class="about_button">' . "\n"
 	. '    <input type="button" onclick="alert(\'' . T_('Gallery2 Image Chooser') . '\n' . T_('Version') . ' ' . $version
 	. '\n' . T_('Documentation:') .  ' http://g2image.steffensenfamily.com/\')" '
 	. 'value="' . T_('About G2Image') . '"/>' . "\n"
-	. '    <input type="hidden" name="current_album" value="' . $g2ic_options['current_album'] . '">' . "\n"
-	. '    <input type="hidden" name="album_name" value="' . $g2ic_album_info['title'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_url" value="' . $g2ic_album_info['url'] . '" />' . "\n"
+	. '    <input type="hidden" name="current_album" value="' . $album_info['id'] . '">' . "\n"
+	. '    <input type="hidden" name="album_name" value="' . $album_info['title'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_url" value="' . $album_info['url'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_summary" value="' . $album_info['summary'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
@@ -373,10 +168,9 @@ function g2ic_make_html_about($version){
  *
  * @return string $html The album tree HTML
  */
-function g2ic_make_html_album_tree($root_album){
+function g2ic_make_html_album_tree($tree, $root){
 
 	// Album navigation
-
 	$html = '<div class="dtree">' . "\n"
 	. '    <p><a href="javascript: d.openAll();">' . T_('Expand all') . '</a> | <a href="javascript: d.closeAll();">' . T_('Collapse all') . '</a></p>' . "\n"
 	. '    <script type="text/javascript">' . "\n"
@@ -384,7 +178,7 @@ function g2ic_make_html_album_tree($root_album){
 	. '        d = new dTree("d");' . "\n";
 	$parent = -1;
 	$node = 0;
-	$html .= g2ic_make_html_album_tree_branches($root_album, $parent, $node);
+	$html .= g2ic_make_html_album_tree_branches($tree[$root], $root, $parent, $node);
 	$html .= '        document.write(d);' . "\n"
 	. '        //-->' . "\n"
 	. '    </script>' . "\n"
@@ -399,30 +193,19 @@ function g2ic_make_html_album_tree($root_album){
  * @param int $current_album id of current album
  * @param int $parent node of the parent album
  */
-function g2ic_make_html_album_tree_branches($current_album, $parent, &$node) {
+function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$node) {
 	global $g2ic_options;
-
-	$item = BackendApi::loadEntityById($current_album);
-	$album_title = $item->getTitle();
-	if(empty($album_title)) {
-		$album_title = $item->getPathComponent();
-	}
+	$album_title = $branch['title'];
 	$html = '        d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
 	. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sortby']
 	. '&images_per_page=' . $g2ic_options['images_per_page'] . '");' . "\n";
-
-	$sub_albums = BackendApi::fetchAlbumTree($current_album, 1);
-
-	$albums = array_keys($sub_albums);
-
-	if (count($albums) > 0) {
+	if ($branch['children']) {
 		$parent = $node;
-		foreach ($albums as $album) {
+		foreach ($branch['children'] as $album => $twig) {
 			$node++;
-			$html .= g2ic_make_html_album_tree_branches($album, $parent, $node);
+			$html .= g2ic_make_html_album_tree_branches($twig, $album, $parent, $node);
 		}
 	}
-
 	return $html;
 }
 
@@ -470,11 +253,11 @@ function g2ic_make_html_alignment_select($name){
  * @return string $html The HTML for the image controls
  */
 function g2ic_make_html_album_insert_controls(){
-	global $g2ic_albuminsert_options, $g2ic_options, $g2ic_album_info;
+	global $g2ic_albuminsert_options, $g2ic_options;
 
 	// "How to insert:" selector
 	$html = '        <fieldset id="album_additional_dialog">' . "\n"
-	. '            <legend>' . T_('Album Insertion Options for the entire current album: ') . $g2ic_album_info['title'] . '</legend>' . "\n"
+	. '            <legend>' . T_('Album Insertion Options for the entire current album: ') . $g2obj->album['title'] . '</legend>' . "\n"
 	. '            <label for="alignment">' . T_('How to Insert Album') . '</label>' . "\n"
 	. g2ic_make_html_select('albuminsert', $g2ic_albuminsert_options, 'toggleAlbumTextboxes();')
 	. '            <br />' . "\n";
@@ -627,14 +410,13 @@ function g2ic_make_html_empty_page() {
  *
  * @return string $html The HTML for the image block
  */
-function g2ic_make_html_image_navigation(){
-	global $g2ic_gallery_items, $g2ic_options;
+function g2ic_make_html_image_navigation($g2obj){
+	global $g2ic_options;
 
-	reset($g2ic_gallery_items);
+	$items = $g2obj->items;
 
 	$html = '';
-
-	foreach($g2ic_gallery_items as $key => $item) {
+	foreach($items as $key => $item) {
 
 		$image_id = $item['id'];
 
@@ -649,19 +431,16 @@ function g2ic_make_html_image_navigation(){
 		else {
 			$html .=  "<div class='thumbnail_imageblock'>\n";
 		}
-
-		$item_info = g2ic_get_item_info($image_id);
-
-		$html .= g2ic_make_html_img($item_info) . "\n";
+		$html .= g2ic_make_html_img($g2obj, $item, 100, 700, "exact", "x") . "\n";
 
 		if ($g2ic_options['display_filenames'])
 			$html .= '    <div class="displayed_title">' . "\n";
 		else
 			$html .= '    <div class="hidden_title">' . "\n";
 
-		$html .= '        ' . T_('Title: (used for alt in HTML)') . ' <input type="text" name="item_title" size="60" maxlength="200" value="' . htmlspecialchars($item_info['title']) . '" /><br />' . "\n"
-		. '        ' . T_('Summary: (used for title in HTML)') . ' <input type="text" name="item_summary" size="60" maxlength="200" value="' . htmlspecialchars($item_info['summary']) . '" /><br />' . "\n"
-		. '        ' . T_('Description: (used for caption in Lightbox)') . '<input type="text" name="item_description" size="60" maxlength="200" value="' . htmlspecialchars($item_info['description']) . '" /><br />' . "\n";
+		$html .= '        ' . T_('Title: (used for alt in HTML)') . ' <input type="text" name="item_title" size="60" maxlength="200" value="' . htmlspecialchars($item['title']) . '" /><br />' . "\n"
+		. '        ' . T_('Summary: (used for title in HTML)') . ' <input type="text" name="item_summary" size="60" maxlength="200" value="' . htmlspecialchars($item['summary']) . '" /><br />' . "\n"
+		. '        ' . T_('Description: (used for caption in Lightbox)') . '<input type="text" name="item_description" size="60" maxlength="200" value="' . htmlspecialchars($item['description']) . '" /><br />' . "\n";
 
 		$html .=  "    </div>\n\n";
 
@@ -675,12 +454,15 @@ function g2ic_make_html_image_navigation(){
 		}
 
 		// hidden fields
-		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item_info['thumbnail_img'] . '" />' . "\n"
-		. '    <input type="hidden" name="fullsize_img" value="' . $item_info['fullsize_img'] . '" />' . "\n"
-		. '    <input type="hidden" name="image_url" value="' . $item_info['image_url'] . '" />' . "\n"
-		. '    <input type="hidden" name="image_id" value="' . $image_id . '" />' . "\n"
-		. '    <input type="hidden" name="thumbw" value="' . $item_info['thumbnail_width'] . '" />' . "\n"
-		. '    <input type="hidden" name="thumbh" value="' . $item_info['thumbnail_height'] . '" />' . "\n"
+
+		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item['thumbnail_img'] . '" />' . "\n"
+		. '    <input type="hidden" name="fullsize_img" value="' . $item['fullsize_img'] . '" />' . "\n"
+//**hm** where did you get this?
+//		. '    <input type="hidden" name="image_url" value="' . $item['image_url'] . '" />' . "\n"
+//**hm**
+		. '    <input type="hidden" name="image_id" value="' . $item['id'] . '" />' . "\n"
+		. '    <input type="hidden" name="thumbw" value="' . $item["thumbnail_width"] . '" />' . "\n"
+		. '    <input type="hidden" name="thumbh" value="' . $item["thumbnail_height"] . '" />' . "\n"
 		. '</div>' . "\n";
 	}
 	return $html;
@@ -692,52 +474,31 @@ function g2ic_make_html_image_navigation(){
  * @param array $item_info Information on the image
  * @return string $html The HTML for an individual image
  */
-function g2ic_make_html_img($item_info) {
+
+function g2ic_make_html_img($g2obj, $item, $thumbSize=100, $fullSize=700, $fit="max", $direction="q") {
 	global $g2ic_options;
+	list($picId, $siz, $orientation) = $g2obj->fitInSize($item, $fullSize, $fit, $direction);
+	$fullPic = $item["derivatives"][$picId];
+	list($picId, $siz, $orientation) = $g2obj->fitInSize($item, $thumbSize, $fit, $direction);
+	$thumbPic = $item["derivatives"][$picId];
 
 	$html = '';
 
 	// ---- image code
-	$html .= '    <div style="background:#F0F0EE url(' . $item_info['thumbnail_img'] . '); width:'
-	. $item_info['thumbnail_width'] . 'px; height:' . $item_info['thumbnail_height'] . 'px; float: left;">' . "\n"
+	$html .= '    <div style="background:#F0F0EE url(' . $thumbPic["url"]["download"] . '); width:'
+	. $thumbPic['width'] . 'px; height:' . $thumbPic['height'] . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
-	if ($item_info['number_resizes'] === 'non-image') {
-	}
-	else {
-		$html .= '        <a title="' . $item_info['title'] .  '" rel="lightbox[g2image]" href="';
-		if ($item_info['number_resizes'] != 0) {
-			if ($item_info['fullsize_width'] < 700 && $item_info['fullsize_height'] < 500) {
-				$html .= $item_info['fullsize_img'];
-			}
-			else {
-				$ratio = 0;
-				$html_current = $item_info['fullsize_img'];
-				for($i=0; $i<$item_info['number_resizes']; $i++) {
-					if ($item_info['resize_width'] > $item_info['resize_height']) {
-						$ratio_current = ($item_info['resize_width'][$i] / 700);
-					}
-					else {
-						$ratio_current = ($item_info['resize_height'][$i] / 500);
-					}
-					if (($ratio <= 1) && ($ratio_current <= 1) && ($ratio_current > $ratio)) {
-						$ratio = $ratio_current;
-						$html_current = $item_info['resize_src'][$i];
-					}
-					elseif ((($ratio > 1) && ($ratio_current < $ratio)) || ($ratio == 0)) {
-						$ratio = $ratio_current;
-						$html_current = $item_info['resize_src'][$i];
-					}
-				}
-				$html .= $html_current;
-			}
-		}
-		else {
-			$html .= $item_info['fullsize_img'];
-		}
+// ??? what for
+//	if ($item_info['number_resizes'] === 'non-image') {
+//	}
+//	else {
+		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="';
+			$html .= $fullPic["url"]["download"];
+
 		$html .= '">' . "\n"
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
-	}
+//	}
 	$html .= '    </div>' . "\n";
 
 	return $html;
@@ -749,13 +510,14 @@ function g2ic_make_html_img($item_info) {
  *
  * @return string $html The HTML for navigating multiple pages of images
  */
-function g2ic_make_html_page_navigation() {
-	global $g2ic_gallery_items, $g2ic_options;
+function g2ic_make_html_page_navigation($g2obj) {
+	global $g2ic_options;
 
 	// ---- navigation for pages of images
-	$pages = ceil(count($g2ic_gallery_items)/$g2ic_options['images_per_page']);
-	if ($g2ic_options['current_page'] > $pages)
+	$pages = ceil(count($g2obj->items)/$g2ic_options['images_per_page']);
+	if ($g2ic_options['current_page'] > $pages) {
 		$g2ic_options['current_page'] = $pages;
+	}
 
 	$pagelinks = array();
 	for ($count = 1; $count <= $pages; $count++) {
@@ -764,7 +526,7 @@ function g2ic_make_html_page_navigation() {
 		}
 		else {
 			$pagelinks[] = '        <a href="?g2ic_page=' . $count
-			. '&sortby=' . $g2ic_options['sortby'] . '&current_album=' . $g2ic_options['current_album']
+			. '&sortby=' . $g2ic_options['sortby'] . '&current_album=' . $g2obj->album['id']
 			. '&images_per_page='  . $g2ic_options['images_per_page'] . '">' . $count . '</a>';
 		}
 	}
@@ -818,4 +580,6 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 
 	return $html;
 }
+
+echo debug::show($g2obj, "obj");
 ?>

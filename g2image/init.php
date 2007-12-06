@@ -15,7 +15,6 @@
 */
 
 require_once('config.php');
-require_once('./modules/module.inc.php');
 
 // ====( Initialize Variables )=================================
 $g2ic_options['current_page'] = 1;
@@ -43,6 +42,7 @@ $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
 $g2ic_options['bbcode_enabled'] = $g2ic_bbcode_enabled;
 $g2ic_options['bbcode_only'] = $g2ic_bbcode_only;
 $g2ic_options['embedded_mode'] = $g2ic_embedded_mode;
+$g2ic_options['gallery2_path'] = $g2ic_gallery2_path;
 $g2ic_options['use_full_path'] = $g2ic_use_full_path;
 $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
@@ -132,6 +132,68 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 		$g2ic_options['default_image_action'] = 'wpg2_image';
 }
 
+session_start();
+
+// Is this a TinyMCE window?
+if(isset($_REQUEST['g2ic_tinymce'])){
+	$g2ic_options['tinymce'] = $_REQUEST['g2ic_tinymce'];
+	$_SESSION['g2ic_tinymce'] = $_REQUEST['g2ic_tinymce'];
+}
+else if (isset($_SESSION['g2ic_tinymce']))
+	$g2ic_options['tinymce'] = $_SESSION['g2ic_tinymce'];
+else $g2ic_options['tinymce'] = 0;
+
+// Get the form name (if set) for insertion (not TinyMCE or FCKEditor)
+if(isset($_REQUEST['g2ic_form'])){
+	$g2ic_options['form'] = $_REQUEST['g2ic_form'];
+	$_SESSION['g2ic_form'] = $_REQUEST['g2ic_form'];
+}
+else if (isset($_SESSION['g2ic_form']))
+	$g2ic_options['form'] = $_SESSION['g2ic_form'];
+else $g2ic_options['form'] = '';
+
+// Get the field name (if set) for insertion (not TinyMCE or FCKEditor)
+if(isset($_REQUEST['g2ic_field'])){
+	$g2ic_options['field'] = $_REQUEST['g2ic_field'];
+	$_SESSION['g2ic_field'] = $_REQUEST['g2ic_field'];
+}
+else if (isset($_SESSION['g2ic_field']))
+	$g2ic_options['field'] = $_SESSION['g2ic_field'];
+else $g2ic_options['field'] = '';
+
+// Get the current album
+if(IsSet($_REQUEST['current_album'])){
+	$g2ic_options['current_album'] = $_REQUEST['current_album'];
+}
+elseif(isset($_SESSION['g2ic_last_album_visited'])) {
+	$g2ic_options['current_album'] = $_SESSION['g2ic_last_album_visited'];
+}
+else {
+	$g2ic_options['current_album'] = null;
+}
+$_SESSION['g2ic_last_album_visited'] = $g2ic_options['current_album'];
+
+// Get the current page
+if (isset($_REQUEST['g2ic_page']) and is_numeric($_REQUEST['g2ic_page'])) {
+	$g2ic_options['current_page'] = floor($_REQUEST['g2ic_page']);
+}
+else {
+	$g2ic_options['current_page'] = 1;
+}
+
+// Get the current sort method
+if(IsSet($_REQUEST['sortby']))
+	$g2ic_options['sortby'] = $_REQUEST['sortby'];
+
+// Determine whether to display the titles or keep them hidden
+if(IsSet($_REQUEST['display']))
+	if ($_REQUEST['display'] == 'filenames')
+		$g2ic_options['display_filenames'] = TRUE;
+
+// Determine how many images to display per page
+if(IsSet($_REQUEST['images_per_page']))
+	$g2ic_options['images_per_page'] = $_REQUEST['images_per_page'];
+
 // ==============================================================
 // NOTE for developers:
 // If you are developing an embedded application for Gallery2 and want to use
@@ -173,8 +235,4 @@ T_setlocale(LC_ALL, $locale);
 T_bindtextdomain('default', 'langs');
 T_bind_textdomain_codeset('default', 'UTF-8');
 T_textdomain('default');
-
-require_once('activemodules.php');
-require_once('backends/gallery2/BackendApi.class.php');
-BackendApi::init($g2ic_options);
 ?>

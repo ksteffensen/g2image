@@ -1,41 +1,61 @@
 <?php
-global $g2ic_options;
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+class g2ic_header {
+	
+	var $html = '';
+	
+	/* *************************
+	 * for PHP4 compatibility
+	 * there should be a function called like the class
+	 * *************************
+	 */
+	function g2ic_header($options){
+		__construct($options);
+	}
+
+
+	/* *************************
+	 * Constuct the head HTML
+	 * 
+	 * @return an object
+	 * *************************
+	 */
+	 /*public*/ function __construct($options){
+		$this->html = 
+'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><?php T_('Gallery2 Image Chooser') ?></title>
+    <title>' . T_('Gallery2 Image Chooser') . '</title>
     <link rel="stylesheet" href="css/g2image.css" type="text/css" />
     <link rel="stylesheet" href="css/dtree.css" type="text/css" />
     <link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<?php
-if($g2ic_options['tinymce'] && $g2ic_options['wpg2_valid']) {
-	echo "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
-}
-elseif($g2ic_options['tinymce'] && !$g2ic_options['wpg2_valid']) {
-	echo "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
-}
-?>
-    <script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+		if($options['tinymce'] && $options['wpg2_valid']) {
+			$this->html .= "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
+		}
+		elseif($options['tinymce'] && !$options['wpg2_valid']) {
+			$this->html .= "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
+		}
+		$this->html .= 
+'    <script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/dtree.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>
     <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>
     <script type="text/javascript">
-<?php
-foreach($g2ic_options['album_modules'] as $moduleName){
-	 echo all_modules::call( $moduleName, "insert");
-}
-foreach($g2ic_options['image_modules'] as $moduleName){
-	 echo all_modules::call( $moduleName, "insert");
-}
-?>
-    </script>
+';
+		foreach($options['album_modules'] as $moduleName){
+			 $this->html .= all_modules::call( $moduleName, "insert");
+		}
+		foreach($options['image_modules'] as $moduleName){
+			 $this->html .= all_modules::call( $moduleName, "insert");
+		}
+		$this->html .= 
+'    </script>
     <script language="javascript" type="text/javascript">
     <!--
 	function insertAlbum(){
 		var obj = document.forms[0];
-		var htmlCode = '';
+		var htmlCode = \'\';
 
 		if(typeof(insertFunctions[obj.albuminsert.value])=="function"){
 			id = 0;
@@ -54,16 +74,16 @@ foreach($g2ic_options['image_modules'] as $moduleName){
 
 			// Module inserted variables
 			// Album modules
-<?php
-foreach($g2ic_options['album_modules'] as $moduleName){
-echo all_modules::call( $moduleName, "javaScriptVariables");
-}
-?>
-
+';
+		foreach($options['album_modules'] as $moduleName){
+			$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+		}
+		$this->html .= 
+'
 			htmlCode += insertFunctions[obj.albuminsert.value]( [obj.albuminsert.value], imageObj );
 		}else{
 			alert(obj.albuminsert.value);
-			htmlCode += 'Error';
+			htmlCode += \'Error\';
 		}
 
 		insertHtml(htmlCode,obj);
@@ -71,10 +91,10 @@ echo all_modules::call( $moduleName, "javaScriptVariables");
 
 	function insertItems(){
 		var obj = document.forms[0];
-		var htmlCode = '';
-		var imgtitle = '';
-		var imgalt = '';
-		var loop = '';
+		var htmlCode = \'\';
+		var imgtitle = \'\';
+		var imgalt = \'\';
+		var loop = \'\';
 		var item_summary = new Array();
 		var item_title = new Array();
 		var item_description = new Array();
@@ -114,13 +134,13 @@ echo all_modules::call( $moduleName, "javaScriptVariables");
 			thumbh[0] = obj.thumbh.value;
 		}
 
-		//let's generate HTML code according to selected insert option
+		//let\'s generate HTML code according to selected insert option
 
 		for (var i=0;i<loop;i++) {
 			if ((loop == 1) || obj.images[i].checked) {
 
-				thumbw[i] = 'width="' + thumbw[i] + '" ';
-				thumbh[i] = 'height="' + thumbh[i] + '" ';
+				thumbw[i] = \'width="\' + thumbw[i] + \'" \';
+				thumbh[i] = \'height="\' + thumbh[i] + \'" \';
 
 				if(typeof(insertFunctions[obj.imginsert.value])=="function"){
 					id = 0;
@@ -149,16 +169,16 @@ echo all_modules::call( $moduleName, "javaScriptVariables");
 
 					// Module inserted variables
 					// Image modules
-<?php
-foreach($g2ic_options['image_modules'] as $moduleName){
-echo all_modules::call( $moduleName, "javaScriptVariables");
-}
-?>
-
+';
+		foreach($options['image_modules'] as $moduleName){
+			$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+		}
+		$this->html .= 
+'
 					htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
 				}else{
 					alert(obj.imginsert.value);
-					htmlCode += 'Error';
+					htmlCode += \'Error\';
 				}
 			}
 		}
@@ -169,3 +189,15 @@ echo all_modules::call( $moduleName, "javaScriptVariables");
 </head>
 <body id="g2image">
     <form method="post">
+        <table>
+            <tr>
+                <td width="200px" valign="top">
+';
+		return;
+	}
+	
+	/*public*/ function __destruct(){
+	}
+	 
+}
+?>
