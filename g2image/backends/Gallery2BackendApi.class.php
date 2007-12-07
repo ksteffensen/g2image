@@ -606,5 +606,79 @@ class Gallery2BackendApi{
 		die;
 	}
 
+function getAllChildImageItemsForAlbum($albumId) {
+	list ($ret, $albumItem) =GalleryCoreApi::loadEntitiesById($albumId);
+    if($ret) {
+        return array ($ret, null, null, null, null);  // Exit, returning the error
+    }  
+	//
+    // Get the child IDs (will only return IDs for child items that have core.view set for the current user)
+    //
+    list ($ret, $childItemIds) = GalleryCoreApi::fetchChildDataItemIds($albumItem);
+    if($ret) {
+        return array ($ret, null, null, null, null);
+    }  
+    //
+    // Since we know that $childItemIds already had core.view checked,
+    // we can just load the thumbnails for the entire array.
+    //
+    list ($ret, $thumbnailImageItems) = GalleryCoreApi::fetchThumbnailsByItemIds( $childItemIds );
+    if ($ret) {
+        return array ($ret, null, null, null, null);
+    }
+    // However, we don't know if the current user has permission to see the original/preferred
+    // and/or resizes for each childItemId, so we'll have to check for each one.
+    //
+    // First check for permission to see original/preferreds.
+    //
+    list ($ret, $childItemIdsSource) = GalleryCoreApi::fetchChildItemIdsWithPermission($albumId, 'core.viewSource');
+    if ($ret) {
+        return array ($ret, null, null, null, null);
+    }
+    //
+    // Since $childItemIdsSource has only had core.viewSource checked,
+    // we need to do the intersection with childItemIds to make sure that core.view is also set.
+    //
+    $childItemIdsViewAndSource = array_intersect($childItemIds, $childItemIdsSource);
+    //
+    // Now we can load the preferreds for the ID array that we know we have permission to see
+    //
+    list ($ret, $fullsizeImageItems) = GalleryCoreApi::fetchPreferredsByItemIds( $childItemIdsViewAndSource );
+    if ($ret) {
+        return array ($ret, null, null, null, null);
+    }
+    //
+    // If there was no preferred for a given ID, we need to load the original instead
+    //
+    foreach ($childItemIdsViewAndSource as $id) {
+        if (empty($fullsizeImageItems[$id])) {
+            list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
+            if ($ret) {
+                return array ($ret, null, null, null, null);
+            }
+            $fullsizeImageItems[$id] = $item;
+        }
+    }
+    //
+    // Next check for permission to see resizes.
+    //
+    list ($ret, $childItemIdsResizes) = GalleryCoreApi::fetchChildItemIdsWithPermission($albumId, 'core.viewResizes');
+    if ($ret) {
+        return array ($ret, null, null, null, null);
+    }
+    //
+    // Since $childItemIdsResizes has only had core.viewResizes checked,
+    // we need to do the intersection with childItemIds to make sure that core.view is also set.
+    //
+    $childItemIdsViewAndResizes = array_intersect($childItemIds, $childItemIdsResizes);
+    //
+    // Now we can load the resizes for the ID array that we know we have permission to see
+    //
+    list ($ret, $resizeImageItems) = GalleryCoreApi::fetchResizesByItemIds( $childItemIdsViewAndResizes );
+    if ($ret) {
+        return array ($ret, null, null, null, null);
+    }
+    return array($ret, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems);
+}	
 }
 ?>
