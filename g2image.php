@@ -578,7 +578,7 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 
 	return $html;
 }
-list ($ret, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $g2obj->getAllChildImageItemsForAlbum($g2obj->root);
+list ($ret, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $g2obj->getAllChildImageItemsForAlbum($g2ic_options['current_album']);
 echo debug::show($childItemIds, 'childItemIds');
 echo debug::show($thumbnailImageItems, 'thumbnailImageItems');
 echo debug::show($fullsizeImageItems, 'fullsizeImageItems');
