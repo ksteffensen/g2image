@@ -639,25 +639,23 @@ class Gallery2BackendApi{
 			return array ($ret, null, null, null);
 		}
 		// Next build arrays of IDs that have the viewSource and viewResizes permissions
-		$childItemIdsSource = array ();
-		$childItemIdsResizes = array ();
+		$idsSource = array ();
+		$idsResizes = array ();
 		foreach ($ids as $id) {
 			if (isset($permissions[$id]['core.viewSource'])) {
-				$childItemIdsSource[] = $id;
+				$idsSource[] = $id;
 			}
 			if (isset($permissions[$id]['core.viewResizes'])) {
-				$childItemIdsResizes[] = $id;
+				$idsResizes[] = $id;
 			}
 		}
 		// Now we can load the preferreds for the viewSource ID array
-		list ($ret, $fullsizeImageItems) = GalleryCoreApi::fetchPreferredsByItemIds( $childItemIdsSource );
+		list ($ret, $fullsizeImageItems) = GalleryCoreApi::fetchPreferredsByItemIds( $idsSource );
 		if ($ret) {
 			return array ($ret, null, null, null);
 		}
-		//
 		// If there was no preferred for a given ID, we need to load the original instead
-		//
-		foreach ($childItemIdsSource as $id) {
+		foreach ($idsSource as $id) {
 			if (empty($fullsizeImageItems[$id])) {
 				list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
 				if ($ret) {
@@ -666,10 +664,8 @@ class Gallery2BackendApi{
 				$fullsizeImageItems[$id] = $item;
 			}
 		}
-		//
 		// Now we can load the resizes for the viewResizes ID array
-		//
-		list ($ret, $resizeImageItems) = GalleryCoreApi::fetchResizesByItemIds( $childItemIdsResizes );
+		list ($ret, $resizeImageItems) = GalleryCoreApi::fetchResizesByItemIds( $idsResizes );
 		if ($ret) {
 			return array ($ret, null, null, null);
 		}
