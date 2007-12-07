@@ -179,7 +179,12 @@ class Gallery2BackendApi{
 	 /*public*/ function getItems($albumID, $sort_by, $current_page, $images_per_page){
 
 		list($nodes, $id) = $this->getChildren($albumID, $sort_by, $current_page, $images_per_page);
-		$items = self::normalize($nodes, "GalleryPhotoItem", false);
+		if (!empty($nodes)) {
+			$items = self::normalize($nodes, "GalleryPhotoItem", false);
+		}
+		else{
+			$items = array();
+		}
 	 	return $items;
 	 }
 
@@ -191,7 +196,7 @@ class Gallery2BackendApi{
 	  */
 	/* public */ function getItem($id){
 		global $gallery;
-		list ($ret, $sid) =GalleryCoreApi::loadEntitiesById($id);
+		list ($ret, $sid) = GalleryCoreApi::loadEntitiesById($id);
 		self::check($ret);
 		if($sid->getEntityType() =="GalleryDerivativeImage"){ // it is a derivative id
 			$id = $sid->getParentId();
@@ -316,7 +321,12 @@ class Gallery2BackendApi{
 		list ($ret, $child_ids) = GalleryCoreApi::fetchChildItemIds($sid, $offset, $amount, $userID ); //TODO fix offset/amount call
 		self::check($ret);
 		// now all sizes for speed up all together
-		list ($typed_child_items, $siblings) = $this->getDerivatives($child_ids);
+		if (!empty($child_ids)) {
+			list ($typed_child_items, $siblings) = $this->getDerivatives($child_ids);
+		}
+		else {
+			$typed_child_items = array();
+		}
 		return array($typed_child_items, $id); // id may differ if it is a derivative $id given as param
 	}
 
@@ -324,33 +334,26 @@ class Gallery2BackendApi{
 	  * fetch all $items derivatives of an array of ids
 	  * *************************
 	  */
-	/*private */ function getDerivatives($child_ids){
-		list ($ret, $derivatives) = GalleryCoreApi::fetchDerivativesByItemIds($child_ids);
+	/*private */ function getDerivatives($ids){
+		list ($ret, $derivatives) = GalleryCoreApi::fetchDerivativesByItemIds($ids);
 		self::check($ret);
-		if (!empty($derivatives)) {
-			list ($ret, $items) =GalleryCoreApi::loadEntitiesById($child_ids);
-			self::check($ret);
-	
-			// create reusable array with items separated by type (albums, images, mp3 ...)
-			$all = array();
-			$siblings = array();
-			$cnt =0;
-			foreach($items as $id=>$item){
-					// this hack may lead in some future to probles, if gallery2 add an same_name xxxderivatives object!!
-						$item->xxxderivatives = $derivatives[$item->getId()]; // merge derivatives to each item
-	
-					$all[$item->getEntityType()][] = $item;
-	
-					$iid = $item->getId();
-					$siblings[$iid] = array( "pos"=>$cnt++, "id"=>$iid, "entityType"=>$item->getEntityType());
-			}
-		}
-		else {
-			$all = array();
-			$siblings = array();
+		list ($ret, $items) = GalleryCoreApi::loadEntitiesById($ids);
+		self::check($ret);
+
+		// create reusable array with items separated by type (albums, images, mp3 ...)
+		$all = array();
+		$siblings = array();
+		$cnt =0;
+		foreach($items as $id=>$item){
+				// this hack may lead in some future to probles, if gallery2 add an same_name xxxderivatives object!!
+					$item->xxxderivatives = $derivatives[$item->getId()]; // merge derivatives to each item
+
+				$all[$item->getEntityType()][] = $item;
+
+				$iid = $item->getId();
+				$siblings[$iid] = array( "pos"=>$cnt++, "id"=>$iid, "entityType"=>$item->getEntityType());
 		}
 		return array($all, $siblings);
-
 	}
 
 	/**	*************************
@@ -384,29 +387,31 @@ class Gallery2BackendApi{
 				$xhash = array();
 				$yhash = array();
 				$derivatives = array();
-				foreach($derrr as $deriva){
-
-					$id = $deriva->getId();
-					$w = $deriva->getWidth();
-					$h = $deriva->getHeight();
-					$xhash[$w] = $id;
-					$yhash[$h] = $id;
-					$sized = array();
-					foreach($this->generateUrlArray as $key => $urlArray){
-						$urlArray["itemId"] = $deriva->getId();
-						$sized[$key] = $urlGenerator->generateUrl($urlArray);
-						list ($ret, $php_path) = $deriva->fetchPath();
+				if (!empty($derrr)) {
+					foreach($derrr as $deriva){
+	
+						$id = $deriva->getId();
+						$w = $deriva->getWidth();
+						$h = $deriva->getHeight();
+						$xhash[$w] = $id;
+						$yhash[$h] = $id;
+						$sized = array();
+						foreach($this->generateUrlArray as $key => $urlArray){
+							$urlArray["itemId"] = $deriva->getId();
+							$sized[$key] = $urlGenerator->generateUrl($urlArray);
+							list ($ret, $php_path) = $deriva->fetchPath();
+						}
+						// php_path is needed for modifying images by external applications
+						$derivatives[$id] = array( "id"=>$id, "url"=>$sized, "width"=>$w, "height"=>$h, "php_path"=>$php_path );
+	
+						//extra for thumbnail
+						if(!(strpos($deriva->getDerivativeOperations() , "thumbnail")===false)){
+							$data["thumbnail_width"] = $w;
+							$data["thumbnail_height"] = $h;
+							$data["thumbnail_img"] = $sized["download"];
+						}
+	
 					}
-					// php_path is needed for modifying images by external applications
-					$derivatives[$id] = array( "id"=>$id, "url"=>$sized, "width"=>$w, "height"=>$h, "php_path"=>$php_path );
-
-					//extra for thumbnail
-					if(!(strpos($deriva->getDerivativeOperations() , "thumbnail")===false)){
-						$data["thumbnail_width"] = $w;
-						$data["thumbnail_height"] = $h;
-						$data["thumbnail_img"] = $sized["download"];
-					}
-
 				}
 
 				list($err, $preferred) = GalleryCoreApi::fetchPreferredsByItemIds(array($data["id"]));
@@ -423,8 +428,10 @@ class Gallery2BackendApi{
 				$data['image_url'] = $urlGenerator->generateUrl($urlArrayPageLink);
 				//**mm
 				if($type == "GalleryAlbumItem"){ // better take the largest todo!!!
-					$data['fullsize_width'] = $node->xxxderivatives[0]->getWidth();
-					$data['fullsize_height'] = $node->xxxderivatives[0]->getheight();
+					if(!empty($derrr)){
+						$data['fullsize_width'] = $node->xxxderivatives[0]->getWidth();
+						$data['fullsize_height'] = $node->xxxderivatives[0]->getheight();
+					}
 				}else{
 					$data['fullsize_width'] = $node->getWidth();
 					$data['fullsize_height'] = $node->getheight();
