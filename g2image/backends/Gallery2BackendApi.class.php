@@ -66,8 +66,8 @@ class Gallery2BackendApi{
 	 * 	$dsn['base_path']
 	 * 	$dsn['use_full_path']
 	 * 	$dsn['embed_uri']
-	 *  $dsn['album_sort_by'] (optional) 
-	 *  $dsn['sort_by] (optional) 
+	 *  $dsn['album_sortby'] (optional) 
+	 *  $dsn['sortby] (optional) 
 	 *  $dsn['current_page'] (optional) 
 	 *  $dsn['images_per_page'] (optional) 
 	 * 	$dsn['root_album'] (optional) 
@@ -90,7 +90,7 @@ class Gallery2BackendApi{
 		}
 	 	$this->error = array();
 		$this->tree = $this->_fetchAlbumTree($this->root, 'title_asc');
-		$this->items = $this->getItems($dsn['current_album'], $dsn['sort_by'], $dsn['current_page'], $dsn['images_per_page']);
+		$this->items = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page']);
 //		$this->album = $this->getItem($dsn['current_album']);
 		
 		return;
@@ -200,9 +200,9 @@ class Gallery2BackendApi{
 	  * *************************
 	  * *************************
 	  */
-	 /*public*/ function getItems($albumID, $sort_by, $current_page, $images_per_page){
+	 /*public*/ function getItems($albumID, $sortby, $current_page, $images_per_page){
 
-		list($child_items, $thumbnail_items, $fullsize_items, $resize_items, $id) = $this->_getChildren($albumID, $sort_by, $current_page, $images_per_page);
+		list($child_items, $thumbnail_items, $fullsize_items, $resize_items, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page);
 		if (!empty($child_items)) {
 			$items = $this->_normalize($child_items, $thumbnail_items, $fullsize_items, $resize_items, false);
 		}
@@ -321,7 +321,7 @@ class Gallery2BackendApi{
 	  * 	$siblings: all ids of the childs of $id parent
 	  * *************************
 	  */
-	/*private */ function _getChildren($id, $sort_by=null, $current_page=null, $images_per_page=null) {
+	/*private */ function _getChildren($id, $sortby=null, $current_page=null, $images_per_page=null) {
 		global $gallery;
 		list ($ret, $sid) = GalleryCoreApi::loadEntitiesById($id);
 		self::check($ret);
@@ -343,8 +343,8 @@ class Gallery2BackendApi{
 		if (!empty($child_ids)) {
 			list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
 			self::check($ret);
-			if ($sort_by) {
-				$child_ids = $this->_sortItems($child_items, $sort_by);
+			if ($sortby) {
+				$child_ids = $this->_sortItems($child_items, $sortby);
 				$reload_items = true;
 			}
 			if ($current_page && $images_per_page) {
@@ -363,8 +363,8 @@ class Gallery2BackendApi{
 		}
 	}
 
-	function _sortItems($items, $sort_by) {
-		switch ($sort_by) {
+	function _sortItems($items, $sortby) {
+		switch ($sortby) {
 			case 'title_asc' :
 				usort($items, array ("Gallery2BackendApi","_byTitleAsc"));
 				break;
@@ -492,28 +492,23 @@ class Gallery2BackendApi{
 			$data["title"] = $item->getTitle();
 			$data["parentId"] = $item->getParentId();
 			$data["ownerId"] = $item->getOwnerId();
-			$data["thumbnail_id"] = $thumbnails[$id]->getId();
-			$data["thumbnail_img"] = $this->_generateUrl($data["thumbnail_id"], 'image');;
-			$data["thumbnail_width"] = $thumbnails[$id]->getWidth();
-			$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
-			
+			if (!empty($thumbnails[$id])) {
+				$data["thumbnail_id"] = $thumbnails[$id]->getId();
+				$data["thumbnail_img"] = $this->_generateUrl($data["thumbnail_id"], 'image');;
+				$data["thumbnail_width"] = $thumbnails[$id]->getWidth();
+				$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
+			}
 			if (!empty($fullsize[$id])) {
 				$urlId = $fullsize[$id]->getid();
-			}
-			else {
-				$urlId = $data['id'];
-			}
-			$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
-			$data['image_url'] = $this->_generateUrl($urlId, 'pagelink');
-
-			if(!empty($fullsize[$id])){
+				$data['fullsize_id'] = $urlId;
+				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
 				$data['fullsize_width'] = $fullsize[$id]->getWidth();
 				$data['fullsize_height'] = $fullsize[$id]->getheight();
 			}
 			else {
-				$data['fullsize_width'] = $item->getWidth();
-				$data['fullsize_height'] = $item->getheight();
+				$urlId = $data['id'];
 			}
+			$data['image_url'] = $this->_generateUrl($urlId, 'pagelink');
 
 			$data["name"] = $item->getPathComponent();
 
@@ -631,7 +626,7 @@ class Gallery2BackendApi{
 	/**
 	  * tree
 	  */
-	function _fetchAlbumTree($base, $sort_by) {
+	function _fetchAlbumTree($base, $sortby) {
 
 		list($error, $album_tree) = GalleryCoreApi::fetchAlbumTree($base);
 		self::check($error, 'Error in GalleryCoreApi::fetchAlbumTree - ');
@@ -639,7 +634,7 @@ class Gallery2BackendApi{
 		self::check($error,  'Error in GalleryCoreApi::fetchAllItemIds - ');
 		list ($error, $tree_items) = GalleryCoreApi::loadEntitiesById($album_tree_ids);
 		self::check($error, 'Error in GalleryCoreApi::loadEntitiesById - ');
-		$tree = $this->_normalizeTree($base, $album_tree, $tree_items, $sort_by);
+		$tree = $this->_normalizeTree($base, $album_tree, $tree_items, $sortby);
 
 		return $tree;
 	}
@@ -647,7 +642,7 @@ class Gallery2BackendApi{
 	/**
 	  * normalize tree
 	  */
-	function _normalizeTree($base, $album_tree, $tree_items, $sort_by){
+	function _normalizeTree($base, $album_tree, $tree_items, $sortby){
 		$tree = array();
 		$normalized_album_tree[$base] = array();
 		foreach($tree_items as $item){
@@ -662,7 +657,7 @@ class Gallery2BackendApi{
 			//etc... whatever needed but it should be exact as in normalize, as it can be overwritten
 			// with the real normalize
 		}
-		$normalized_album_tree['sorted_by'] = $sort_by;
+		$normalized_album_tree['sorted_by'] = $sortby;
 		$normalized_album_tree[$base]['title'] = $tree[$base]['title'];
 		if(count($album_tree)>0){
 			$normalized_album_tree[$base]['children'] = $this->_normalizeTreeBranches($album_tree, $tree);
