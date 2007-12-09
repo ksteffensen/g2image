@@ -38,7 +38,12 @@ $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
 header('content-type: text/html; charset=utf-8');
 $header = new g2ic_header($g2ic_options);
 $html = $header->html;
-
+$html .= '<body id="g2image">
+    <form method="post">
+        <table>
+            <tr>
+                <td width="200px" valign="top">
+';
 $html .= g2ic_make_html_album_tree($g2obj->tree, $g2obj->root);
 $html .= '                </td>
                 <td valign="top">
@@ -416,14 +421,9 @@ function g2ic_make_html_image_navigation($g2obj){
 	$items = $g2obj->items;
 
 	$html = '';
-	foreach($items as $key => $item) {
+	foreach($items as $item) {
 
 		$image_id = $item['id'];
-
-		if (!(($g2ic_options['current_page']-1)*$g2ic_options['images_per_page'] <= $key)) // Haven't gotten there yet
-			continue;
-		else if (!($key < $g2ic_options['current_page']*$g2ic_options['images_per_page']))
-			break; // Have gone past the range for this page
 
 		if ($g2ic_options['display_filenames']){
 			$html .=  "<div class='title_imageblock'>\n";
@@ -431,7 +431,7 @@ function g2ic_make_html_image_navigation($g2obj){
 		else {
 			$html .=  "<div class='thumbnail_imageblock'>\n";
 		}
-		$html .= g2ic_make_html_img($g2obj, $item, 100, 700, "exact", "x") . "\n";
+		$html .= g2ic_make_html_img($g2obj, $item) . "\n";
 
 		if ($g2ic_options['display_filenames'])
 			$html .= '    <div class="displayed_title">' . "\n";
@@ -472,29 +472,23 @@ function g2ic_make_html_image_navigation($g2obj){
  * @param array $item_info Information on the image
  * @return string $html The HTML for an individual image
  */
-
-function g2ic_make_html_img($g2obj, $item, $thumbSize=100, $fullSize=700, $fit="max", $direction="q") {
-	global $g2ic_options;
-	list($picId, $siz, $orientation) = $g2obj->fitInSize($item, $fullSize, $fit, $direction);
-	$fullPic = $item["derivatives"][$picId];
-	list($picId, $siz, $orientation) = $g2obj->fitInSize($item, $thumbSize, $fit, $direction);
-	$thumbPic = $item["derivatives"][$picId];
+function g2ic_make_html_img($g2obj, $item) {
 
 	$html = '';
 
 	// ---- image code
-	$html .= '    <div style="background:#F0F0EE url(' . $thumbPic["url"]["download"] . '); width:'
-	. $thumbPic['width'] . 'px; height:' . $thumbPic['height'] . 'px; float: left;">' . "\n"
+	// TODO Think about making thumbnails bestfit in 100x100 square
+	$html .= '    <div style="background:#F0F0EE url(' . $item['thumbnail_img'] . '); width:' 
+	. $item['thumbnail_width'] . 'px; height:' . $item['thumbnail_height'] . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
 // ??? what for
 //	if ($item_info['number_resizes'] === 'non-image') {
 //	}
 //	else {
-		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="';
-			$html .= $fullPic["url"]["download"];
-
-		$html .= '">' . "\n"
+		$magnifier_img = $item['fullsize_img']; //TODO fix this so that it is bestfit
+		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
+		. $magnifier_img . '">' . "\n" //TODO fix this so that it is bestfit
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
 //	}
 	$html .= '    </div>' . "\n";
@@ -578,13 +572,8 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 
 	return $html;
 }
-list ($ret, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $g2obj->fetchAllChildImageItemsForAlbum($g2ic_options['current_album']);
-if ($ret) {
-	echo $ret->getAsHtml();
+if ($g2obj->error) {
+	echo debug::show($g2obj->error, 'Errors');
 }
-echo debug::show($childItemIds, 'childItemIds');
-echo debug::show($thumbnailImageItems, 'thumbnailImageItems');
-echo debug::show($fullsizeImageItems, 'fullsizeImageItems');
-echo debug::show($resizeImageItems, 'resizeImageItems');
-echo debug::show($g2obj, "obj");
+echo debug::show($g2obj, 'Backend Object');
 ?>

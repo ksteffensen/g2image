@@ -43,11 +43,15 @@ class g2ic_header {
     <script language="javascript" type="text/javascript" src="jscripts/slimbox.js"></script>
     <script type="text/javascript">
 ';
-		foreach($options['album_modules'] as $moduleName){
-			 $this->html .= all_modules::call( $moduleName, "insert");
+		if ($options['album_modules']) {
+			foreach($options['album_modules'] as $moduleName){
+				 $this->html .= all_modules::call( $moduleName, "insert");
+			}
 		}
-		foreach($options['image_modules'] as $moduleName){
-			 $this->html .= all_modules::call( $moduleName, "insert");
+		if ($options['image_modules']) {
+			foreach($options['image_modules'] as $moduleName){
+				 $this->html .= all_modules::call( $moduleName, "insert");
+			}
 		}
 		$this->html .= 
 '    </script>
@@ -75,8 +79,10 @@ class g2ic_header {
 			// Module inserted variables
 			// Album modules
 ';
-		foreach($options['album_modules'] as $moduleName){
-			$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+		if ($options['album_modules']) {
+			foreach($options['album_modules'] as $moduleName){
+				$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+			}
 		}
 		$this->html .= 
 '
@@ -170,8 +176,10 @@ class g2ic_header {
 					// Module inserted variables
 					// Image modules
 ';
-		foreach($options['image_modules'] as $moduleName){
-			$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+		if ($options['image_modules']) {
+			foreach($options['image_modules'] as $moduleName){
+				$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
+			}
 		}
 		$this->html .= 
 '
@@ -187,11 +195,6 @@ class g2ic_header {
     // -->
     </script>
 </head>
-<body id="g2image">
-    <form method="post">
-        <table>
-            <tr>
-                <td width="200px" valign="top">
 ';
 		return;
 	}
