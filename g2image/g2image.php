@@ -202,7 +202,7 @@ function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$
 	global $g2ic_options;
 	$album_title = $branch['title'];
 	$html = '        d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
-	. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sortby']
+	. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sort_by']
 	. '&images_per_page=' . $g2ic_options['images_per_page'] . '");' . "\n";
 	if ($branch['children']) {
 		$parent = $node;
@@ -351,7 +351,7 @@ function g2ic_make_html_display_options(){
 		'mtime_desc' => array('text' => T_('Last Modification (Newest First)')),
 		'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')));
 
-	$sortoptions[$g2ic_options['sortby']]['selected'] = TRUE;
+	$sortoptions[$g2ic_options['sort_by']]['selected'] = TRUE;
 
 	$html = "<div>\n"
 	. "    <fieldset>\n"
