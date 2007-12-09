@@ -518,7 +518,7 @@ function g2ic_make_html_page_navigation($g2obj) {
 		}
 		else {
 			$pagelinks[] = '        <a href="?g2ic_page=' . $count
-			. '&sortby=' . $g2ic_options['sortby'] . '&current_album=' . $g2obj->album['id']
+			. '&sortby=' . $g2ic_options['sort_by'] . '&current_album=' . $g2obj->album['id']
 			. '&images_per_page='  . $g2ic_options['images_per_page'] . '">' . $count . '</a>';
 		}
 	}
