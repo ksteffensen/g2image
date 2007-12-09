@@ -182,16 +182,16 @@ else {
 }
 
 // Get the current sort method
-if(IsSet($_REQUEST['sortby']))
+if(isset($_REQUEST['sortby']))
 	$g2ic_options['sort_by'] = $_REQUEST['sortby'];
 
 // Determine whether to display the titles or keep them hidden
-if(IsSet($_REQUEST['display']))
+if(isset($_REQUEST['display']))
 	if ($_REQUEST['display'] == 'filenames')
 		$g2ic_options['display_filenames'] = TRUE;
 
 // Determine how many images to display per page
-if(IsSet($_REQUEST['images_per_page']))
+if(isset($_REQUEST['images_per_page']))
 	$g2ic_options['images_per_page'] = $_REQUEST['images_per_page'];
 
 // ==============================================================
