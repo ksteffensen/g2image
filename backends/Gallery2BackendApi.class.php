@@ -498,7 +498,7 @@ class Gallery2BackendApi{
 				$data["thumbnail_width"] = $thumbnails[$id]->getWidth();
 				$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
 			}
-			if (!empty($fullsize[$id])) {
+			if (!empty($fullsizes[$id])) {
 				$urlId = $fullsize[$id]->getid();
 				$data['fullsize_id'] = $urlId;
 				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
