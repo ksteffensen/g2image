@@ -116,7 +116,7 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 	if(isset($wpg2_g2ic['g2ic_class_mode']))
 		$g2ic_options['class_mode'] = $wpg2_g2ic['g2ic_class_mode'];
 	if(isset($wpg2_g2ic['g2ic_sortby']))
-		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
+		$g2ic_options['sort_by'] = $wpg2_g2ic['g2ic_sortby'];
 	if(isset($wpg2_g2ic['g2ic_default_album_action']))
 		$g2ic_options['default_album_action'] = $wpg2_g2ic['g2ic_default_album_action'];
 	else
@@ -183,7 +183,7 @@ else {
 
 // Get the current sort method
 if(IsSet($_REQUEST['sortby']))
-	$g2ic_options['sortby'] = $_REQUEST['sortby'];
+	$g2ic_options['sort_by'] = $_REQUEST['sortby'];
 
 // Determine whether to display the titles or keep them hidden
 if(IsSet($_REQUEST['display']))
