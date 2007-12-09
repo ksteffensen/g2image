@@ -499,11 +499,11 @@ class Gallery2BackendApi{
 				$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
 			}
 			if (!empty($fullsizes[$id])) {
-				$urlId = $fullsize[$id]->getid();
+				$urlId = $fullsizes[$id]->getid();
 				$data['fullsize_id'] = $urlId;
 				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
-				$data['fullsize_width'] = $fullsize[$id]->getWidth();
-				$data['fullsize_height'] = $fullsize[$id]->getheight();
+				$data['fullsize_width'] = $fullsizes[$id]->getWidth();
+				$data['fullsize_height'] = $fullsizes[$id]->getheight();
 			}
 			else {
 				$urlId = $data['id'];
