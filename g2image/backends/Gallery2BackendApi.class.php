@@ -671,7 +671,7 @@ class Gallery2BackendApi{
 	function _normalizeTreeBranches($album_tree, $tree){
 		foreach($album_tree as $album => $branch) {
 			$normalized_album_tree[$album]['title'] = $tree[$album]['title'];
-			$normalized_album_tree[$album]['originationTimestamp'] = $tree[$album]['originationTimestamp'];
+			$normalized_album_tree[$album]['creationTimestamp'] = $tree[$album]['creationTimestamp'];
 			$normalized_album_tree[$album]['modificationTimestamp'] = $tree[$album]['modificationTimestamp'];
 			if(count($branch)>0){
 				$normalized_album_tree[$album]['children'] = $this->_normalizeTreeBranches($branch, $tree);
