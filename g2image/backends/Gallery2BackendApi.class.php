@@ -242,7 +242,7 @@ class Gallery2BackendApi{
 		else{
 			$items = array();
 		}
-	 	return $items;
+	 	return $items[0];
 	}
 
 	/**	*************************

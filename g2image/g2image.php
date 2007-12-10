@@ -153,7 +153,7 @@ function g2ic_make_html_about($g2obj, $version){
 	. 'value="' . T_('About G2Image') . '"/>' . "\n"
 	. '    <input type="hidden" name="current_album" value="' . $album_info['id'] . '">' . "\n"
 	. '    <input type="hidden" name="album_name" value="' . $album_info['title'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_url" value="' . $album_info['url'] . '" />' . "\n"
+	. '    <input type="hidden" name="album_url" value="' . $album_info['image_url'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_summary" value="' . $album_info['summary'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
 	. '    <input type="hidden" name="album_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
