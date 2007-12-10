@@ -83,7 +83,7 @@ class Gallery2BackendApi{
 	 * *************************
 	 */
 	 /*public*/ function __construct($dsn){
-	 	
+	 	// TODO make the constructor reuse tree and items if included as parameters.
 	 	$this->_init($dsn);
 	 	if ($this->error) {return;}
 	 	list($ret, $this->root) = $this->_getRootAlbumId();
@@ -517,7 +517,7 @@ class Gallery2BackendApi{
 				$data["thumbnail_width"] = $thumbnails[$id]->getWidth();
 				$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
 			}
-			if (!empty($fullsizes[$id])) {
+			if (!empty($fullsizes[$id])) {  // TODO If fullsize is not an image, and there is an image as a resize, use largest resize instead.
 				$urlId = $fullsizes[$id]->getid();
 				$data['fullsize_id'] = $urlId;
 				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
@@ -614,7 +614,7 @@ class Gallery2BackendApi{
 	/**
 	  * tree
 	  */
-	function _fetchAlbumTree($base, $sortby) {
+	function _fetchAlbumTree($base, $sortby) { // TODO implement album tree sortby
 
 		list ($ret, $album_tree) = GalleryCoreApi::fetchAlbumTree($base);
 		if ($ret) {return array($ret, null);}
