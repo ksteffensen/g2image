@@ -490,6 +490,16 @@ class Gallery2BackendApi{
 			$id = $item->getId();
 			$data["id"] = $id;
 			$data["title"] = $item->getTitle();
+			$data["name"] = $item->getPathComponent();
+			if (empty($data['title'])) {
+				$data['title'] = $data["name"];
+			}
+			$data["entityType"] = $item->getEntityType();
+			if ($data["entityType"] != "GalleryAlbumItem") {
+				$data["mimeType"] = $item->getMimeType();
+			} else {
+				$data["mimeType"] = "Album";
+			}
 			$data["parentId"] = $item->getParentId();
 			$data["ownerId"] = $item->getOwnerId();
 			if (!empty($thumbnails[$id])) {
@@ -502,15 +512,15 @@ class Gallery2BackendApi{
 				$urlId = $fullsizes[$id]->getid();
 				$data['fullsize_id'] = $urlId;
 				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
-				$data['fullsize_width'] = $fullsizes[$id]->getWidth();
-				$data['fullsize_height'] = $fullsizes[$id]->getheight();
+				if ($data['entityType'] != 'GalleryUnknownItem') {
+					$data['fullsize_width'] = $fullsizes[$id]->getWidth();
+					$data['fullsize_height'] = $fullsizes[$id]->getheight();
+				}
 			}
 			else {
 				$urlId = $data['id'];
 			}
 			$data['image_url'] = $this->_generateUrl($urlId, 'pagelink');
-
-			$data["name"] = $item->getPathComponent();
 
 			// just copy the data from gallery2
 			$data["keywords"] = $item->getKeywords();
@@ -522,12 +532,6 @@ class Gallery2BackendApi{
 			$data["modificationTimestamp"] = $item->getModificationTimestamp();
 			$data["viewedSinceTimestamp"] = $item->getViewedSinceTimestamp();
 			$data["serialNumber"] = $item->getSerialNumber();
-			$data["entityType"] = $item->getEntityType();
-			if ($data["entityType"] != "GalleryAlbumItem") {
-				$data["mimeType"] = $item->getMimeType();
-			} else {
-				$data["mimeType"] = "Album";
-			}
 			$data["isAlbum"] = $item->getCanContainChildren();
 							
 			list ($ret, $data["realpath"]) = $item->fetchPath();
@@ -540,23 +544,23 @@ class Gallery2BackendApi{
 			if (!empty($thumbnails[$id])) {
 				$version = $thumbnails[$id];
 				$normalized_version = $this->_normalizeVersion($version);
-				$xhash[$normalized_version['width']] = $id;
-				$yhash[$normalized_version['height']] = $id;			
+				$xhash[$normalized_version['width']] = $normalized_version['id'];
+				$yhash[$normalized_version['height']] = $normalized_version['id'];			
 				$versions[$normalized_version['id']] = $normalized_version;
 			}
 			if (!empty($resizes[$id])) {
 				foreach($resizes[$id] as $version){
 					$normalized_version = $this->_normalizeVersion($version);
-					$xhash[$normalized_version['width']] = $id;
-					$yhash[$normalized_version['height']] = $id;			
+					$xhash[$normalized_version['width']] = $normalized_version['id'];
+					$yhash[$normalized_version['height']] = $normalized_version['id'];			
 					$versions[$normalized_version['id']] = $normalized_version;
 				}
 			}
 			if (!empty($fullsizes[$id])) {
 				$version = $fullsizes[$id];
 				$normalized_version = $this->_normalizeVersion($version);
-				$xhash[$normalized_version['width']] = $id;
-				$yhash[$normalized_version['height']] = $id;			
+				$xhash[$normalized_version['width']] = $normalized_version['id'];
+				$yhash[$normalized_version['height']] = $normalized_version['id'];			
 				$versions[$normalized_version['id']] = $normalized_version;
 			}
 			
@@ -574,14 +578,16 @@ class Gallery2BackendApi{
 	
 	function _normalizeVersion($version) {
 		$id = $version->getId();
-		$w = $version->getWidth();
-		$h = $version->getHeight();
+		$entityType =  $version->getEntityType();
+		if ($entityType != 'GalleryUnknownItem') {
+			$w = $version->getWidth();
+			$h = $version->getHeight();
+		}
 		$sized = array();
 		$url['image'] = $this->_generateUrl($id, 'image');
 		$url['pagelink'] = $this->_generateUrl($id, 'pagelink');
 		// php_path is needed for modifying images by external applications
 		list ($ret, $php_path) = $version->fetchPath();
-		$entityType =  $version->getEntityType();
 		if ($entityType != "GalleryAlbumItem") {
 			$mimeType = $version->getMimeType();
 		} else {
