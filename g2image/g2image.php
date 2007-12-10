@@ -481,17 +481,18 @@ function g2ic_make_html_img($g2obj, $item) {
 
 	// ---- image code
 	// TODO Think about making thumbnails bestfit in 100x100 square
+	// TODO Fix so that it shows something for no thumbnail
 	$html .= '    <div style="background:#F0F0EE url(' . $item['thumbnail_img'] . '); width:' 
 	. $item['thumbnail_width'] . 'px; height:' . $item['thumbnail_height'] . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
-// ??? what for
+// TODO Fix so that it doesn't show magnifier if non-image.
 //	if ($item_info['number_resizes'] === 'non-image') {
 //	}
 //	else {
 		$magnifier_img = $item['fullsize_img']; //TODO fix this so that it is bestfit
 		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
-		. $magnifier_img . '">' . "\n" //TODO fix this so that it is bestfit
+		. $magnifier_img . '">' . "\n"
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
 //	}
 	$html .= '    </div>' . "\n";

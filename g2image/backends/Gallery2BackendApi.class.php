@@ -226,7 +226,7 @@ class Gallery2BackendApi{
 	 * @param $itemID
 	 * @return normalized $itemObj
 	 */
-	/* public */ function getItem($id){
+	/* public */ function getItem($id){ // TODO add getItemsByIds that takes array of IDs
 		global $gallery;
 		
 		list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
@@ -268,7 +268,7 @@ class Gallery2BackendApi{
 	  * @return $derivativePtr direct ptr to derivatives
 	  * *************************
 	  */
-	 /*public*/ function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){
+	 /*public*/ function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){ // TODO add bestfit function
 		$picId = null;
 		$hash = $itemObj["hash"];
 		//special case alway max! to fit i square
