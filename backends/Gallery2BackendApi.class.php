@@ -228,11 +228,12 @@ class Gallery2BackendApi{
 		if ($item->getEntityType() == "GalleryAlbumItem") { // it is an album
 			list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $id ));
 			self::check($ret);
-
-			$derivativeSourceId = $thumbnails[$id]->getDerivativeSourceId();
-			list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
-			self::check($ret);
-			$id = $albumSourceImage[0]->getParentId();
+			if (!empty($thumbnails)) {			
+				$derivativeSourceId = $thumbnails[$id]->getDerivativeSourceId();
+				list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
+				self::check($ret);
+				$id = $albumSourceImage[0]->getParentId();
+			}
 		}
 		list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds(array($id));
 		self::check($ret);
@@ -532,7 +533,7 @@ class Gallery2BackendApi{
 				$urlId = $fullsizes[$id]->getid();
 				$data['fullsize_id'] = $urlId;
 				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
-				if ($data['entityType'] != 'GalleryUnknownItem') {
+				if (($data['entityType'] != 'GalleryUnknownItem') && ($data['entityType'] != 'GalleryAlbumItem')) {
 					$data['fullsize_width'] = $fullsizes[$id]->getWidth();
 					$data['fullsize_height'] = $fullsizes[$id]->getheight();
 				}
@@ -576,7 +577,8 @@ class Gallery2BackendApi{
 					$versions[$normalized_version['id']] = $normalized_version;
 				}
 			}
-			if (!empty($fullsizes[$id])) {
+			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
+			if ((!empty($fullsizes[$id])) && ($fullsize_entity_type != 'GalleryAlbumItem')) {
 				$version = $fullsizes[$id];
 				$normalized_version = $this->_normalizeVersion($version);
 				$xhash[$normalized_version['width']] = $normalized_version['id'];
