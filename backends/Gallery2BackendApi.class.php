@@ -91,7 +91,7 @@ class Gallery2BackendApi{
 	 	$this->error = array();
 		$this->tree = $this->_fetchAlbumTree($this->root, 'title_asc');
 		$this->items = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page']);
-//		$this->album = $this->getItem($dsn['current_album']);
+		$this->album = $this->getItem($dsn['current_album']);
 		
 		return;
 
@@ -202,9 +202,9 @@ class Gallery2BackendApi{
 	  */
 	 /*public*/ function getItems($albumID, $sortby, $current_page, $images_per_page){
 
-		list($child_items, $thumbnail_items, $fullsize_items, $resize_items, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page);
+		list($child_items, $thumbnails, $fullsizes, $resizes, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page);
 		if (!empty($child_items)) {
-			$items = $this->_normalize($child_items, $thumbnail_items, $fullsize_items, $resize_items, false);
+			$items = $this->_normalize($child_items, $thumbnails, $fullsizes, $resizes);
 		}
 		else{
 			$items = array();
@@ -218,16 +218,31 @@ class Gallery2BackendApi{
 	 */
 	/* public */ function getItem($id){
 		global $gallery;
-		list ($ret, $sid) = GalleryCoreApi::loadEntitiesById($id);
+		
+		list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
 		self::check($ret);
-		if($sid->getEntityType() =="GalleryDerivativeImage"){ // it is a derivative id
-			$id = $sid->getParentId();
-			list ($ret, $sid) =GalleryCoreApi::loadEntitiesById($id);
-			//$sid = array($sid);
+		if ($item->getEntityType() == "GalleryDerivativeImage") { // it is a derivative id
+			$id = $item->getParentId();
+			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
 		}
-		list ($nodes, $siblings) = $this->getDerivatives( array($id) );
-		$items = $this->_normalize($nodes, null, null, null, false);
-		return $items[0];
+		if ($item->getEntityType() == "GalleryAlbumItem") { // it is an album
+			list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $id ));
+			self::check($ret);
+
+			$derivativeSourceId = $thumbnails[$id]->getDerivativeSourceId();
+			list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
+			self::check($ret);
+			$id = $albumSourceImage[0]->getParentId();
+		}
+		list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds(array($id));
+		self::check($ret);
+		if (!empty($item)) {
+			$items = $this->_normalize(array($item), $thumbnails, $fullsizes, $resizes, false, $id);
+		}
+		else{
+			$items = array();
+		}
+	 	return $items;
 	}
 
 	/**	*************************
@@ -323,21 +338,21 @@ class Gallery2BackendApi{
 	  */
 	/*private */ function _getChildren($id, $sortby=null, $current_page=null, $images_per_page=null) {
 		global $gallery;
-		list ($ret, $sid) = GalleryCoreApi::loadEntitiesById($id);
+		list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
 		self::check($ret);
 
 		// first check for thumb, then for image
-		if($sid->getEntityType() =="GalleryDerivativeImage"){ // it is a derivative id
-			$id = $sid->getParentId();
-			list ($ret, $sid) =GalleryCoreApi::loadEntitiesById($id);
-			//$sid = array($sid);
+		if($item->getEntityType() =="GalleryDerivativeImage"){ // it is a derivative id
+			$id = $item->getParentId();
+			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
+			//$item = array($item);
 		}
-		if($sid->getEntityType()=="GalleryPhotoItem"){ // it is an image, so get the album parent and later all sibling
-			$id = $sid->getParentId();
-			list ($ret, $sid) =GalleryCoreApi::loadEntitiesById($id);
+		if($item->getEntityType()=="GalleryPhotoItem"){ // it is an image, so get the album parent and later all sibling
+			$id = $item->getParentId();
+			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
 		}
 
-		list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($sid);
+		list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($item);
 		self::check($ret);
 		
 		if (!empty($child_ids)) {
@@ -354,9 +369,9 @@ class Gallery2BackendApi{
 			if ($reload_items) {
 				list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
 			}
-			list ($ret, $thumbnail_items, $fullsize_items, $resize_items) = $this->fetchAllVersionsByItemIds($child_ids);
+			list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds($child_ids);
 			self::check($ret);
-			return array($child_items, $thumbnail_items, $fullsize_items, $resize_items, $id); // id may differ if it is a derivative $id given as param
+			return array($child_items, $thumbnails, $fullsizes, $resizes, $id); // id may differ if it is a derivative $id given as param
 		}
 		else {
 			return array(null, null, null, null);			
@@ -483,12 +498,17 @@ class Gallery2BackendApi{
 	  *		$filter: tbd for example to get only $nodes with a specified keyword or title - not yet implemented
 	  * *************************
 	  */
-	function _normalize($items, $thumbnails, $fullsizes, $resizes, $filter=false){
+	function _normalize($items, $thumbnails, $fullsizes, $resizes, $filter=false, $album_images_parent_id=null){
 		$norm = array();
 		foreach($items as $item){
 			$data = array();
-			$id = $item->getId();
-			$data["id"] = $id;
+			if ($album_images_parent_id) {
+				$id = $album_images_parent_id;
+			}
+			else {
+				$id = $item->getId();
+			}
+			$data["id"] = $item->getId();
 			$data["title"] = $item->getTitle();
 			$data["name"] = $item->getPathComponent();
 			if (empty($data['title'])) {
