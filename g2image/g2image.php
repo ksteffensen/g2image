@@ -30,6 +30,9 @@ require_once('header.class.php');
 $BackendApiClass = 'Gallery2' . 'BackendApi';
 
 $g2obj = new $BackendApiClass( $g2ic_options );
+if ($g2obj->error) {
+	g2ic_fatal_error($g2obj->error);
+}
 
 $g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions();
 $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
@@ -575,5 +578,18 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 if ($g2obj->error) {
 	echo debug::show($g2obj->error, 'Errors');
 }
+
+function g2ic_fatal_error($str){
+	require_once('header.class.php');
+	$header = new g2ic_header($g2ic_options);
+	echo $header->html;
+	echo $str . "\n";
+	echo '</body>
+	</html>';
+	flush();
+	die;
+}
+
+
 echo debug::show($g2obj, 'Backend Object');
 ?>
