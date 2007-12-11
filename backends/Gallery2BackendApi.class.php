@@ -756,22 +756,22 @@ class Gallery2BackendApi{
 	function _sortNormalizedTreeBranches($items, $sortby) {
 		switch ($sortby) {
 			case 'title_asc' :
-				usort($items, array ("Gallery2BackendApi","_albumByTitleAsc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByTitleAsc"));
 				break;
 			case 'title_desc' :
-				usort($items, array ("Gallery2BackendApi","_albumByTitleDesc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByTitleDesc"));
 				break;
 			case 'orig_time_asc' :
-				usort($items, array ("Gallery2BackendApi","_albumByOrigTimeAsc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByOrigTimeAsc"));
 				break;
 			case 'orig_time_desc' :
-				usort($items, array ("Gallery2BackendApi","_albumByOrigTimeDesc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByOrigTimeDesc"));
 				break;
 			case 'mtime_asc' :
-				usort($items, array ("Gallery2BackendApi","_albumByModTimeAsc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByModTimeAsc"));
 				break;
 			case 'mtime_desc' :
-				usort($items, array ("Gallery2BackendApi","_albumByModTimeDesc"));
+				uasort($items, array ("Gallery2BackendApi","_albumByModTimeDesc"));
 		}
 		return $items;
 	}
