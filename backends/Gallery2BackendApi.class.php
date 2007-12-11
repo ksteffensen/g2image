@@ -388,7 +388,7 @@ class Gallery2BackendApi{
 		if (!empty($child_ids)) {
 			list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
 			if ($ret) {return array($ret, null, null, null, null);}
-			if ($sortby) {
+			if ($sortby && count($child_ids)>1) {
 				$child_ids = $this->_sortItems($child_items, $sortby);
 				$reload_items = true;
 			}
@@ -459,16 +459,28 @@ class Gallery2BackendApi{
 		
 	}
 	
-	function _byTitleAsc($a, $b) { // TODO fix for albums with no title
+	function _byTitleAsc($a, $b) {
 		$a_title = strtolower($a->title);
+		if (empty($a_title)) {
+			$a_title = strtolower($a->getPathComponent());
+		}
 		$b_title = strtolower($b->title);
-		if ($a_title == $b_title) return 0;
+		if (empty($b_title)) {
+			$b_title = strtolower($b->getPathComponent());
+		}
+			if ($a_title == $b_title) return 0;
 		return ($a_title < $b_title ) ? -1 : 1;
 	}
 	
-	function _byTitleDesc($a, $b) { // TODO fix for albums with no title
+	function _byTitleDesc($a, $b) {
 		$a_title = strtolower($a->title);
+		if (empty($a_title)) {
+			$a_title = strtolower($a->getPathComponent());
+		}
 		$b_title = strtolower($b->title);
+		if (empty($b_title)) {
+			$b_title = strtolower($b->getPathComponent());
+		}
 		if ($a_title == $b_title) return 0;
 		return ($a_title > $b_title ) ? -1 : 1;
 	}
@@ -486,7 +498,7 @@ class Gallery2BackendApi{
 		if ($a_orig_time == $b_orig_time) return 0;
 		return ($a_orig_time > $b_orig_time ) ? -1 : 1;
 	}
-		
+
 	function _byModTimeAsc($a, $b) {
 		$a_mod_time = $a->modificationTimestamp;
 		$b_mod_time = $b->modificationTimestamp;
@@ -702,8 +714,11 @@ class Gallery2BackendApi{
 			$normalized_album_tree[$base]['source_image_id'] = null;
 		}
 		if(count($album_tree)>0){
-			list ($ret, $normalized_album_tree[$base]['children']) = $this->_normalizeTreeBranches($album_tree, $tree);
+			list ($ret, $normalized_album_tree[$base]['children']) = $this->_normalizeTreeBranches($album_tree, $tree, $sortby);
 			if ($ret) {return array($ret, null);}
+			if (count($normalized_album_tree[$base]['children'])>1) { 
+				$normalized_album_tree[$base]['children'] = $this->_sortNormalizedTreeBranches($normalized_album_tree[$base]['children'], $sortby);
+			}
 		}
 		return array (null, $normalized_album_tree);
 	}
@@ -711,7 +726,7 @@ class Gallery2BackendApi{
 	/*
 	 * normalize tree branches
 	 */
-	function _normalizeTreeBranches($album_tree, $tree){
+	function _normalizeTreeBranches($album_tree, $tree, $sortby){
 		foreach($album_tree as $album => $branch) {
 			$normalized_album_tree[$album]['title'] = $tree[$album]['title'];
 			$normalized_album_tree[$album]['creationTimestamp'] = $tree[$album]['creationTimestamp'];
@@ -728,12 +743,81 @@ class Gallery2BackendApi{
 				$normalized_album_tree[$album]['source_image_id'] = null;
 			}
 			if(count($branch)>0){
-				list ($ret, $normalized_album_tree[$album]['children']) = $this->_normalizeTreeBranches($branch, $tree);
+				list ($ret, $normalized_album_tree[$album]['children']) = $this->_normalizeTreeBranches($branch, $tree, $sortby);
 				if ($ret) {return array($ret, null);}
+				if (count($normalized_album_tree[$album]['children'])>1) { 
+					$normalized_album_tree[$album]['children'] = $this->_sortNormalizedTreeBranches($normalized_album_tree[$album]['children'], $sortby);
+				}
 			}
 		}
 		return array (null, $normalized_album_tree);
 	}
+	
+	function _sortNormalizedTreeBranches($items, $sortby) {
+		switch ($sortby) {
+			case 'title_asc' :
+				usort($items, array ("Gallery2BackendApi","_albumByTitleAsc"));
+				break;
+			case 'title_desc' :
+				usort($items, array ("Gallery2BackendApi","_albumByTitleDesc"));
+				break;
+			case 'orig_time_asc' :
+				usort($items, array ("Gallery2BackendApi","_albumByOrigTimeAsc"));
+				break;
+			case 'orig_time_desc' :
+				usort($items, array ("Gallery2BackendApi","_albumByOrigTimeDesc"));
+				break;
+			case 'mtime_asc' :
+				usort($items, array ("Gallery2BackendApi","_albumByModTimeAsc"));
+				break;
+			case 'mtime_desc' :
+				usort($items, array ("Gallery2BackendApi","_albumByModTimeDesc"));
+		}
+		return $items;
+	}
+	
+	function _albumByTitleAsc($a, $b) {
+		$a_title = strtolower($a['title']);
+		$b_title = strtolower($b['title']);
+		if ($a_title == $b_title) return 0;
+		return ($a_title < $b_title ) ? -1 : 1;
+	}
+	
+	function _albumByTitleDesc($a, $b) {
+		$a_title = strtolower($a['title']);
+		$b_title = strtolower($b['title']);
+		if ($a_title == $b_title) return 0;
+		return ($a_title > $b_title ) ? -1 : 1;
+	}
+	
+	function _albumByCreationTimeAsc($a, $b) {
+		$a_create_time = $a['creationTimestamp'];
+		$b_create_time = $b['creationTimestamp'];
+		if ($a_create_time == $b_create_time) return 0;
+		return ($a_create_time < $b_create_time ) ? -1 : 1;
+	}
+	
+	function _albumByCreationTimeDesc($a, $b) {
+		$a_create_time = $a['creationTimestamp'];
+		$b_create_time = $b['creationTimestamp'];
+		if ($a_create_time == $b_create_time) return 0;
+		return ($a_create_time > $b_create_time ) ? -1 : 1;
+	}
+	
+	function _albumByModTimeAsc($a, $b) {
+		$a_mod_time = $a['modificationTimestamp'];
+		$b_mod_time = $b['modificationTimestamp'];
+		if ($a_mod_time == $b_mod_time) return 0;
+		return ($a_mod_time < $b_mod_time ) ? -1 : 1;
+	}
+	
+	function _albumByModTimeDesc($a, $b) {
+		$a_mod_time = $a['modificationTimestamp'];
+		$b_mod_time = $b['modificationTimestamp'];
+		if ($a_mod_time == $b_mod_time) return 0;
+		return ($a_mod_time > $b_mod_time ) ? -1 : 1;
+	}
+		
 	
 	/**
 	  * tree
