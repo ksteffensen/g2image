@@ -749,31 +749,31 @@ class Gallery2BackendApi{
 			$xhash = array();
 			$yhash = array();
 			$derivatives = array();
-			$versions = array();
+			$image_versions = array();
 			if (!empty($thumbnails[$id])) {
-				$version = $thumbnails[$id];
-				$normalized_version = $this->_normalizeVersion($version);
-				$xhash[$normalized_version['width']] = $normalized_version['id'];
-				$yhash[$normalized_version['height']] = $normalized_version['id'];			
-				$versions[$normalized_version['id']] = $normalized_version;
+				$image_version = $thumbnails[$id];
+				$normalized_image_version = $this->_normalizeVersion($image_version);
+				$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
+				$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
+				$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 			}
 			// In the future if Gallery2 adds resizes for movies or other data item
 			// types, will need to do entity type test on resizes
 			if (!empty($resizes[$id])) {
-				foreach($resizes[$id] as $version){
-					$normalized_version = $this->_normalizeVersion($version);
-					$xhash[$normalized_version['width']] = $normalized_version['id'];
-					$yhash[$normalized_version['height']] = $normalized_version['id'];			
-					$versions[$normalized_version['id']] = $normalized_version;
+				foreach($resizes[$id] as $image_version){
+					$normalized_image_version = $this->_normalizeVersion($image_version);
+					$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
+					$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
+					$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 				}
 			}
 			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
 			if ((!empty($fullsizes[$id])) && ($fullsize_entity_type = 'GalleryPhotoItem')) {
-				$version = $fullsizes[$id];
-				$normalized_version = $this->_normalizeVersion($version);
-				$xhash[$normalized_version['width']] = $normalized_version['id'];
-				$yhash[$normalized_version['height']] = $normalized_version['id'];			
-				$versions[$normalized_version['id']] = $normalized_version;
+				$image_version = $fullsizes[$id];
+				$normalized_image_version = $this->_normalizeVersion($image_version);
+				$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
+				$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
+				$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 			}
 			
 			ksort($xhash);
@@ -783,7 +783,7 @@ class Gallery2BackendApi{
 			// In the future if Gallery2 adds resizes for movies or other data item
 			// types, will need to do entity type test on resizes and fullsizes to build
 			// other version arrays like movieVersions or animationVersions.
-			$data["imageVersions"] = $versions;
+			$data["imageVersions"] = $image_versions;
 			
 			$norm[$data["id"]] = $data;
 		}
