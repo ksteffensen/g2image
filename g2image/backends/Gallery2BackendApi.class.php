@@ -345,11 +345,11 @@ class Gallery2BackendApi{
 		// the largest available image.  But if there are multiple imageVersions, the 
 		// largest image is most likely not the thumbnail.
 		$hash_x = $item['imageHash']['x'];
-		$hash_y = $item['imageHash']['y'];
-		$hash_count = count($hash_x);
-		$largest_id = $hash_x[$hash_count-1];
+		$largest_id = array_pop($hash_x);
 		$imageWidth = $item['imageVersions'][$largest_id]['width'];
 		$imageHeight = $item['imageVersions'][$largest_id]['height'];
+		$hash_x = $item['imageHash']['x'];
+		$hash_y = $item['imageHash']['y'];
 		if (!$getEqualOrLarger) {
 			$hash_x = array_reverse($hash_x, true);
 			$hash_y = array_reverse($hash_y, true);

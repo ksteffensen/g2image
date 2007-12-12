@@ -494,7 +494,7 @@ function g2ic_make_html_img($g2obj, $item) {
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
 	if ($item['fullsize_id']) {
-		$magnifier_img_id = $g2obj->getBestFit($item, 750, 550, false);
+		$magnifier_img_id = $g2obj->getBestFit($item, 640, 640, false);
 		$magnifier_img = $item['imageVersions'][$magnifier_img_id]['url']['image'];
 		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
 		. $magnifier_img . '">' . "\n"
