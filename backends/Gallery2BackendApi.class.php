@@ -776,12 +776,6 @@ class Gallery2BackendApi{
 			if (!empty($thumbnails[$id])) {
 				$data["thumbnail_id"] = $thumbnails[$id]->getId();
 			}
-			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
-			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {  // TODO If fullsize is not an image, and there is an image as a resize, use largest resize instead.
-				$data["fullsize_id"] = $fullsizes[$id]->getid();
-			}
-
-			// just copy the data from gallery2
 			$data["keywords"] = $item->getKeywords();
 			$data["summary"] = $item->getSummary();
 			$data["description"] = $item->getDescription();
@@ -817,6 +811,7 @@ class Gallery2BackendApi{
 					$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 				}
 			}
+			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
 			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {
 				$image_version = $fullsizes[$id];
 				$normalized_image_version = $this->_normalizeVersion($image_version);
@@ -1120,31 +1115,5 @@ class Gallery2BackendApi{
 		}
 		return array(null, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems);
 	}
-		
-	/**
-	 * Fetch all image versions (thumbnails, fullsizes, and resizes) for an album.  
-	 * 
-	 * @param int $albumId
-	 * @return array($ret, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems);
-	 *     $ret = Gallery2 Error Object
-	 *     $childItemIds = array of child item IDs for use as keys to the image items arrays
-	 *     $thumbnailImageItems = array of thumbnail items with $childItemIds as keys
-	 *     $fullsizeImageItems = array of preferred items (original items if preferred 
-	 *                           not present for a given ID) with $childItemIds as keys
-	 *     $resizeImageItems = array of resize items with $childItemIds as keys.  There may be multiple
-	 *                         resizes for a given ID
-	 */
-	function _fetchAllChildImageItemsForAlbum($albumId) {
-		list ($ret, $albumItem) = GalleryCoreApi::loadEntitiesById($albumId);
-		if($ret) {
-			return array ($ret, null, null, null, null);  // Exit, returning the error
-		}  
-		list ($ret, $childItemIds) = GalleryCoreApi::fetchChildDataItemIds($albumItem);
-		if($ret) {
-			return array ($ret, null, null, null, null);
-		}  
-		list ($ret, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $this->_fetchAllVersionsByItemIds($childItemIds);
-		return array(null, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems);
-	}	
 }
 ?>

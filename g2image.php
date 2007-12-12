@@ -80,7 +80,7 @@ $html .= '                    </div>
 
 echo $html;
 
-//$BackendApiClass::finished();
+//$BackendApiClass::finished();  TODO fix for PHP4
 
 // ====( Functions - Alphabetical by Function Name)
 
@@ -585,9 +585,6 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 
 	return $html;
 }
-if ($g2obj->error) {
-	echo debug::show($g2obj->error, 'Errors');
-}
 
 function g2ic_fatal_error($str){
 	require_once('header.class.php');
@@ -599,7 +596,6 @@ function g2ic_fatal_error($str){
 	flush();
 	die;
 }
-
 
 echo debug::show($g2obj, 'Backend Object');
 ?>
