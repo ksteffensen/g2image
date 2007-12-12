@@ -270,7 +270,7 @@ class Gallery2BackendApi{
 	  */
 	function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){ // TODO add bestfit function
 		$picId = null;
-		$hash = $itemObj["hash"];
+		$hash = $itemObj["imageHash"];
 		//special case alway max! to fit i square
 		if($direction == "q"){ // not very elegant...
 			krsort($hash["x"]); //reverse
@@ -778,8 +778,8 @@ class Gallery2BackendApi{
 			
 			ksort($xhash);
 			ksort($yhash);
-			$data["hash"]["x"] = $xhash;
-			$data["hash"]["y"] = $yhash;
+			$data["imageHash"]["x"] = $xhash;
+			$data["imageHash"]["y"] = $yhash;
 			// In the future if Gallery2 adds resizes for movies or other data item
 			// types, will need to do entity type test on resizes and fullsizes to build
 			// other version arrays like movieVersions or animationVersions.
