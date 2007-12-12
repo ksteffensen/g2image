@@ -713,18 +713,11 @@ class Gallery2BackendApi{
 			$data["ownerId"] = $item->getOwnerId();
 			if (!empty($thumbnails[$id])) {
 				$data["thumbnail_id"] = $thumbnails[$id]->getId();
-				$data["thumbnail_img"] = $this->_generateUrl($data["thumbnail_id"], 'image');;
-				$data["thumbnail_width"] = $thumbnails[$id]->getWidth();
-				$data["thumbnail_height"] = $thumbnails[$id]->getHeight();
 			}
-			if (!empty($fullsizes[$id])) {  // TODO If fullsize is not an image, and there is an image as a resize, use largest resize instead.
+			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
+			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {  // TODO If fullsize is not an image, and there is an image as a resize, use largest resize instead.
 				$urlId = $fullsizes[$id]->getid();
 				$data['fullsize_id'] = $urlId;
-				$data['fullsize_img'] = $this->_generateUrl($urlId, 'image');
-				if (($data['entityType'] != 'GalleryUnknownItem') && ($data['entityType'] != 'GalleryAlbumItem')) {
-					$data['fullsize_width'] = $fullsizes[$id]->getWidth();
-					$data['fullsize_height'] = $fullsizes[$id]->getheight();
-				}
 			}
 			else {
 				$urlId = $data['id'];
@@ -767,8 +760,7 @@ class Gallery2BackendApi{
 					$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 				}
 			}
-			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
-			if ((!empty($fullsizes[$id])) && ($fullsize_entity_type = 'GalleryPhotoItem')) {
+			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {
 				$image_version = $fullsizes[$id];
 				$normalized_image_version = $this->_normalizeVersion($image_version);
 				$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
