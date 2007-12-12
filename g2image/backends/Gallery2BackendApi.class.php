@@ -49,9 +49,11 @@ class Gallery2BackendApi{
 	 * 	$dsn['base_path']
 	 * 	$dsn['use_full_path']
 	 * 	$dsn['embed_uri']
-	 *  $dsn['album_sortby'] (optional) 
+	 *  $dsn['album_sortby'] (optional) // How to sort the album tree and albumItems
+	 *  $dsn['build_all_data_items'] (optional)
+	 *  $dsn['build_all_album_items'] (optional)  // Overrides build_child_album_items
 	 *  $dsn['build_child_album_items'] (optional)
-	 *  $dsn['sortby] (optional) 
+	 *  $dsn['sortby] (optional)   // How to sort dataItems
 	 *  $dsn['current_page'] (optional) 
 	 *  $dsn['images_per_page'] (optional) 
 	 * 	$dsn['root_album'] (optional) 

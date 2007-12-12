@@ -480,7 +480,6 @@ function g2ic_make_html_img($g2obj, $item) {
 	$html = '';
 
 	// ---- image code
-	// TODO Think about making thumbnails bestfit in 100x100 square
 	// TODO Fix so that it shows something for no thumbnail
 	$html .= '    <div style="background:#F0F0EE url(' . $item['thumbnail_img'] . '); width:' 
 	. $item['thumbnail_width'] . 'px; height:' . $item['thumbnail_height'] . 'px; float: left;">' . "\n"
