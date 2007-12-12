@@ -118,7 +118,7 @@ class Gallery2BackendApi{
 		$dsn['album_sortby'] = 'title_asc';
 		$dsn['build_all_data_items'] = false;
 		$dsn['build_all_album_items'] = false;
-		$dsn['build_child_album_items'] = true;
+		$dsn['build_child_album_items'] = false;
 		
 		// TODO make the constructor reuse tree and items if included as parameters.
 		$this->_init($dsn);
@@ -359,28 +359,28 @@ class Gallery2BackendApi{
 		$widthbound = ( !$maxImageHeight || $imageHeight * $maxImageWidth < $imageWidth * $maxImageHeight ) ? 1 : 0;
 		
 		if ( $maxImageWidth &&  $widthbound ) {
-			foreach ($hash_x as $key=>$id) {
+			foreach ($hash_x as $width=>$id) {
 				if ($getEqualOrLarger) {
-					if ($key >= $maxImageWidth) {
+					if ($width >= $maxImageWidth) {
 						return $id;	//return the first one equal to or wider than $maxImageWidth
 					}
 				}
 				else {
-					if ($key <= $maxImageWidth) {
+					if ($width <= $maxImageWidth) {
 						return $id;	//return the first one equal to or narrower than $maxImageWidth
 					}
 				}
 			}
 		}
 		elseif ( $maxImageHeight ) {
-			foreach ($hash_y as $key=>$id) {
+			foreach ($hash_y as $height=>$id) {
 				if ($getEqualOrLarger) {
-					if ($key >= $maxImageHeight) {
+					if ($height >= $maxImageHeight) {
 						return $id;	//return the first one equal to or taller than $maxImageHeight
 					}
 				}
 				else {
-					if ($key <= $maxImageHeight) {
+					if ($height <= $maxImageHeight) {
 						return $id;	//return the first one equal to or shorter than $maxImageHeight
 					}
 				}
