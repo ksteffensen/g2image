@@ -268,7 +268,7 @@ class Gallery2BackendApi{
 	  * @return $derivativePtr direct ptr to derivatives
 	  * *************************
 	  */
-	function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){ // TODO add bestfit function
+	function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){
 		$picId = null;
 		$hash = $itemObj["imageHash"];
 		//special case alway max! to fit i square
@@ -337,6 +337,57 @@ class Gallery2BackendApi{
 			$orientation = $direction ;
 		}
 		return array($picId, $siz, $orientation, $hash);
+	}
+	
+	function getBestFit($item, $maxImageWidth, $maxImageHeight, $getEqualOrLarger=true) {
+		// Get the height and width of the largest available imageVersion.  This is
+		// because the thumbnail can be square.  If there is only a thumbnail, then it is
+		// the largest available image.  But if there are multiple imageVersions, the 
+		// largest image is most likely not the thumbnail.
+		$hash_x = $item['imageHash']['x'];
+		$hash_y = $item['imageHash']['y'];
+		$hash_count = count($hash_x);
+		$largest_id = $hash_x[$hash_count-1];
+		$imageWidth = $item['imageVersions'][$largest_id]['width'];
+		$imageHeight = $item['imageVersions'][$largest_id]['height'];
+		if (!$getEqualOrLarger) {
+			$hash_x = array_reverse($hash_x, true);
+			$hash_y = array_reverse($hash_y, true);
+		}
+				
+		// true if maxDimensions are taller/narrower than image, in which case width is the constraint:
+		$widthbound = ( !$maxImageHeight || $imageHeight * $maxImageWidth < $imageWidth * $maxImageHeight ) ? 1 : 0;
+		
+		if ( $maxImageWidth &&  $widthbound ) {
+			foreach ($hash_x as $key=>$id) {
+				if ($getEqualOrLarger) {
+					if ($key >= $maxImageWidth) {
+						return $id;	//return the first one equal to or wider than $maxImageWidth
+					}
+				}
+				else {
+					if ($key <= $maxImageWidth) {
+						return $id;	//return the first one equal to or narrower than $maxImageWidth
+					}
+				}
+			}
+		}
+		elseif ( $maxImageHeight ) {
+			foreach ($hash_y as $key=>$id) {
+				if ($getEqualOrLarger) {
+					if ($key >= $maxImageHeight) {
+						return $id;	//return the first one equal to or taller than $maxImageHeight
+					}
+				}
+				else {
+					if ($key <= $maxImageHeight) {
+						return $id;	//return the first one equal to or shorter than $maxImageHeight
+					}
+				}
+			}
+		}
+		// If no other image ID has already been returned, return the ID of the largest image.
+		return $largest_id;	
 	}
 
 	/**

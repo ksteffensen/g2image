@@ -494,7 +494,8 @@ function g2ic_make_html_img($g2obj, $item) {
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
 	if ($item['fullsize_id']) {
-		$magnifier_img = $item['imageVersions'][$item['fullsize_id']]['url']['image']; //TODO fix this so that it is bestfit
+		$magnifier_img_id = $g2obj->getBestFit($item, 750, 550, false);
+		$magnifier_img = $item['imageVersions'][$magnifier_img_id]['url']['image'];
 		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
 		. $magnifier_img . '">' . "\n"
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
@@ -516,7 +517,6 @@ function g2ic_make_html_img($g2obj, $item) {
 function g2ic_make_html_page_navigation($g2obj) {
 	global $g2ic_options;
 
-	// ---- navigation for pages of images
 	$pages = ceil(count($g2obj->dataItems)/$g2ic_options['images_per_page']);
 	if ($g2ic_options['current_page'] > $pages) {
 		$g2ic_options['current_page'] = $pages;
