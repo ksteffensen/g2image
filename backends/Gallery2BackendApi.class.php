@@ -64,6 +64,52 @@ class Gallery2BackendApi{
 	 * @param array $filters (optional)      // Not implemented.  Included for future expansion
 	 * 
 	 * @return an object
+	 * $this->root = integer root album ID
+	 * $this->tree = album tree array
+	 *    tree = [root ID 
+	 *               [title,
+	 *                source_image_id,
+	 *                children 
+	 *                   [id
+	 *                       [title,
+	 *                        creationTimestamp,
+	 *                        modificationTimestamp,
+	 *                        source_image_id,
+	 *                        children
+	 *                           [id
+	 *                               [title,
+	 *                                creationTimestamp,
+	 *                                modificationTimestamp,
+	 *                                source_image_id
+	 *                               ]
+	 *                           ]
+	 *                       ]
+	 *                   ],
+	 *                   [id
+	 *                       [title,
+	 *                        creationTimestamp,
+	 *                        modificationTimestamp,
+	 *                        source_image_id,
+	 *                        children
+	 *                           [id
+	 *                               [title,
+	 *                                creationTimestamp,
+	 *                                modificationTimestamp,
+	 *                                source_image_id
+	 *                               ]
+	 *                           ]
+	 *                       ]
+	 *                   ]
+	 *               ],
+	 *           sorted_by
+	 *           ]
+	 * $this->album = normalized item for current album
+	 * $this->dataItems = array of normalized child data items for current album (or ALL data items
+	 *                    in the entire gallery if build_all_data_items is true)
+	 * $this->albumItems = array of normalized child album items for current album (only built if 
+	 *                     build_child_album_items is true.  Will have ALL album items
+	 *                     in the entire gallery if build_all_album_items is true)
+	 * $this->error = error returned during object construction
 	 * *************************
 	 */
 	function __construct($dsn, $album_tree=null, $data_items=null, $album_items=null, $filters=null){
@@ -711,6 +757,8 @@ class Gallery2BackendApi{
 				$yhash[$normalized_version['height']] = $normalized_version['id'];			
 				$versions[$normalized_version['id']] = $normalized_version;
 			}
+			// In the future if Gallery2 adds resizes for movies or other data item
+			// types, will need to do entity type test on resizes
 			if (!empty($resizes[$id])) {
 				foreach($resizes[$id] as $version){
 					$normalized_version = $this->_normalizeVersion($version);
@@ -720,7 +768,7 @@ class Gallery2BackendApi{
 				}
 			}
 			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
-			if ((!empty($fullsizes[$id])) && ($fullsize_entity_type != 'GalleryAlbumItem')) {
+			if ((!empty($fullsizes[$id])) && ($fullsize_entity_type = 'GalleryPhotoItem')) {
 				$version = $fullsizes[$id];
 				$normalized_version = $this->_normalizeVersion($version);
 				$xhash[$normalized_version['width']] = $normalized_version['id'];
@@ -732,7 +780,10 @@ class Gallery2BackendApi{
 			ksort($yhash);
 			$data["hash"]["x"] = $xhash;
 			$data["hash"]["y"] = $yhash;
-			$data["versions"] = $versions;
+			// In the future if Gallery2 adds resizes for movies or other data item
+			// types, will need to do entity type test on resizes and fullsizes to build
+			// other version arrays like movieVersions or animationVersions.
+			$data["imageVersions"] = $versions;
 			
 			$norm[$data["id"]] = $data;
 		}
