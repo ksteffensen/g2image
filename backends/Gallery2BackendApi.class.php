@@ -68,8 +68,8 @@ class Gallery2BackendApi{
 	
 		// Following $dsn variables are here for testing only.  Will move to g2image.php as part of input parameters
 		$dsn['album_sortby'] = 'title_asc';
-		$dsn['build_all_data_items'] = true;
-		$dsn['build_all_album_items'] = true;
+		$dsn['build_all_data_items'] = false;
+		$dsn['build_all_album_items'] = false;
 		$dsn['build_child_album_items'] = true;
 		
 		// TODO make the constructor reuse tree and items if included as parameters.
