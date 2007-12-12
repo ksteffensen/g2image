@@ -776,6 +776,9 @@ class Gallery2BackendApi{
 			if (!empty($thumbnails[$id])) {
 				$data["thumbnail_id"] = $thumbnails[$id]->getId();
 			}
+			else {
+				$data["thumbnail_id"] = null;
+			}
 			$data["keywords"] = $item->getKeywords();
 			$data["summary"] = $item->getSummary();
 			$data["description"] = $item->getDescription();
@@ -792,7 +795,6 @@ class Gallery2BackendApi{
 			
 			$xhash = array();
 			$yhash = array();
-			$derivatives = array();
 			$image_versions = array();
 			if (!empty($thumbnails[$id])) {
 				$image_version = $thumbnails[$id];
@@ -847,6 +849,10 @@ class Gallery2BackendApi{
 		if ($entityType != 'GalleryUnknownItem') {
 			$w = $version->getWidth();
 			$h = $version->getHeight();
+		}
+		else {
+			$w = null;
+			$h = null;
 		}
 		$sized = array();
 		$url['image'] = $this->_generateUrl($id, 'image');
