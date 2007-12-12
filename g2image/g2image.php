@@ -47,7 +47,7 @@ $html .= '<body id="g2image">
             <tr>
                 <td width="200px" valign="top">
 ';
-$html .= g2ic_make_html_album_tree($g2obj->tree, $g2obj->root);
+$html .= g2ic_make_html_album_tree($g2obj->tree);
 $html .= '                </td>
                 <td valign="top">
                     <div class="main">
@@ -176,7 +176,7 @@ function g2ic_make_html_about($g2obj, $version){
  *
  * @return string $html The album tree HTML
  */
-function g2ic_make_html_album_tree($tree, $root){
+function g2ic_make_html_album_tree($tree){
 
 	// Album navigation
 	$html = '<div class="dtree">' . "\n"
@@ -186,7 +186,9 @@ function g2ic_make_html_album_tree($tree, $root){
 	. '        d = new dTree("d");' . "\n";
 	$parent = -1;
 	$node = 0;
-	$html .= g2ic_make_html_album_tree_branches($tree[$root], $root, $parent, $node);
+	foreach ($tree as $root => $trunk) {
+		$html .= g2ic_make_html_album_tree_branches($trunk, $root, $parent, $node);
+	}
 	$html .= '        document.write(d);' . "\n"
 	. '        //-->' . "\n"
 	. '    </script>' . "\n"
@@ -493,7 +495,7 @@ function g2ic_make_html_img($g2obj, $item) {
 	. $thumbnail_width . 'px; height:' . $thumbnail_height . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
-	if ($item['fullsize_id']) {
+	if ($item['imageVersions']) {
 		$magnifier_img_id = $g2obj->getBestFit($item, 640, 640, false);
 		$magnifier_img = $item['imageVersions'][$magnifier_img_id]['url']['image'];
 		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
@@ -501,7 +503,7 @@ function g2ic_make_html_img($g2obj, $item) {
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
 	}
 	if (!$item['thumbnail_id']) {
-		$html .= '<br />' . T_('No Thumbnail.  Please click "Thumbnails with info" for file details');
+		$html .= '<br />' . T_('No Thumbnail:<br />') . $item['title'];
 	}
 	$html .= '    </div>' . "\n";
 
