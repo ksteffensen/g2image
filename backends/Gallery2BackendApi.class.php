@@ -19,7 +19,6 @@
  */
 
 class Gallery2BackendApi{
-	var $root = false;
 	var $tree = array();
 	var $album = array(); 
 	var $dataItems = array();
@@ -64,11 +63,11 @@ class Gallery2BackendApi{
 	 * @param array $filters (optional)      // Not implemented.  Included for future expansion
 	 * 
 	 * @return an object
-	 * $this->root = integer root album ID
 	 * $this->tree = album tree array
 	 *    tree = [root ID 
 	 *               [title,
 	 *                source_image_id,
+	 *                sorted_by,
 	 *                children 
 	 *                   [id
 	 *                       [title,
@@ -101,7 +100,6 @@ class Gallery2BackendApi{
 	 *                       ]
 	 *                   ]
 	 *               ],
-	 *           sorted_by
 	 *           ]
 	 * $this->album = normalized item for current album
 	 * $this->dataItems = array of normalized child data items for current album (or ALL data items
@@ -124,17 +122,17 @@ class Gallery2BackendApi{
 		$this->_init($dsn);
 		if ($this->error) {return;}
 		if (!$dsn['root_album']) {
-		 	list($ret, $this->root) = $this->getRootAlbumId();
+		 	list($ret, $root) = $this->getRootAlbumId();
 			$this->_check($ret);
 			if ($this->error) {return;}
 		}
 		else {
-			$this->root = $dsn['root_album'];
+			$root = $dsn['root_album'];
 		}
 		if(!$dsn['current_album']){
-			$dsn['current_album'] = $this->root;
+			$dsn['current_album'] = $root;
 		}
-		list($ret, $this->tree) = $this->getAlbumTree($this->root, $dsn['album_sortby']);
+		list($ret, $this->tree) = $this->getAlbumTree($root, $dsn['album_sortby']);
 		$this->_check($ret);
 		if ($this->error) {return;}
 		list($ret, $this->dataItems) = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page'], 'data', $dsn['build_all_data_items']);
@@ -339,6 +337,18 @@ class Gallery2BackendApi{
 		return array($picId, $siz, $orientation, $hash);
 	}
 	
+	/**
+	 * Get the best fit image ID from an normalized item's imageVersions array
+	 * Best fit is equal to or larger than the dimensions given so that it can 
+	 * be shrunk in the browser, unless $getEqualOrLarger is false.  In that case
+	 * the best fit is equal to or smaller than the dimensions.
+	 *
+	 * @param array $item
+	 * @param int $maxImageWidth
+	 * @param int $maxImageHeight
+	 * @param int $getEqualOrLarger
+	 * @return int $id
+	 */
 	function getBestFit($item, $maxImageWidth, $maxImageHeight, $getEqualOrLarger=true) {
 		// Get the height and width of the largest available imageVersion.  This is
 		// because the thumbnail can be square.  If there is only a thumbnail, then it is
@@ -386,8 +396,8 @@ class Gallery2BackendApi{
 				}
 			}
 		}
-		// If no other image ID has already been returned, return the ID of the largest image.
-		return $largest_id;	
+		// If no other image ID has already been returned, return the ID of the largest/smallest image.
+		return array_pop($hash_x);	
 	}
 
 	/**
@@ -754,6 +764,7 @@ class Gallery2BackendApi{
 			if (empty($data['title'])) {
 				$data['title'] = $data["name"];
 			}
+			$data['image_url'] = $this->_generateUrl($data["id"], 'pagelink');
 			$data["entityType"] = $item->getEntityType();
 			if ($data["entityType"] != "GalleryAlbumItem") {
 				$data["mimeType"] = $item->getMimeType();
@@ -767,13 +778,8 @@ class Gallery2BackendApi{
 			}
 			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
 			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {  // TODO If fullsize is not an image, and there is an image as a resize, use largest resize instead.
-				$urlId = $fullsizes[$id]->getid();
-				$data['fullsize_id'] = $urlId;
+				$data["fullsize_id"] = $fullsizes[$id]->getid();
 			}
-			else {
-				$urlId = $data['id'];
-			}
-			$data['image_url'] = $this->_generateUrl($urlId, 'pagelink');
 
 			// just copy the data from gallery2
 			$data["keywords"] = $item->getKeywords();
@@ -885,7 +891,6 @@ class Gallery2BackendApi{
 			//etc... whatever needed but it should be exact as in normalize, as it can be overwritten
 			// with the real normalize
 		}
-		$normalized_album_tree['sorted_by'] = $sortby;
 		$normalized_album_tree[$base]['title'] = $tree[$base]['title'];
 		list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $base ));
 		if ($ret) {return array($ret, null);}
@@ -898,6 +903,7 @@ class Gallery2BackendApi{
 		else {
 			$normalized_album_tree[$base]['source_image_id'] = null;
 		}
+		$normalized_album_tree[$base]['sorted_by'] = $sortby;
 		if(count($album_tree)>0){
 			list ($ret, $normalized_album_tree[$base]['children']) = $this->_normalizeTreeBranches($album_tree, $tree, $sortby);
 			if ($ret) {return array($ret, null);}
