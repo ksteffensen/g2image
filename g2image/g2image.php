@@ -55,7 +55,7 @@ $html .= '                </td>
 
 $html .= g2ic_make_html_album_insert_controls();
 
-if (empty($g2obj->items)) {
+if (empty($g2obj->dataItems)) {
 	$html .= g2ic_make_html_empty_page();
 }
 else {
@@ -421,7 +421,7 @@ function g2ic_make_html_empty_page() {
 function g2ic_make_html_image_navigation($g2obj){
 	global $g2ic_options;
 
-	$items = $g2obj->items;
+	$items = $g2obj->dataItems;
 
 	$html = '';
 	foreach($items as $item) {
@@ -510,7 +510,7 @@ function g2ic_make_html_page_navigation($g2obj) {
 	global $g2ic_options;
 
 	// ---- navigation for pages of images
-	$pages = ceil(count($g2obj->items)/$g2ic_options['images_per_page']);
+	$pages = ceil(count($g2obj->dataItems)/$g2ic_options['images_per_page']);
 	if ($g2ic_options['current_page'] > $pages) {
 		$g2ic_options['current_page'] = $pages;
 	}

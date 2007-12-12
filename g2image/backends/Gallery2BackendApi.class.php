@@ -1,7 +1,7 @@
 <?php
-// gallery2_backend.class.php    2007-12-01 14:38 rev. aob
+// Gallery2BackendApi.class.php    2007-12-11
 /*
- * Copyright (C) 2005 Andres Obrero
+ * Copyright (C) 2007 Andres Obrero and Kirk Steffensen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,44 +21,26 @@
 class Gallery2BackendApi{
 	var $root = false;
 	var $tree = array();
-	var $album = array();        //* normalized 
-	var $items = array();
+	var $album = array(); 
+	var $dataItems = array();
+	var $albumItems = array();
 	var $error = false;
 
-	/**	*************************
-	  * for PHP4 compatibility
-	  * there should be a function called like the class
-	  * *************************
-	  */
-	function aBackendApi($dsn){
+	//=================================================
+	// Public functions
+	//=================================================
+
+	/**
+	 * PHP4 compatibility class constructor
+	 *
+	 * @param array $dsn see __construct for details
+	 */
+	function Gallery2BackendApi($dsn){
 		__construct($dsn);
 	}
 
 	/**
-	 *
-	 * $this->root = rootid
-	 * 
-	 * $this->tree = [a1=>
-	 *                    [b1=>
-	 *                         [c1=>[],
-	 *                          c2=>[],
-	 *                          c3=>[]
-	 *                         ]
-	 *                     b2=>
-	 *                         [d1=>[],
-	 *                          d2=>[],
-	 *                          d3=>[]
-	 *                         ]
-	 *                     ]
-	 *		            a2=>
-	 *                     [b3=>
-	 *                         [e1=>[],
-	 *                          e2=>[]
-	 *                         ]
-	 *                      b4=>[]
-	 *                      ],
-	 *                 a3=>[]
-	 *                ];
+	 * Construct the Gallery2BackendApi object
 	 * 
 	 * @param $dsn with all needed information
 	 * 	$dsn['embedded_mode']
@@ -68,48 +50,61 @@ class Gallery2BackendApi{
 	 * 	$dsn['use_full_path']
 	 * 	$dsn['embed_uri']
 	 *  $dsn['album_sortby'] (optional) 
+	 *  $dsn['build_child_album_items'] (optional)
 	 *  $dsn['sortby] (optional) 
 	 *  $dsn['current_page'] (optional) 
 	 *  $dsn['images_per_page'] (optional) 
 	 * 	$dsn['root_album'] (optional) 
 	 * 	$dsn['images_per_page'] (optional) 
-	 * 	$dsn['userid'] ??? what if real user
-	 *  $dsn urlCreateStuff
 	 * @param array $album_tree (optional) 
-	 * @param array $items (optional)
-	 * @param array $filters (optional)
+	 * @param array $data_items (optional)
+	 * @param array $album_items (optional)
+	 * @param array $filters (optional)      // Not implemented.  Included for future expansion
 	 * 
 	 * @return an object
 	 * *************************
 	 */
-	 /*public*/ function __construct($dsn){
+	function __construct($dsn, $album_tree=null, $data_items=null, $album_items=null, $filters=null){
 	
 		// Following $dsn variables are here for testing only.  Will move to g2image.php as part of input parameters
 		$dsn['album_sortby'] = 'title_asc';
-		$dsn['build_album_items'] = true;
+		$dsn['build_all_data_items'] = true;
+		$dsn['build_all_album_items'] = true;
+		$dsn['build_child_album_items'] = true;
 		
-	 	// TODO make the constructor reuse tree and items if included as parameters.
-	 	$this->_init($dsn);
-	 	if ($this->error) {return;}
-	 	list($ret, $this->root) = $this->_getRootAlbumId();
-		$this->_check($ret);
+		// TODO make the constructor reuse tree and items if included as parameters.
+		$this->_init($dsn);
 		if ($this->error) {return;}
-	 	if(!$dsn['current_album']){
-			$dsn['current_album'] = $this->root;
-		}
-		list($ret, $this->tree) = $this->_fetchAlbumTree($this->root, $dsn['album_sortby']);
-		$this->_check($ret);
-		if ($this->error) {return;}
-		list($ret, $this->items) = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page'], 'data');
-		$this->_check($ret);
-		if ($this->error) {return;}
-		if ($dsn['build_album_items']) {
-			list($ret, $this->albumItems) = $this->getItems($dsn['current_album'], $dsn['album_sortby'], null, null, 'album');
+		if (!$dsn['root_album']) {
+		 	list($ret, $this->root) = $this->getRootAlbumId();
 			$this->_check($ret);
 			if ($this->error) {return;}
 		}
-		list($ret, $this->album) = $this->getItem($dsn['current_album']);
+		else {
+			$this->root = $dsn['root_album'];
+		}
+		if(!$dsn['current_album']){
+			$dsn['current_album'] = $this->root;
+		}
+		list($ret, $this->tree) = $this->getAlbumTree($this->root, $dsn['album_sortby']);
 		$this->_check($ret);
+		if ($this->error) {return;}
+		list($ret, $this->dataItems) = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page'], 'data', $dsn['build_all_data_items']);
+		$this->_check($ret);
+		if ($this->error) {return;}
+		if ($dsn['build_all_album_items']) {
+			list($ret, $this->albumItems) = $this->getItems(null, $dsn['album_sortby'], null, null, 'album', true);
+			$this->_check($ret);
+			if ($this->error) {return;}
+		}
+		elseif ($dsn['build_child_album_items']) {
+			list($ret, $this->albumItems) = $this->getItems($dsn['current_album'], $dsn['album_sortby'], null, null, 'album', false);
+			$this->_check($ret);
+			if ($this->error) {return;}
+		}
+		list($ret, $album) = $this->getItemsByIds(array($dsn['current_album']));
+		$this->_check($ret);
+		$this->album = $album[$dsn['current_album']];
 		
 		return;
 
@@ -118,83 +113,10 @@ class Gallery2BackendApi{
 	/**
 	 * in PHP4 this should be called at end of code
 	 */
-	 /*public*/ function __destruct(){
+	function __destruct(){
 		global $gallery;
 		$ret = GalleryEmbed::done();
 		$this->_check($ret);
-	 }
-
-	/**
-	 * Initialize Gallery2
-	 *
-	 * @param array $dsn see __construct for description
-	 */
-	/*private*/ function _init($dsn){
-	 	
-		if(!$dsn['embedded_mode'])
-			$dsn['gallery2_uri'] = '/' . $dsn['gallery2_path'] . 'main.php';
-		if(!$dsn['use_full_path'])
-			$dsn['gallery2_path'] = $dsn['base_path'] . $dsn['gallery2_path'];
-
-		if(file_exists($dsn['gallery2_path'].'embed.php')) {
-			require_once($dsn['gallery2_path'].'embed.php');
-			if ($dsn['embedded_mode']){
-				$ret = GalleryEmbed::init( array(
-					'g2Uri' => $dsn['gallery2_uri'],
-					'embedUri' => $dsn['embed_uri'],
-					'fullInit' => true)
-				);
-			}
-			else {
-				$ret = GalleryEmbed::init( array(
-					'g2Uri' => $dsn['gallery2_uri'],
-					'embedUri' => $dsn['gallery2_uri'],
-					'fullInit' => true)
-				);
-			}
-
-			$this->_check($ret, '<h3>Fatal Gallery2 error:  Failed to initialize Gallery2.</h3><br />Here\'s the error from G2:');
-			if ($this->error) {return;}
-		}
-		// Else die on a fatal error
-		else {
-			$this->_fatalError('<h3>Fatal Gallery2 Error: Cannot activate the Gallery2 Embedded functions because cannot locate embed.php.</h3><br />For WordPress users, Validate WPG2 in the Options Admin panel.<br /><br />For other platforms, please verify your Gallery2 path in config.php.');
-			if ($this->error) {return;}
-		}
-	 }
-
-	/**
-	 * Generate a URL given an ID
-	 *
-	 * @param int $id
-	 * @param string $type either 'image' or 'pagelink'
-	 * @return string $url
-	 */
-	/*private*/ function _generateUrl($id, $type) {
-		global $gallery;
-		$urlGenerator =& $gallery->getUrlGenerator();
-		if ($type == 'image'){
-			$view = 'core.DownloadItem';
-		}
-		else {
-			$view = 'core.ShowItem';
-		}
-		$url = $urlGenerator->generateUrl(array('view' => $view, 'itemId' => $id), array('forceFullUrl' => true));
-		return $url;
-	}
-	
-	/**	*************************
-	  * in get a random thumb , there is sure a better way to get it, its just a hack
-	  *
-	  * *************************
-	  */
-	function random(){
-		list ($ret, $bodyHtml, $headHtml) = GalleryEmbed::getImageBlock(array('blocks' => 'randomImage', 'show' => 'title|date'));
-		preg_match("/<img.*>/i",$bodyHtml, $res);
-		preg_match("/g2_itemId=([0-9]*)/i",$bodyHtml, $idres);
-		$id = $idres[1];
-		$img = $res[0];
-		return $this->getItem($id);
 	}
 
 	/**	*************************
@@ -218,9 +140,9 @@ class Gallery2BackendApi{
 	  * *************************
 	  * *************************
 	  */
-	 /*public*/ function getItems($albumID, $sortby, $current_page, $images_per_page, $child_type){
+	function getItems($albumID, $sortby=null, $current_page=null, $images_per_page=null, $child_type='data', $get_all=false){
 
-		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type);
+		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type, $get_all);
 		if ($ret) {return array($ret, null);}
 		if (!empty($child_items)) {
 			list ($ret, $items) = $this->_normalize($child_items, $thumbnails, $fullsizes, $resizes);
@@ -229,43 +151,63 @@ class Gallery2BackendApi{
 		else{
 			$items = array();
 		}
-	 	return array(null, $items);
-	 }
+		return array(null, $items);
+	}
 
 	/**
-	 * @param $itemID
-	 * @return normalized $itemObj
+	 * @param array $ids
+	 * @return array normalized $itemObj
 	 */
-	/* public */ function getItem($id){ // TODO add getItemsByIds that takes array of IDs
+	function getItemsByIds($ids){
 		global $gallery;
-		
-		list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
+		list ($ret, $items) = GalleryCoreApi::loadEntitiesById($ids);
 		if ($ret) {return array($ret, null);}
-		if ($item->getEntityType() == "GalleryDerivativeImage") { // it is a derivative id
-			$id = $item->getParentId();
-			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
-			if ($ret) {return array($ret, null);}
-		}
-		if ($item->getEntityType() == "GalleryAlbumItem") { // it is an album
-			list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $id ));
-			if ($ret) {return array($ret, null);}
-			if (!empty($thumbnails)) {			
-				$derivativeSourceId = $thumbnails[$id]->getDerivativeSourceId();
-				list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
+		foreach ($items as $key=>$item)
+			if ($item->getEntityType() == "GalleryDerivativeImage") { // it is a derivative id
+				$ids['$key'] = $item->getParentId();
+				list ($ret, $items['$key']) =GalleryCoreApi::loadEntitiesById($ids['$key']);
 				if ($ret) {return array($ret, null);}
-				$id = $albumSourceImage[0]->getParentId();
 			}
-		}
-		list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds(array($id));
+			if ($item->getEntityType() == "GalleryAlbumItem") { // it is an album
+				list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array($ids[$key]));
+				if ($ret) {return array($ret, null);}
+				if (!empty($thumbnails)) {			
+					$derivativeSourceId = $thumbnails[$ids[$key]]->getDerivativeSourceId();
+					list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
+					if ($ret) {return array($ret, null);}
+					$ids[$key] = $albumSourceImage[0]->getParentId();
+				}
+			}
+		list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($ids);
 		if ($ret) {return array($ret, null);}
-		if (!empty($item)) {
-			list ($ret, $items) = $this->_normalize(array($item), $thumbnails, $fullsizes, $resizes);
+		if (!empty($items)) {
+			list ($ret, $normalized_items) = $this->_normalize($items, $thumbnails, $fullsizes, $resizes);
 			if ($ret) {return array($ret, null);}
 		}
 		else{
-			$items = array();
+			$normalized_items = array();
 		}
-	 	return array(null, $items[0]);
+	 	return array(null, $normalized_items);
+	}
+
+	/**
+	 * Generate album tree array
+	 *
+	 * @param integer $base
+	 * @param string $sortby
+	 * @return object
+	 */
+	function getAlbumTree($base, $sortby) {
+
+		list ($ret, $album_tree) = GalleryCoreApi::fetchAlbumTree($base);
+		if ($ret) {return array($ret, null);}
+		list ($ret, $album_tree_ids) = GalleryCoreApi::fetchAllItemIds('GalleryAlbumItem');
+		if ($ret) {return array($ret, null);}
+		list ($ret, $tree_items) = GalleryCoreApi::loadEntitiesById($album_tree_ids);
+		if ($ret) {return array($ret, null);}
+		list ($ret, $tree) = $this->_normalizeTree($base, $album_tree, $tree_items, $sortby);
+		if ($ret) {return array($ret, null);}
+		return array(null, $tree);
 	}
 
 	/**	*************************
@@ -278,7 +220,7 @@ class Gallery2BackendApi{
 	  * @return $derivativePtr direct ptr to derivatives
 	  * *************************
 	  */
-	 /*public*/ function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){ // TODO add bestfit function
+	function fitInSize($itemObj, $osize=320, $fit="exact", $direction="x"){ // TODO add bestfit function
 		$picId = null;
 		$hash = $itemObj["hash"];
 		//special case alway max! to fit i square
@@ -346,9 +288,94 @@ class Gallery2BackendApi{
 			}
 			$orientation = $direction ;
 		}
-	 	return array($picId, $siz, $orientation, $hash);
-	 }
+		return array($picId, $siz, $orientation, $hash);
+	}
 
+	/**
+	 * Get the root album ID
+	 *
+	 * @return array(GalleryErrorObject $ret, int $root_album_id)
+	 */
+	function getRootAlbumId() {
+		// Check for G2 Core API >= 7.5.  getDefaultAlbumId only available at 7.5 or above
+		if (GalleryUtilities::isCompatibleWithApi(array(7,5), GalleryCoreApi::getApiVersion())) {
+			list($ret, $root_album_id) = GalleryCoreApi::getDefaultAlbumId();
+		}
+		// Otherwise use a Gallery2 2.1 method to get the root album
+		else {
+			list($ret, $root_album_id) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
+		}
+		if ($ret) {
+			return array($ret, null);
+		}
+		else {
+			return array(null, $root_album_id);
+		}
+	}
+
+	//=================================================
+	// Private functions
+	//=================================================
+
+	/**
+	 * Initialize Gallery2
+	 *
+	 * @param array $dsn see __construct for description
+	 */
+	function _init($dsn){
+		
+		if(!$dsn['embedded_mode'])
+			$dsn['gallery2_uri'] = '/' . $dsn['gallery2_path'] . 'main.php';
+		if(!$dsn['use_full_path'])
+			$dsn['gallery2_path'] = $dsn['base_path'] . $dsn['gallery2_path'];
+
+		if(file_exists($dsn['gallery2_path'].'embed.php')) {
+			require_once($dsn['gallery2_path'].'embed.php');
+			if ($dsn['embedded_mode']){
+				$ret = GalleryEmbed::init( array(
+					'g2Uri' => $dsn['gallery2_uri'],
+					'embedUri' => $dsn['embed_uri'],
+					'fullInit' => true)
+				);
+			}
+			else {
+				$ret = GalleryEmbed::init( array(
+					'g2Uri' => $dsn['gallery2_uri'],
+					'embedUri' => $dsn['gallery2_uri'],
+					'fullInit' => true)
+				);
+			}
+
+			$this->_check($ret, '<h3>Fatal Gallery2 error:  Failed to initialize Gallery2.</h3><br />Here\'s the error from G2:');
+			if ($this->error) {return;}
+		}
+		// Else die on a fatal error
+		else {
+			$this->_fatalError('<h3>Fatal Gallery2 Error: Cannot activate the Gallery2 Embedded functions because cannot locate embed.php.</h3><br />For WordPress users, Validate WPG2 in the Options Admin panel.<br /><br />For other platforms, please verify your Gallery2 path in config.php.');
+			if ($this->error) {return;}
+		}
+	}
+
+	/**
+	 * Generate a URL given an ID
+	 *
+	 * @param int $id
+	 * @param string $type either 'image' or 'pagelink'
+	 * @return string $url
+	 */
+	function _generateUrl($id, $type) {
+		global $gallery;
+		$urlGenerator =& $gallery->getUrlGenerator();
+		if ($type == 'image'){
+			$view = 'core.DownloadItem';
+		}
+		else {
+			$view = 'core.ShowItem';
+		}
+		$url = $urlGenerator->generateUrl(array('view' => $view, 'itemId' => $id), array('forceFullUrl' => true));
+		return $url;
+	}
+	
 	/**	*************************
 	  * workhorse to get all items of an given album
 	  *
@@ -359,28 +386,41 @@ class Gallery2BackendApi{
 	  * 	$siblings: all ids of the childs of $id parent
 	  * *************************
 	  */
-	/*private */ function _getChildren($id, $sortby=null, $current_page=null, $images_per_page=null, $child_type='data') {
+	function _getChildren($id, $sortby=null, $current_page=null, $images_per_page=null, $child_type='data', $get_all=false) {
 		global $gallery;
-		list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
-		if ($ret) {return array($ret, null, null, null, null);}
 		
-		// first check for thumb, then for image
-		if($item->getEntityType() == "GalleryDerivativeImage"){ // it is a derivative id
-			$id = $item->getParentId();
-			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
-			if ($ret) {return array($ret, null, null, null, null);}
-		}
-		if($item->getEntityType() == "GalleryPhotoItem"){ // it is an image, so get the album parent and later all sibling
-			$id = $item->getParentId();
-			list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
-			if ($ret) {return array($ret, null, null, null, null);}
-		}
-
-		if ($child_type == 'album') {
-			list ($ret, $child_ids) = GalleryCoreApi::fetchChildAlbumItemIds($item);
+		if ($get_all) {
+			if ($child_type == 'album') {
+				list ($ret, $child_ids) = GalleryCoreApi::fetchAllItemIds('GalleryAlbumItem');
+			}
+			else {
+				list ($ret, $photo_ids) = GalleryCoreApi::fetchAllItemIds('GalleryPhotoItem');
+				if ($ret) {return array($ret, null, null, null, null);}
+				list ($ret, $movie_ids) = GalleryCoreApi::fetchAllItemIds('GalleryMovieItem');
+				if ($ret) {return array($ret, null, null, null, null);}
+				list ($ret, $animation_ids) = GalleryCoreApi::fetchAllItemIds('GalleryAnimationItem');
+				if ($ret) {return array($ret, null, null, null, null);}
+				list ($ret, $unknown_ids) = GalleryCoreApi::fetchAllItemIds('GalleryUnknownItem');
+				if ($ret) {return array($ret, null, null, null, null);}
+				$child_ids = array_merge($photo_ids, $movie_ids, $animation_ids, $unknown_ids);
+			}
 		}
 		else {
-			list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($item);
+			list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
+			if ($ret) {return array($ret, null, null, null, null);}
+			
+			if($item->getEntityType() != "GalleryAlbumItem"){
+				$id = $item->getParentId();
+				list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
+				if ($ret) {return array($ret, null, null, null, null);}
+			}
+	
+			if ($child_type == 'album') {
+				list ($ret, $child_ids) = GalleryCoreApi::fetchChildAlbumItemIds($item);
+			}
+			else {
+				list ($ret, $child_ids) = GalleryCoreApi::fetchChildDataItemIds($item);
+			}
 		}
 			
 		if ($ret) {return array($ret, null, null, null, null);}
@@ -418,10 +458,10 @@ class Gallery2BackendApi{
 				if ($ret) {return array($ret, null, null, null, null);}
 			}
 			if ($child_type == 'album') {
-				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds($source_image_ids);
+				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($source_image_ids);
 			}
 			else {
-				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->fetchAllVersionsByItemIds($child_ids);
+				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($child_ids);
 			}
 			if ($ret) {return array($ret, null, null, null, null);}
 			return array(null, $child_items, $thumbnails, $fullsizes, $resizes, $id); // id may differ if it is a derivative $id given as param
@@ -431,6 +471,13 @@ class Gallery2BackendApi{
 		}
 	}
 
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $items
+	 * @param unknown_type $sortby
+	 * @return unknown
+	 */
 	function _sortItems($items, $sortby) {
 		switch ($sortby) {
 			case 'title_asc' :
@@ -459,6 +506,13 @@ class Gallery2BackendApi{
 		
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byTitleAsc($a, $b) {
 		$a_title = strtolower($a->title);
 		if (empty($a_title)) {
@@ -472,6 +526,13 @@ class Gallery2BackendApi{
 		return ($a_title < $b_title ) ? -1 : 1;
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byTitleDesc($a, $b) {
 		$a_title = strtolower($a->title);
 		if (empty($a_title)) {
@@ -485,6 +546,13 @@ class Gallery2BackendApi{
 		return ($a_title > $b_title ) ? -1 : 1;
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byOrigTimeAsc($a, $b) {
 		$a_orig_time = $a->originationTimestamp;
 		$b_orig_time = $b->originationTimestamp;
@@ -492,6 +560,13 @@ class Gallery2BackendApi{
 		return ($a_orig_time < $b_orig_time ) ? -1 : 1;
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byOrigTimeDesc($a, $b) {
 		$a_orig_time = $a->originationTimestamp;
 		$b_orig_time = $b->originationTimestamp;
@@ -499,6 +574,13 @@ class Gallery2BackendApi{
 		return ($a_orig_time > $b_orig_time ) ? -1 : 1;
 	}
 
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byModTimeAsc($a, $b) {
 		$a_mod_time = $a->modificationTimestamp;
 		$b_mod_time = $b->modificationTimestamp;
@@ -506,13 +588,28 @@ class Gallery2BackendApi{
 		return ($a_mod_time < $b_mod_time ) ? -1 : 1;
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $a
+	 * @param unknown_type $b
+	 * @return unknown
+	 */
 	function _byModTimeDesc($a, $b) {
 		$a_mod_time = $a->modificationTimestamp;
 		$b_mod_time = $b->modificationTimestamp;
 		if ($a_mod_time == $b_mod_time) return 0;
 		return ($a_mod_time > $b_mod_time ) ? -1 : 1;
 	}
-		
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $ids
+	 * @param unknown_type $current_page
+	 * @param unknown_type $images_per_page
+	 * @return unknown
+	 */
 	function _cutItems($ids, $current_page, $images_per_page) {
 		$sub_ids = array();
 		foreach($ids as $key => $id) {
@@ -635,12 +732,18 @@ class Gallery2BackendApi{
 			$data["hash"]["y"] = $yhash;
 			$data["versions"] = $versions;
 			
-			$norm[] = $data;
+			$norm[$data["id"]] = $data;
 		}
 
 		return array(null, $norm);
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $version
+	 * @return unknown
+	 */
 	function _normalizeVersion($version) {
 		$id = $version->getId();
 		$entityType =  $version->getEntityType();
@@ -662,29 +765,15 @@ class Gallery2BackendApi{
 		return $normalized_version;
 	}
 
-	//=================================================
-	// private helper functions
-	//=================================================
-
 	/**
-	  * tree
-	  */
-	function _fetchAlbumTree($base, $sortby) { // TODO implement album tree sortby
-
-		list ($ret, $album_tree) = GalleryCoreApi::fetchAlbumTree($base);
-		if ($ret) {return array($ret, null);}
-		list ($ret, $album_tree_ids) = GalleryCoreApi::fetchAllItemIds('GalleryAlbumItem');
-		if ($ret) {return array($ret, null);}
-		list ($ret, $tree_items) = GalleryCoreApi::loadEntitiesById($album_tree_ids);
-		if ($ret) {return array($ret, null);}
-		list ($ret, $tree) = $this->_normalizeTree($base, $album_tree, $tree_items, $sortby);
-		if ($ret) {return array($ret, null);}
-		return array(null, $tree);
-	}
-
-	/**
-	  * normalize tree
-	  */
+	 * Enter description here...
+	 *
+	 * @param unknown_type $base
+	 * @param unknown_type $album_tree
+	 * @param unknown_type $tree_items
+	 * @param unknown_type $sortby
+	 * @return unknown
+	 */
 	function _normalizeTree($base, $album_tree, $tree_items, $sortby){
 		$tree = array();
 		$normalized_album_tree[$base] = array();
@@ -723,8 +812,13 @@ class Gallery2BackendApi{
 		return array (null, $normalized_album_tree);
 	}
 	
-	/*
-	 * normalize tree branches
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $album_tree
+	 * @param unknown_type $tree
+	 * @param unknown_type $sortby
+	 * @return unknown
 	 */
 	function _normalizeTreeBranches($album_tree, $tree, $sortby){
 		foreach($album_tree as $album => $branch) {
@@ -753,6 +847,13 @@ class Gallery2BackendApi{
 		return array (null, $normalized_album_tree);
 	}
 	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $items
+	 * @param unknown_type $sortby
+	 * @return unknown
+	 */
 	function _sortNormalizedTreeBranches($items, $sortby) {
 		switch ($sortby) {
 			case 'title_asc' :
@@ -817,40 +918,13 @@ class Gallery2BackendApi{
 		if ($a_mod_time == $b_mod_time) return 0;
 		return ($a_mod_time > $b_mod_time ) ? -1 : 1;
 	}
-		
 	
 	/**
-	  * tree
-	  */
-	function _getRootAlbumId() {
-		// Check for G2 Core API >= 7.5.  getDefaultAlbumId only available at 7.5 or above
-		if (GalleryUtilities::isCompatibleWithApi(array(7,5), GalleryCoreApi::getApiVersion())) {
-			list($ret, $root_album_id) = GalleryCoreApi::getDefaultAlbumId();
-		}
-		// Otherwise use a Gallery2 2.1 method to get the root album
-		else {
-			list($ret, $root_album_id) = GalleryCoreApi::getPluginParameter('module', 'core', 'id.rootAlbum');
-		}
-		if ($ret) {
-			return array($ret, null);
-		}
-		else {
-			return array(null, $root_album_id);
-		}
-	}
-	//=================================================
-	//=================================================
-	//=================================================
-
-
-	//=================================================
-	//=================================================
-	//=================================================
-	/**
-	  * output error message of gallery2
-	  * @param
-	  * @return just die
-	  */
+	 * If there is an error from Gallery2, convert it into HTML and put it into $this->error
+	 *
+	 * @param galleryErrorObject $ret
+	 * @param string $str
+	 */
 	function _check($ret, $str="Error: ") {
 		global $gallery;
 	    if ($ret){
@@ -865,8 +939,10 @@ class Gallery2BackendApi{
 	}
 	
 	/**
-	  *
-	  */
+	 * Enter description here...
+	 *
+	 * @param unknown_type $str
+	 */
 	function _fatalError($str){
 		if(function_exists("T_")){ 
 			$this->error = T_($str);
@@ -894,7 +970,7 @@ class Gallery2BackendApi{
 	 *     $resizeImageItems = array of resize items with $ids as keys.  There may be multiple
 	 *                         resizes for a given ID
 	 */
-	function fetchAllVersionsByItemIds($ids) {
+	function _fetchAllVersionsByItemIds($ids) {
 		// Given that core.view has already been checked, we can just load 
 		// the thumbnails for the entire array.
 		list ($ret, $thumbnailImageItems) = GalleryCoreApi::fetchThumbnailsByItemIds( $ids );
@@ -956,7 +1032,7 @@ class Gallery2BackendApi{
 	 *     $resizeImageItems = array of resize items with $childItemIds as keys.  There may be multiple
 	 *                         resizes for a given ID
 	 */
-	 function fetchAllChildImageItemsForAlbum($albumId) {
+	function _fetchAllChildImageItemsForAlbum($albumId) {
 		list ($ret, $albumItem) = GalleryCoreApi::loadEntitiesById($albumId);
 		if($ret) {
 			return array ($ret, null, null, null, null);  // Exit, returning the error
@@ -965,7 +1041,7 @@ class Gallery2BackendApi{
 		if($ret) {
 			return array ($ret, null, null, null, null);
 		}  
-		list ($ret, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $this->fetchAllVersionsByItemIds($childItemIds);
+		list ($ret, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems) = $this->_fetchAllVersionsByItemIds($childItemIds);
 		return array(null, $childItemIds, $thumbnailImageItems, $fullsizeImageItems, $resizeImageItems);
 	}	
 }
