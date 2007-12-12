@@ -256,9 +256,9 @@ function g2ic_make_html_alignment_select($name){
 }
 
 /**
- * Create the HTML for the image controls
+ * Create the HTML for the album insert controls
  *
- * @return string $html The HTML for the image controls
+ * @return string $html The HTML for the album insert controls
  */
 function g2ic_make_html_album_insert_controls(){
 	global $g2ic_albuminsert_options, $g2ic_options;
@@ -458,12 +458,12 @@ function g2ic_make_html_image_navigation($g2obj){
 
 		// hidden fields
 
-		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item['thumbnail_img'] . '" />' . "\n"
-		. '    <input type="hidden" name="fullsize_img" value="' . $item['fullsize_img'] . '" />' . "\n"
+		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item['imageVersions'][$item['thumbnail_id']]['url']['image'] . '" />' . "\n"
+		. '    <input type="hidden" name="fullsize_img" value="' . $item['imageVersions'][$item['fullsize_id']]['url']['image'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_url" value="' . $item['image_url'] . '" />' . "\n"
 		. '    <input type="hidden" name="image_id" value="' . $item['id'] . '" />' . "\n"
-		. '    <input type="hidden" name="thumbw" value="' . $item["thumbnail_width"] . '" />' . "\n"
-		. '    <input type="hidden" name="thumbh" value="' . $item["thumbnail_height"] . '" />' . "\n"
+		. '    <input type="hidden" name="thumbw" value="' . $item['imageVersions'][$item['thumbnail_id']]['width'] . '" />' . "\n"
+		. '    <input type="hidden" name="thumbh" value="' . $item['imageVersions'][$item['thumbnail_id']]['height'] . '" />' . "\n"
 		. '</div>' . "\n";
 	}
 	return $html;
@@ -479,21 +479,29 @@ function g2ic_make_html_img($g2obj, $item) {
 
 	$html = '';
 
-	// ---- image code
-	// TODO Fix so that it shows something for no thumbnail
-	$html .= '    <div style="background:#F0F0EE url(' . $item['thumbnail_img'] . '); width:' 
-	. $item['thumbnail_width'] . 'px; height:' . $item['thumbnail_height'] . 'px; float: left;">' . "\n"
+	if ($item['thumbnail_id']) {
+		$thumbnail_img = $item['imageVersions'][$item['thumbnail_id']]['url']['image'];
+		$thumbnail_width = $item['imageVersions'][$item['thumbnail_id']]['width'];
+		$thumbnail_height = $item['imageVersions'][$item['thumbnail_id']]['height'];
+	}
+	else {
+		$thumbnail_img = '';
+		$thumbnail_width = 100;
+		$thumbnail_height = 100;
+	}
+	$html .= '    <div style="background:#F0F0EE url(' . $thumbnail_img . '); width:' 
+	. $thumbnail_width . 'px; height:' . $thumbnail_height . 'px; float: left;">' . "\n"
 	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
-// TODO Fix so that it doesn't show magnifier if non-image.
-//	if ($item_info['number_resizes'] === 'non-image') {
-//	}
-//	else {
-		$magnifier_img = $item['fullsize_img']; //TODO fix this so that it is bestfit
+	if ($item['fullsize_id']) {
+		$magnifier_img = $item['imageVersions'][$item['fullsize_id']]['url']['image']; //TODO fix this so that it is bestfit
 		$html .= '        <a title="' . $item['title'] .  '" rel="lightbox[g2image]" href="'
 		. $magnifier_img . '">' . "\n"
 		. '        <img src="images/magnifier.gif" border="0"></a>' . "\n";
-//	}
+	}
+	if (!$item['thumbnail_id']) {
+		$html .= '<br />' . T_('No Thumbnail.  Please click "Thumbnails with info" for file details');
+	}
 	$html .= '    </div>' . "\n";
 
 	return $html;
