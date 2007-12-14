@@ -142,11 +142,7 @@ function showThumbnails(){
 	}
 }
 
-function insertHtml(html,form) {
-	g2ic_form=form.g2ic_form.value;
-	g2ic_field=form.g2ic_field.value;
-
-	//**aob [A7] added if(window.opener)
+function insertHtml(html, g2ic_form, g2ic_field) {
 	if(window.opener){
 		if(window.tinyMCE)
 			window.opener.tinyMCE.execCommand("mceInsertContent",true,html);
@@ -155,8 +151,6 @@ function insertHtml(html,form) {
 		else
 			insertAtCursor(window.opener.document.forms[g2ic_form].elements[g2ic_field],html);
 		window.close();
-
-	//**aob [A7] added if(window.opener)
 	}else{
 		var textA = document.getElementById("outputArea");
 		if(!textA){
@@ -172,53 +166,8 @@ function insertHtml(html,form) {
 		textA.value = html;
 		document.getElementById("outputDiv").innerHTML = html;
 	}
-	//**aob
 }
 
-//**aob [A5]
-//**
-var insertFunctions = new Object();
 // this object will be filled with an array
 // of functions to be called in insertItems
-//**
-//**aob
-
-
-
-function insertWpg2Tag(){
-
-	var obj = document.forms[0];
-	var htmlCode = '';
-
-	if (obj.alignment.value != 'none'){
-		htmlCode += '<div class="' + obj.alignment.value + '">';
-	}
-	if(window.tinyMCE) {
-		htmlCode += '<img src="' + obj.wpg2_thumbnail.value
-		+ '" alt="' + obj.wpg2_id.value
-		+ '" title="' + obj.wpg2_id.value
-		+ '" width="' + obj.wpg2_thumbw.value + '" height="' + obj.wpg2_thumbh.value
-		+ '" id="mce_plugin_g2image_wpg2" />';
-	}
-	else {
-		htmlCode += '<wpg2>' + obj.wpg2_id.value + '</wpg2>';
-	}
-	if (obj.alignment.value != 'none'){
-		htmlCode += '</div>';
-	}
-	insertHtml(htmlCode,obj);
-}
-
-function insertDrupalFilter(){
-
-	var obj = document.forms[0];
-	var htmlCode = '';
-
-	htmlCode += '[' + obj.drupal_filter_prefix.value + ':' + obj.drupal_image_id.value;
-	if (obj.alignment.value != 'none'){
-		htmlCode += ' class=' + obj.alignment.value;
-	}
-	htmlCode += ']';
-
-	insertHtml(htmlCode,obj);
-}
+var insertFunctions = new Object();

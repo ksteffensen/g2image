@@ -39,7 +39,7 @@ $g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
 
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');
-$header = new g2ic_header($g2ic_options);
+$header = new g2ic_header($g2ic_options, $g2obj);
 $html = $header->html;
 $html .= '<body id="g2image">
     <form method="post">
@@ -154,18 +154,6 @@ function g2ic_make_html_about($g2obj, $version){
 	. '    <input type="button" onclick="alert(\'' . T_('Gallery2 Image Chooser') . '\n' . T_('Version') . ' ' . $version
 	. '\n' . T_('Documentation:') .  ' http://g2image.steffensenfamily.com/\')" '
 	. 'value="' . T_('About G2Image') . '"/>' . "\n"
-	. '    <input type="hidden" name="current_album" value="' . $album_info['id'] . '">' . "\n"
-	. '    <input type="hidden" name="album_name" value="' . $album_info['title'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_url" value="' . $album_info['image_url'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_summary" value="' . $album_info['summary'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_thumbnail" value="' . $album_info['thumbnail_img'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_thumbw" value="' . $album_info['thumbnail_width'] . '" />' . "\n"
-	. '    <input type="hidden" name="album_thumbh" value="' . $album_info['thumbnail_height'] . '" />' . "\n"
-	. '    <input type="hidden" name="g2ic_page" value="' . $g2ic_options['current_page'] . '" />' . "\n"
-	. '    <input type="hidden" name="class_mode" value="' . $g2ic_options['class_mode'] . '" />' . "\n"
-	. '    <input type="hidden" name="g2ic_form" value="' . $g2ic_options['form'] . '" />' . "\n"
-	. '    <input type="hidden" name="g2ic_field" value="' . $g2ic_options['field'] . '" />' . "\n"
-	. '    <input type="hidden" name="drupal_filter_prefix" value="' . $g2ic_options['drupal_g2_filter_prefix'] . '" />' . "\n"
 	. '</div>' . "\n";
 
 	return $html;
@@ -286,7 +274,7 @@ function g2ic_make_html_album_insert_controls(){
 	. '            <label for="album_insert_button">' . T_('Press button to insert the current album') . '</label>' . "\n"
 	. '            <input type="button"' . "\n"
 	. '            name="album_insert_button"' . "\n"
-	. '            onclick="insertAlbum();"' . "\n"
+	. '            onclick="g2icInsert(\'album\');"' . "\n"
 	. '            value="' . T_('Insert') . '"' . "\n"
 	. '            />' . "\n"
 	. '        </fieldset>' . "\n\n";
@@ -324,7 +312,7 @@ function g2ic_make_html_image_insert_controls(){
 	. '            <legend>' . T_('Press button to insert checked image(s)') . '</legend>' . "\n"
 	. "            <input disabled type='button'\n"
 	. "            name='insert_button'\n"
-	. '            onclick="insertItems();"' . "\n"
+	. '            onclick="g2icInsert();"' . "\n"
 	. '            value="' . T_('Insert') . '"' . "\n"
 	. '            />' . "\n"
 	. '            <a href="javascript: checkAllImages();">' . T_('Check all') . '</a> | <a href="javascript: uncheckAllImages();">' . T_('Uncheck all') . '</a>' . "\n"
@@ -460,12 +448,7 @@ function g2ic_make_html_image_navigation($g2obj){
 
 		// hidden fields
 
-		$html .= '    <input type="hidden" name="thumbnail_img" value="' . $item['imageVersions'][$item['thumbnail_id']]['url']['image'] . '" />' . "\n"
-		. '    <input type="hidden" name="fullsize_img" value="' . $item['imageVersions'][$item['fullsize_id']]['url']['image'] . '" />' . "\n"
-		. '    <input type="hidden" name="image_url" value="' . $item['image_url'] . '" />' . "\n"
-		. '    <input type="hidden" name="image_id" value="' . $item['id'] . '" />' . "\n"
-		. '    <input type="hidden" name="thumbw" value="' . $item['imageVersions'][$item['thumbnail_id']]['width'] . '" />' . "\n"
-		. '    <input type="hidden" name="thumbh" value="' . $item['imageVersions'][$item['thumbnail_id']]['height'] . '" />' . "\n"
+		$html .= '    <input type="hidden" name="image_id" value="' . $item['id'] . '" />' . "\n"
 		. '</div>' . "\n";
 	}
 	return $html;
@@ -595,6 +578,63 @@ function g2ic_fatal_error($str){
 	</html>';
 	flush();
 	die;
+}
+
+function PhpArrayToJsObject($array, $objName)
+{
+    return "\t\t" . 'var ' . $objName . ' = ' . PhpArrayToJsObject_Recurse($array, 3) . ';' . "\n";
+}
+
+function PhpArrayToJsObject_Recurse($array, $level)
+{
+    // Base case of recursion: when the passed value is not a PHP array, just output it (in quotes).
+    if(! is_array($array) )
+    {
+        // Handle null specially: otherwise it becomes "".
+        if ($array === null)
+        {
+            return 'null';
+        }
+        $array = str_replace('\\', '\\\\', $array);
+        return '"' . $array . '"';
+    }
+   
+    // Open this JS object.
+    $retVal =  "\n" . g2ic_add_tabs($level) . "{";
+
+    // Output all key/value pairs as "$key" : $value
+    // * Output a JS object (using recursion), if $value is a PHP array.
+    // * Output the value in quotes, if $value is not an array (see above).
+    $first = true;
+    foreach($array as $key => $value)
+    {
+        // Add a comma before all but the first pair.
+        if (! $first )
+        {
+            $retVal .= ', ' . "\n" . g2ic_add_tabs($level);
+        }
+        $first = false;
+       
+        // Quote $key if it's a string.
+        if (is_string($key) )
+        {
+            $key = '"' . $key . '"';
+        }
+        
+        $nextLevel = $level +1;
+        $retVal .= $key . ' : ' . PhpArrayToJsObject_Recurse($value, $nextLevel);
+    }
+
+    // Close and return the JS object.
+    return $retVal . '} ';
+}
+
+function g2ic_add_tabs ($level) {
+	$retVal = '';
+	for ($i=0; $i<$level; $i++) {
+		$retVal .= "\t";
+	}
+	return $retVal;
 }
 
 echo debug::show($g2obj, 'Backend Object');
