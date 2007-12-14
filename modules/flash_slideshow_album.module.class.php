@@ -16,61 +16,61 @@ class flash_slideshow_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, album, options){
 		var str = "";
 
 		var g2imageUrl = location.href;
 		g2imageUrl = g2imageUrl.substring(0, g2imageUrl.lastIndexOf('/g2image.php'));
 
-		if (imageObj['album_alignment'] != 'none'){
-			str += '<div class="' + imageObj['album_alignment'] + '">';
+		if (form.album_alignment.value != 'none'){
+			str += '<div class="' + form.album_alignment.value + '">';
 		}
 		str += '<embed src="' + g2imageUrl + '/flash/minislideshow.swf" '
 		+ 'flashvars="xmlUrl=' + g2imageUrl + '/flash/mediaRss.php?g2_itemId='
-		+ imageObj['current_album']
-		+ '%26g2_maxImageHeight=' + imageObj['flash_slideshow_height']
-		+ '%26g2_maxImageWidth=' + imageObj['flash_slideshow_width']
-		if (imageObj['flash_slideshow_use_full'] == 'true') {
+		+ album.id
+		+ '%26g2_maxImageHeight=' + form.flash_slideshow_height.value
+		+ '%26g2_maxImageWidth=' + form.flash_slideshow_width.value
+		if (form.flash_slideshow_use_full.value == 'true') {
 			str += '&useFull=true';
 		}
-		+ '&delay=' + imageObj['flash_slideshow_delay'];
-		if (imageObj['flash_slideshow_shuffle'] == 'true') {
+		+ '&delay=' + form.flash_slideshow_delay.value;
+		if (form.flash_slideshow_shuffle.value == 'true') {
 			str += '&shuffle=true';
 		}
-		if (imageObj['flash_slideshow_drop_shadow'] == 'true') {
+		if (form.flash_slideshow_drop_shadow.value == 'true') {
 			str += '&showDropShadow=true';
 		}
-		str += '&transInType=' + imageObj['flash_slideshow_transition_in']
-		+ '&transOutType=' + imageObj['flash_slideshow_transition_out'];
-		if (imageObj['flash_slideshow_no_link'] == 'true') {
+		str += '&transInType=' + form.flash_slideshow_transition_in.value
+		+ '&transOutType=' + form.flash_slideshow_transition_out.value;
+		if (form.flash_slideshow_no_link.value == 'true') {
 			str += '&noLink=true';
 		}
-		if (imageObj['flash_slideshow_alt_link'] != 'false') {
-			str += '&altLink=' + imageObj['flash_slideshow_alt_link'];
+		if (form.flash_slideshow_alt_link.value != 'false') {
+			str += '&altLink=' + form.flash_slideshow_alt_link.value;
 		}
-		str += '&linkTarget=' + imageObj['flash_slideshow_link_target'];
-		if (imageObj['flash_slideshow_show_title'] == 'true') {
+		str += '&linkTarget=' + form.flash_slideshow_link_target.value;
+		if (form.flash_slideshow_show_title.value == 'true') {
 			str += '&showTitle=true'
-			+ '&titleColor=' + imageObj['flash_slideshow_title_color']
-			+ '&titleBgColor=' + imageObj['flash_slideshow_title_bg_color'];
+			+ '&titleColor=' + form.flash_slideshow_title_color.value
+			+ '&titleBgColor=' + form.flash_slideshow_title_bg_color.value;
 		}
-		if (imageObj['flash_slideshow_masks'] == 'circleMask') {
+		if (form.flash_slideshow_masks.value == 'circleMask') {
 			str += '&circleMask=true';
 		}
-		if (imageObj['flash_slideshow_masks'] == 'roundedMask') {
+		if (form.flash_slideshow_masks.value == 'roundedMask') {
 			str += '&roundedMask=true';
 		}
-		if (imageObj['flash_slideshow_masks'] == 'starMask') {
+		if (form.flash_slideshow_masks.value == 'starMask') {
 			str += '&starMask=true';
 		}
-		if (imageObj['flash_slideshow_site_info_text']) {
-			str += '&siteInfoText=' + imageObj['flash_slideshow_site_info_text'];
+		if (options.flash_slideshow_site_info_text) {
+			str += '&siteInfoText=' + options.flash_slideshow_site_info_text;
 		}
-		if (imageObj['flash_slideshow_site_info_url']) {
-			str += '&siteInfoUrl=' + imageObj['flash_slideshow_site_info_url'];
+		if (options.flash_slideshow_site_info_url) {
+			str += '&siteInfoUrl=' + options.flash_slideshow_site_info_url;
 		}
 		str += '" quality="high" ';
-		if (imageObj['flash_slideshow_use_full'] == 'true') {
+		if (form.flash_slideshow_use_full.value == 'true') {
 			str += 'allowfullscreen=true ';
 		}
 		else {
@@ -78,8 +78,8 @@ class flash_slideshow_album{
 		}
 		str += 'name="minislide" '
 		+ 'type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" '
-		+ 'align="middle" height="' + imageObj['flash_slideshow_height'] + '" width="' + imageObj['flash_slideshow_width'] + '"></embed>';
-		if (imageObj['album_alignment'] != 'none'){
+		+ 'align="middle" height="' + form.flash_slideshow_height.value + '" width="' + form.flash_slideshow_width.value + '"></embed>';
+		if (form.album_alignment.value != 'none'){
 			str += '</div>';
 		}
 
@@ -196,33 +196,6 @@ SCRIPTSTUFF;
 		. '                        <option value="starMask"' . flash_slideshow_album::selected('flash_slideshow_transition_out', 'starMask') . '>' . T_('Star Mask') . '</option>' . "\n"
 		. '                    </select><br />' . "\n"
 		. '                </div>' . "\n";
-		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		global $g2ic_options;
-
-		$html = "					imageObj.flash_slideshow_width = obj.flash_slideshow_width.value;\n"
-		. "					imageObj.flash_slideshow_height = obj.flash_slideshow_height.value;\n"
-		. "					imageObj.flash_slideshow_use_full = obj.flash_slideshow_use_full.value;\n"
-		. "					imageObj.flash_slideshow_delay = obj.flash_slideshow_delay.value;\n"
-		. "					imageObj.flash_slideshow_shuffle = obj.flash_slideshow_shuffle.value;\n"
-		. "					imageObj.flash_slideshow_drop_shadow = obj.flash_slideshow_drop_shadow.value;\n"
-		. "					imageObj.flash_slideshow_transition_in = obj.flash_slideshow_transition_in.value;\n"
-		. "					imageObj.flash_slideshow_transition_out = obj.flash_slideshow_transition_out.value;\n"
-		. "					imageObj.flash_slideshow_no_link = obj.flash_slideshow_no_link.value;\n"
-		. "					imageObj.flash_slideshow_alt_link = obj.flash_slideshow_alt_link.value;\n"
-		. "					imageObj.flash_slideshow_link_target = obj.flash_slideshow_link_target.value;\n"
-		. "					imageObj.flash_slideshow_show_title = obj.flash_slideshow_show_title.value;\n"
-		. "					imageObj.flash_slideshow_title_color = obj.flash_slideshow_title_color.value;\n"
-		. "					imageObj.flash_slideshow_title_bg_color = obj.flash_slideshow_title_bg_color.value;\n"
-		. "					imageObj.flash_slideshow_masks = obj.flash_slideshow_masks.value;\n"
-		. "					imageObj.flash_slideshow_site_info_text = '" . $g2ic_options['flash_slideshow_site_info_text'] . "';\n"
-		. "					imageObj.flash_slideshow_site_info_url = '" . $g2ic_options['flash_slideshow_site_info_url'] . "';\n";
 		return $html;
 	}
 

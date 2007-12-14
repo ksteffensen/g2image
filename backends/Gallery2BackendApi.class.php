@@ -683,7 +683,7 @@ class Gallery2BackendApi{
 			if (empty($data['title'])) {
 				$data['title'] = $data["name"];
 			}
-			$data['image_url'] = $this->_generateUrl($data["id"], 'pagelink');
+			$data['base_item_url'] = $this->_generateUrl($data["id"], 'pagelink');
 			$data["entityType"] = $item->getEntityType();
 			if ($data["entityType"] != "GalleryAlbumItem") {
 				$data["mimeType"] = $item->getMimeType();
