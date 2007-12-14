@@ -18,8 +18,8 @@ class text_link_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
-		return '<a href="' + imageObj['album_url'] + '">' + imageObj['text_link_album'] + '</a>';
+	function module_{$name}(stack, imageObj, form, album, options){
+		return '<a href="' + album.base_item_url + '">' + form.text_link_album.value + '</a>';
 	}
     //end module [{$name}]
 
@@ -39,14 +39,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.text_link_album = obj.text_link_album.value;\n";
 	}
 
 	/**

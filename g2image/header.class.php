@@ -70,39 +70,24 @@ class g2ic_header {
 		}
 	}
 	function insertAlbum(album, options){
-		var obj = document.forms[0];
+		var form = document.forms[0];
 		var htmlCode = \'\';
 
-		if(typeof(insertFunctions[obj.albuminsert.value])=="function"){
+		if(typeof(insertFunctions[form.albuminsert.value])=="function"){
 			id = 0;
 			var imageObj = {}; // new Object()
 
-			// Fixed core variables
-			imageObj.current_album = album.id;
-			imageObj.album_name = album.title;
-			imageObj.album_url = album.image_url;
-			imageObj.album_summary = album.summary;
+			// Convert thumbnail info to imageObj literals for convenience
+			// (Since they\'re long otherwise...)
 			if(album.thumbnail_id){
 				imageObj.album_thumbnail = album.imageVersions[album.thumbnail_id]["url"]["image"];
 				imageObj.album_thumbw = album.imageVersions[album.thumbnail_id]["width"];
 				imageObj.album_thumbh = album.imageVersions[album.thumbnail_id]["height"];
 			}
-			imageObj.album_alignment = obj.album_alignment.value;
-			imageObj.class_mode = options.class_mode;
 
-			// Module inserted variables
-			// Album modules
-';
-		if ($options['album_modules']) {
-			foreach($options['album_modules'] as $moduleName){
-				$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
-			}
-		}
-		$this->html .= 
-'
-			htmlCode += insertFunctions[obj.albuminsert.value]( [obj.albuminsert.value], imageObj );
+			htmlCode += insertFunctions[form.albuminsert.value]( [form.albuminsert.value], imageObj, form, album, options );
 		}else{
-			alert(obj.albuminsert.value);
+			alert(form.albuminsert.value);
 			htmlCode += \'Error\';
 		}
 
@@ -154,7 +139,7 @@ class g2ic_header {
 					imageObj.pos = i;
 					imageObj.image_id = image_id[i];
 					id = image_id[i];
-					imageObj.image_url = items[id].image_url;
+					imageObj.image_url = items[id].base_item_url;
 					imageObj.album_url = album.image_url;
 					imageObj.fullsize_img = fullsize_img[id];
 					imageObj.thumbnail_img = items[id].imageVersions[items[id].thumbnail_id]["url"]["image"];

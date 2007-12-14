@@ -16,23 +16,24 @@ class wpg2_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, album, options){
 		var str = "";
 
-		if (imageObj['album_alignment'] != 'none'){
-			str += '<div class="' + imageObj['album_alignment'] + '">';
+		if (form.album_alignment.value != 'none'){
+			str += '<div class="' + form.album_alignment.value + '">';
 		}
 		if(window.tinyMCE) {
 			str += '<img src="' + imageObj['album_thumbnail']
-			+ '" alt="' + imageObj['current_album'];
-			str += '" title="' + imageObj['current_album'];
-			str += '" width="' + imageObj['album_thumbw'] + '" height="' + imageObj['album_thumbh']
+			+ '" alt="' + album.id 
+			+ '" title="' + album.id
+			+'" width="' + imageObj['album_thumbw'] 
+			+ '" height="' + imageObj['album_thumbh']
 			+ '" id="mce_plugin_g2image_wpg2" />';
 		}
 		else {
-			str += '<wpg2>' + imageObj['current_album'] + '</wpg2>';
+			str += '<wpg2>' + album.id + '</wpg2>';
 		}
-		if (imageObj['album_alignment'] != 'none'){
+		if (form.album_alignment.value != 'none'){
 			str += '</div>';
 		}
 
@@ -52,14 +53,6 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
 		return '';
 	}
 
