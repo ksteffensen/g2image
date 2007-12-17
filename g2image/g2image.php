@@ -474,9 +474,13 @@ function g2ic_make_html_img($g2obj, $item) {
 		$thumbnail_width = 100;
 		$thumbnail_height = 100;
 	}
-	$html .= '    <div style="background:#F0F0EE url(' . $thumbnail_img . '); width:' 
+	$html .= '	<div style="background:#F0F0EE';
+	if ($thumbnail_img) {
+		$html .= ' url(' . $thumbnail_img . ')'; 
+	}
+	$html .= '; width:' 
 	. $thumbnail_width . 'px; height:' . $thumbnail_height . 'px; float: left;">' . "\n"
-	. '        <input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
+	. '		<input type="checkbox" name="images" onclick="activateInsertButton();"/>' . "\n";
 
 	if ($item['imageVersions']) {
 		$magnifier_img_id = $g2obj->getBestFit($item, 640, 640, false);

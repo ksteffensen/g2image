@@ -44,8 +44,8 @@ class bbcode_text_link_image{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
-		return '[url=' + imageObj['image_url'] + ']' + imageObj['bbcode_text_link_image'] + '[/url]';
+	function module_{$name}(stack, imageObj, form, item, album, options){
+		return '[url=' + item.base_item_url + ']' + form.bbcode_text_link_image.value + '[/url]';
 	}
     //end module [{$name}]
 

@@ -44,17 +44,19 @@ class fullsize_only{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
+		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
+			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<img src="' + imageObj['fullsize_img'] + '" alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
+		str += '<img src="' + imageObj.fullsize_img
+		+ '" alt="' + item.title
+		+ '" title="' + item.summary + '"';
+		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
+			str += ' class="' + form.alignment.value + '"';
 		}
 		str += ' />';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '</div>';
 		}
 		return str;

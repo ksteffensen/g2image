@@ -116,7 +116,7 @@ class module_prototype{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		return " ---";
 	}
     //end module [{$name}]

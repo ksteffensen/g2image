@@ -51,7 +51,7 @@ class sample_prototype{
 //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
 		for(var a in imageObj){
 			if(typeof(imageObj[a] == "string")){

@@ -1,9 +1,9 @@
 <?php
 
 class g2ic_header {
-	
+
 	var $html = '';
-	
+
 	/**
 	 * Enter description here...
 	 *
@@ -20,7 +20,7 @@ class g2ic_header {
 	 * @param unknown_type $options
 	 */
 	function __construct($options, $g2obj){
-		$this->html = 
+		$this->html =
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -30,12 +30,12 @@ class g2ic_header {
 	<link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 		if($options['tinymce'] && $options['wpg2_valid']) {
-			$this->html .= "    <script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
+			$this->html .= "	<script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
 		}
 		elseif($options['tinymce'] && !$options['wpg2_valid']) {
-			$this->html .= "    <script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
+			$this->html .= "	<script language='javascript' type='text/javascript' src='../../tiny_mce_popup.js'></script>\n";
 		}
-		$this->html .= 
+		$this->html .=
 '	<script language="javascript" type="text/javascript" src="jscripts/functions.js"></script>
 	<script language="javascript" type="text/javascript" src="jscripts/dtree.js"></script>
 	<script language="javascript" type="text/javascript" src="jscripts/mootools.js"></script>
@@ -52,7 +52,7 @@ class g2ic_header {
 				 $this->html .= all_modules::call( $moduleName, "insert");
 			}
 		}
-		$this->html .= 
+		$this->html .=
 '	</script>
 	<script language="javascript" type="text/javascript">
 	<!--
@@ -61,7 +61,7 @@ class g2ic_header {
 		$this->html .= PhpArrayToJsObject($options, 'options');
 		$this->html .= PhpArrayToJsObject($g2obj->album, 'album');
 		$this->html .= PhpArrayToJsObject($g2obj->dataItems, 'dataItems');
-		$this->html .= 
+		$this->html .=
 '		if(insertType == "album") {
 			insertAlbum(album, options);
 		}
@@ -97,18 +97,11 @@ class g2ic_header {
 	function insertItems(items, album, options){
 		var obj = document.forms[0];
 		var htmlCode = \'\';
-		var imgtitle = \'\';
-		var imgalt = \'\';
-		var loop = \'\';
-		var item_summary = new Array();
-		var item_title = new Array();
-		var item_description = new Array();
-		var image_url = new Array();
-		var thumbnail_img = new Array();
-		var fullsize_img = new Array();
-		var thumbw = new Array();
-		var thumbh = new Array();
+		var id = 0;
+		var loop = 0;
 		var image_id = new Array();
+		var imageObj = new Object();
+		var fullsize = new Object();
 
 		//hack required for when there is only one image
 
@@ -128,44 +121,24 @@ class g2ic_header {
 		for (var i=0;i<loop;i++) {
 			if ((loop == 1) || obj.images[i].checked) {
 
-				thumbw[i] = \'width="\' + thumbw[i] + \'" \';
-				thumbh[i] = \'height="\' + thumbh[i] + \'" \';
-
 				if(typeof(insertFunctions[obj.imginsert.value])=="function"){
-					id = 0;
-					var imageObj = {}; // new Object()
-
-					// Fixed core variables
 					imageObj.pos = i;
-					imageObj.image_id = image_id[i];
 					id = image_id[i];
-					imageObj.image_url = items[id].base_item_url;
-					imageObj.album_url = album.image_url;
-					imageObj.fullsize_img = fullsize_img[id];
-					imageObj.thumbnail_img = items[id].imageVersions[items[id].thumbnail_id]["url"]["image"];
-					imageObj.thumbw = items[id].imageVersions[items[id].thumbnail_id]["width"];
-					imageObj.thumbh = items[id].imageVersions[items[id].thumbnail_id]["height"];
-					imageObj.w = false; 			// to be done
-					imageObj.h =  false; 			// to be done
-					imageObj.item_title = items[id].title;
-					imageObj.item_summary = items[id].summary;
-					imageObj.item_description = items[id].description;
-					imageObj.album_id =  album.id;
-					imageObj.keywords =  items[id].keywords;
-					imageObj.alignment = obj.alignment.value;
-					imageObj.class_mode = options.class_mode;
+					fullsize = g2icBestFit(items[id], 640, 640, true);
+					if (fullsize) {
+						imageObj.fullsize_id = fullsize.id;
+						imageObj.fullsize_img = fullsize.image;
+						imageObj.fullsize_width = fullsize.width;
+						imageObj.fullsize_height = fullsize.height;
+					}
+					if (items[id].thumbnail_id) {
+						imageObj.thumbnail_id = items[id].thumbnail_id;
+						imageObj.thumbnail_img = items[id].imageVersions[items[id].thumbnail_id]["url"]["image"];
+						imageObj.thumbw = items[id].imageVersions[items[id].thumbnail_id]["width"];
+						imageObj.thumbh = items[id].imageVersions[items[id].thumbnail_id]["height"];
+					}
 
-					// Module inserted variables
-					// Image modules
-';
-		if ($options['image_modules']) {
-			foreach($options['image_modules'] as $moduleName){
-				$this->html .= all_modules::call( $moduleName, "javaScriptVariables");
-			}
-		}
-		$this->html .= 
-'
-					htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj );
+					htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj, obj, items[id], album, options );
 				}else{
 					alert(obj.imginsert.value);
 					htmlCode += \'Error\';
@@ -180,9 +153,9 @@ class g2ic_header {
 ';
 		return;
 	}
-	
+
 	/*public*/ function __destruct(){
 	}
-	 
+
 }
 ?>

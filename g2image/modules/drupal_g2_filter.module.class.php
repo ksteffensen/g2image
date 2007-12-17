@@ -16,15 +16,15 @@ class drupal_g2_filter{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
 
-		str += '[' + imageObj['drupal_filter_prefix'] + ':' + imageObj['image_id'];
-		if (imageObj['alignment'] != 'none'){
-			str += ' class=' + imageObj['alignment'];
+		str += '[' + options.drupal_filter_prefix + ':' + item.id;
+		if (form.alignment.value != 'none'){
+			str += ' class=' + form.alignment.value;
 		}
 		if (imageObj['drupal_exactsize'])
-			str += ' exactsize=' + imageObj['drupal_exactsize'];
+			str += ' exactsize=' + form.drupal_exactsize.value;
 		str += ']';
 
 		return str;

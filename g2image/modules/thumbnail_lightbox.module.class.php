@@ -16,22 +16,26 @@ class thumbnail_lightbox{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
-			str += '<div class="' + imageObj['alignment'] + '">';
+		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
+			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<a href="' + imageObj['fullsize_img'] + '" rel="lightbox';
+		str += '<a href="' + imageObj.fullsize_img + '" rel="lightbox';
 		if (imageObj['lightbox_group'])
-			str += '[' + imageObj['lightbox_group'] + ']';
-		str += '" title="' + imageObj['item_description'] + '"><img src="'
-		+ imageObj['thumbnail_img'] + '" ' + imageObj['thumbw']
-		+ ' ' + imageObj['thumbh'] + ' alt="' + imageObj['item_title'] + '" title="' + imageObj['item_summary'] + '"';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'img')){
-			str += ' class="' + imageObj['alignment'] + '"';
+			str += '[' + form.lightbox_group + ']';
+		str += '" title="' + item.description
+		+ '"><img src="' + imageObj.thumbnail_img
+		+ '" width ="' + imageObj.thumbw
+		+ '" height="' + imageObj.thumbh
+		+ '" alt="' + item.title
+		+ '" title="' + item.summary
+		+ '"';
+		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
+			str += ' class="' + form.alignment.value + '"';
 		}
 		str += ' /></a>';
-		if ((imageObj['alignment'] != 'none') && (imageObj['class_mode'] == 'div')){
+		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '</div>';
 		}
 		return str;
@@ -54,14 +58,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="lightbox_group" size="84" maxlength="150" value="g2image" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.lightbox_group = obj.lightbox_group.value;\n";
 	}
 
 	/**

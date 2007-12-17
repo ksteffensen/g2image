@@ -38,6 +38,61 @@ function activateInsertButton() {
 	}
 }
 
+// Get the best fit image 
+function g2icBestFit(item, maxImageWidth, maxImageHeight) {
+	// Get the height and width of the largest available imageVersion.  This is
+	// because the thumbnail can be square.  If there is only a thumbnail, then it is
+	// the largest available image.  But if there are multiple imageVersions, the 
+	// largest image is most likely not the thumbnail.
+	var hash_x = item.imageHash.x;
+	var hash_y = item.imageHash.y;
+	var largest_id = null;
+	for (var id in hash_x) {
+		largest_id = hash_x[id];
+	}
+	
+	// largest_id will remain null if there were no enumerable members in hash_x
+	if (largest_id) {
+		var imageWidth = item.imageVersions[largest_id].width;
+		var imageHeight = item.imageVersions[largest_id].height;
+	
+		// true if maxDimensions are taller/narrower than image, in which case width is the constraint:
+		var widthbound = 0;
+		if ( !maxImageHeight || imageHeight * maxImageWidth < imageWidth * maxImageHeight ) {
+			widthbound = 1;
+		}
+		
+		var bestFit = new Object();
+		if ( maxImageWidth &&  widthbound ) {
+			for (var width in hash_x) {
+				if (width >= maxImageWidth) {
+					bestFit.id = hash_x[width];
+					bestFit.image = item.imageVersions[bestFit.id].url.image;
+					imageWidth = item.imageVersions[bestFit.id].width;
+					bestFit.width = width;
+					bestFit.height = Math.round(item.imageVersions[bestFit.id].height*width/imageWidth);
+					return bestFit;	//return the first one equal to or wider than $maxImageWidth
+				}
+			}
+		}
+		else if ( maxImageHeight ) {
+			for (var height in hash_y) {
+				if (height >= maxImageHeight) {
+					bestFit.id = hash_y[height];
+					bestFit.image = item.imageVersions[bestFit.id].url.image;
+					imageHeight = item.imageVersions[bestFit.id].height;
+					bestFit.height = height;
+					bestFit.width = Math.round(item.imageVersions[bestFit.id].width*height/imageHeight);
+					return bestFit;	//return the first one equal to or wider than $maxImageWidth
+				}
+			}
+		}
+	}
+	
+	// If no other image ID has already been returned or if there were no images in the first place.
+	return largest_id;	
+}
+
 function checkAllImages() {
 	var obj = document.forms[0];
 

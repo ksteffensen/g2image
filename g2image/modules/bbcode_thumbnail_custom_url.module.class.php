@@ -16,9 +16,9 @@ class bbcode_thumbnail_custom_url{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		str += '[url=' + imageObj['custom_url_thumbnail_bbcode'] + '][img]' + imageObj['thumbnail_img'] + '[/img][/url]';
+		str += '[url=' + form.custom_url_thumbnail_bbcode.value + '][img]' + imageObj.thumbnail_img + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]

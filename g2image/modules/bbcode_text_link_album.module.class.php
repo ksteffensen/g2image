@@ -18,8 +18,8 @@ class bbcode_text_link_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
-		return '[url=' + imageObj['album_url'] + ']' + imageObj['bbcode_text_link_album'] + '[/url]';
+	function module_{$name}(stack, imageObj, form, item, album, options){
+		return '[url=' + album.base_item_url + ']' + form.bbcode_text_link_album.value + '[/url]';
 	}
     //end module [{$name}]
 

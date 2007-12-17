@@ -16,15 +16,15 @@ class drupal_g2_filter_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
 
-		str += '[' + imageObj['drupal_filter_prefix'] + ':' + imageObj['current_album'];
-		if (imageObj['album_alignment'] != 'none'){
-			str += ' class=' + imageObj['album_alignment'];
+		str += '[' + options.drupal_filter_prefix + ':' + item.id;
+		if (form.album_alignment.value != 'none'){
+			str += ' class=' + form.album_alignment.value;
 		}
-		if (imageObj['drupal_exactsize_album'])
-			str += ' exactsize=' + imageObj['drupal_exactsize_album'];
+		if (form.drupal_exactsize_album)
+			str += ' exactsize=' + form.drupal_exactsize_album;
 		str += ']';
 
 		return str;

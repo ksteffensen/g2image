@@ -44,9 +44,9 @@ class bbcode_fullsize_image{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		str += '[url=' + imageObj['image_url'] + '][img]' + imageObj['fullsize_img'] + '[/img][/url]';
+		str += '[url=' + item.base_item_url + '][img]' + imageObj.fullsize_img + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]
