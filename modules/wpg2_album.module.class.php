@@ -16,18 +16,18 @@ class wpg2_album{
 	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, album, options){
+	function module_{$name}(stack, form, album, options){
 		var str = "";
 
 		if (form.album_alignment.value != 'none'){
 			str += '<div class="' + form.album_alignment.value + '">';
 		}
 		if(window.tinyMCE) {
-			str += '<img src="' + imageObj['album_thumbnail']
+			str += '<img src="' + album.thumbnail_image
 			+ '" alt="' + album.id 
 			+ '" title="' + album.id
-			+'" width="' + imageObj['album_thumbw'] 
-			+ '" height="' + imageObj['album_thumbh']
+			+'" width="' + album.thumbnail_width
+			+ '" height="' + album.thumbnail_height
 			+ '" id="mce_plugin_g2image_wpg2" />';
 		}
 		else {

@@ -16,7 +16,7 @@ class flash_slideshow_album{
 	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, album, options){
+	function module_{$name}(stack, form, album, options){
 		var str = "";
 
 		var g2imageUrl = location.href;

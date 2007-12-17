@@ -668,10 +668,10 @@ class Gallery2BackendApi{
 			$data = array();
 			$id = $item->getId();
 			if ($item->getEntityType() == "GalleryAlbumItem") { // it is an album
-				list ($ret, $thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $id ));
+				list ($ret, $album_thumbnails) = GalleryCoreApi::fetchThumbnailsByItemIds(array( $id ));
 				if ($ret) {return array($ret, null);}
-				if (!empty($thumbnails)) {			
-					$derivativeSourceId = $thumbnails[$id]->getDerivativeSourceId();
+				if (!empty($album_thumbnails)) {			
+					$derivativeSourceId = $album_thumbnails[$id]->getDerivativeSourceId();
 					list ($ret, $albumSourceImage) = GalleryCoreApi::loadEntitiesById(array($derivativeSourceId));
 					if ($ret) {return array($ret, null);}
 					$id = $albumSourceImage[0]->getParentId();

@@ -74,18 +74,15 @@ class g2ic_header {
 		var htmlCode = \'\';
 
 		if(typeof(insertFunctions[form.albuminsert.value])=="function"){
-			id = 0;
-			var imageObj = {}; // new Object()
 
-			// Convert thumbnail info to imageObj literals for convenience
-			// (Since they\'re long otherwise...)
+			// Convert thumbnail info to album members for convenience
 			if(album.thumbnail_id){
-				imageObj.album_thumbnail = album.imageVersions[album.thumbnail_id]["url"]["image"];
-				imageObj.album_thumbw = album.imageVersions[album.thumbnail_id]["width"];
-				imageObj.album_thumbh = album.imageVersions[album.thumbnail_id]["height"];
+				album.thumbnail_image = album.imageVersions[album.thumbnail_id]["url"]["image"];
+				album.thumbnail_width = album.imageVersions[album.thumbnail_id]["width"];
+				album.thumbnail_height = album.imageVersions[album.thumbnail_id]["height"];
 			}
 
-			htmlCode += insertFunctions[form.albuminsert.value]( [form.albuminsert.value], imageObj, form, album, options );
+			htmlCode += insertFunctions[form.albuminsert.value]([form.albuminsert.value], form, album, options);
 		}else{
 			alert(form.albuminsert.value);
 			htmlCode += \'Error\';
@@ -102,6 +99,7 @@ class g2ic_header {
 		var image_id = new Array();
 		var imageObj = new Object();
 		var fullsize = new Object();
+		var checkedItems = new Array();
 
 		//hack required for when there is only one image
 
@@ -115,34 +113,41 @@ class g2ic_header {
 			loop = 1;
 			image_id[0] = obj.image_id.value;
 		}
-
-		//let\'s generate HTML code according to selected insert option
-
+		
+		// Generate an array of checked-item IDs
+		var count = 0;
 		for (var i=0;i<loop;i++) {
 			if ((loop == 1) || obj.images[i].checked) {
+				checkedItems[count] = image_id[i];
+				count++;
+			}
+		}
+				
+		// Generate HTML code according to selected insert option
+		// for checked items
 
-				if(typeof(insertFunctions[obj.imginsert.value])=="function"){
-					imageObj.pos = i;
-					id = image_id[i];
-					fullsize = g2icBestFit(items[id], 640, 640, true);
-					if (fullsize) {
-						imageObj.fullsize_id = fullsize.id;
-						imageObj.fullsize_img = fullsize.image;
-						imageObj.fullsize_width = fullsize.width;
-						imageObj.fullsize_height = fullsize.height;
-					}
-					if (items[id].thumbnail_id) {
-						imageObj.thumbnail_id = items[id].thumbnail_id;
-						imageObj.thumbnail_img = items[id].imageVersions[items[id].thumbnail_id]["url"]["image"];
-						imageObj.thumbw = items[id].imageVersions[items[id].thumbnail_id]["width"];
-						imageObj.thumbh = items[id].imageVersions[items[id].thumbnail_id]["height"];
-					}
-
-					htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], imageObj, obj, items[id], album, options );
-				}else{
-					alert(obj.imginsert.value);
-					htmlCode += \'Error\';
+		for (var i=0;i<count;i++) {
+			if(typeof(insertFunctions[obj.imginsert.value])=="function"){
+				id = checkedItems[i];
+				items[id].total_items = count;
+				items[id].item_number = i;
+				fullsize = g2icBestFit(items[id], 640, 640, true);
+				if (fullsize) {
+					items[id].fullsize_id = fullsize.id;
+					items[id].fullsize_image = fullsize.image;
+					items[id].fullsize_width = fullsize.width;
+					items[id].fullsize_height = fullsize.height;
 				}
+				if (items[id].thumbnail_id) {
+					items[id].thumbnail_image = items[id].imageVersions[items[id].thumbnail_id]["url"]["image"];
+					items[id].thumbnail_width = items[id].imageVersions[items[id].thumbnail_id]["width"];
+					items[id].thumbnail_height = items[id].imageVersions[items[id].thumbnail_id]["height"];
+				}
+
+				htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], obj, items[id], album, options );
+			}else{
+				alert(obj.imginsert.value);
+				htmlCode += \'Error\';
 			}
 		}
 		insertHtml(htmlCode, options.form, options.field);

@@ -16,9 +16,9 @@ class bbcode_fullsize_custom_url{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
-		str += '[url=' + form.custom_url_fullsize_bbcode.value + '][img]' + imageObj.fullsize_img + '[/img][/url]';
+		str += '[url=' + form.custom_url_fullsize_bbcode.value + '][img]' + item.fullsize_image + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]
@@ -40,14 +40,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="custom_url_fullsize_bbcode" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.custom_url_fullsize_bbcode = obj.custom_url_fullsize_bbcode.value;\n";
 	}
 
 	/**

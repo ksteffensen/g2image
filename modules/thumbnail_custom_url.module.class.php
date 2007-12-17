@@ -16,13 +16,13 @@ class thumbnail_custom_url{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
 		str += '<a href="' + form.custom_url_thumbnail.value
-		+ '"><img src="' + imageObj.thumbnail_img
+		+ '"><img src="' + item.thumbnail_image
 		+ '" alt="' + item.title
 		+ '" title="' + item.summary + '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
@@ -53,14 +53,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="custom_url_thumbnail" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.custom_url_thumbnail = obj.custom_url_thumbnail.value;\n";
 	}
 
 	/**

@@ -8,34 +8,8 @@
 
 class fullsize_image{
 
-	//------------------------------------------------------------
 	/**
-	 * this is the main part of the class rendering the desired output
-	 *	var stack = [];
-	 *	stack[0] = module_name
-	 *	stack[1] = function within module
-	 *	stack[n] = optional extra subfunction or switch
-	 *
-	 *	var args = {};
-	 *
-	 *	var imageObj = {};
-	 *	imageObj.id
-	 *	imageObj.url
-	 *	imageObj.original
-	 *	imageObj.thumbnail
-	 *	imageObj.thumbw
-	 *	imageObj.thumbh
-	 *	imageObj.w
-	 *	imageObj.h
-	 *	imageObj.title
-	 *	imageObj.summary
-	 *	imageObj.description
-	 *	imageObj.album_id
-	 *	imageObj.keywords
-	 *	imageObj.derivatives	//	all resized versions of the image or a function that deliver this
-	 *	imageObj.siblings		// all images in the same album or a function that deliver this
-	 *
-	 *	@return $string
+	 * See sample module for details
 	 */
 	function insert($name){
 		// caution: \n in javascript strings: \\n
@@ -44,17 +18,17 @@ class fullsize_image{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
 		str += '<a href="' + item.base_item_url
-		+ '"><img src="' + imageObj.fullsize_img
-		+ '" alt="' + item.title 
-		+ '" title="' + item.summary 
-		+ '" width="' + imageObj.fullsize_width
-		+ '" height="' + imageObj.fullsize_height
+		+ '"><img src="' + item.fullsize_image
+		+ '" alt="' + item.title
+		+ '" title="' + item.summary
+		+ '" width="' + item.fullsize_width
+		+ '" height="' + item.fullsize_height
 		+ '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
 			str += ' class="' + form.alignment.value + '"';

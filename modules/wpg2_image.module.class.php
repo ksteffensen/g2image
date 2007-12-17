@@ -16,21 +16,21 @@ class wpg2_image{
 	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = '';
 
 		if (form.alignment.value != 'none') {
 			str += '<div class="' + form.alignment.value + '">';
 		}
 		if (window.tinyMCE) {
-			str += '<img src="' + imageObj.thumbnail_img
+			str += '<img src="' + item.thumbnail_image
 			+ '" alt="' + item.id;
 			if (form.wpg2_tag_size.value)
 				str += '|' + form.wpg2_tag_size.value;
 			str += '" title="' + item.id;
 			if (form.wpg2_tag_size.value)
 				str += '|' + form.wpg2_tag_size.value;
-			str += '" width="' + imageObj.thumbw + '" height="' + imageObj.thumbh
+			str += '" width="' + item.thumbnail_width + '" height="' + item.thumbnail_height
 			+ '" id="mce_plugin_g2image_wpg2" />';
 		}
 		else {

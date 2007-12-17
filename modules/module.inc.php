@@ -95,8 +95,8 @@ class module_prototype{
 	 *	imageObj.url
 	 *	imageObj.original
 	 *	imageObj.thumbnail
-	 *	imageObj.thumbw
-	 *	imageObj.thumbh
+	 *	item.thumbnail_width
+	 *	item.thumbnail_height
 	 *	imageObj.w
 	 *	imageObj.h
 	 *	imageObj.title
@@ -116,7 +116,7 @@ class module_prototype{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		return " ---";
 	}
     //end module [{$name}]

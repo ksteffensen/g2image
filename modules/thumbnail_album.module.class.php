@@ -16,13 +16,13 @@ class thumbnail_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
 		str += '<a href="' + album.base_item_url
-		+ '"><img src="' + imageObj.thumbnail_img
+		+ '"><img src="' + item.thumbnail_image
 		+ '" alt="' + item.title
 		+ '" title="' + item.summary
 		+ '"';
@@ -49,14 +49,6 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
 		return '';
 	}
 
