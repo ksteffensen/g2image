@@ -21,7 +21,7 @@ class fullsize_custom_url{
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<a href="' + form.custom_url_fullsize
+		str += '<a href="' + form.custom_url_fullsize.value
 		+ '"><img src="' + imageObj.fullsize_img
 		+ '" alt="' + item.title
 		+ '" title="' + item.summary + '"';

@@ -18,7 +18,8 @@ class bbcode_thumbnail_custom_url{
 
 	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		str += '[url=' + form.custom_url_thumbnail_bbcode.value + '][img]' + imageObj.thumbnail_img + '[/img][/url]';
+		str += '[url=' + form.custom_url_thumbnail_bbcode.value
+		+ '][img]' + imageObj.thumbnail_img + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]

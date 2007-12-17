@@ -23,7 +23,7 @@ class thumbnail_lightbox{
 		}
 		str += '<a href="' + imageObj.fullsize_img + '" rel="lightbox';
 		if (imageObj['lightbox_group'])
-			str += '[' + form.lightbox_group + ']';
+			str += '[' + form.lightbox_group.value + ']';
 		str += '" title="' + item.description
 		+ '"><img src="' + imageObj.thumbnail_img
 		+ '" width ="' + imageObj.thumbw
