@@ -16,9 +16,9 @@ class bbcode_thumbnail_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
-		str += '[url=' + album.base_item_url + '][img]' + imageObj.thumbnail_img + '[/img][/url]';
+		str += '[url=' + album.base_item_url + '][img]' + item.thumbnail_image + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]
@@ -35,14 +35,6 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		return '';
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
 		return '';
 	}
 

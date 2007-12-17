@@ -8,34 +8,8 @@
 
 class bbcode_fullsize_image{
 
-	//------------------------------------------------------------
 	/**
-	 * this is the main part of the class rendering the desired output
-	 *	var stack = [];
-	 *	stack[0] = module_name
-	 *	stack[1] = function within module
-	 *	stack[n] = optional extra subfunction or switch
-	 *
-	 *	var args = {};
-	 *
-	 *	var imageObj = {};
-	 *	imageObj.id
-	 *	imageObj.url
-	 *	imageObj.original
-	 *	imageObj.thumbnail
-	 *	imageObj.thumbw
-	 *	imageObj.thumbh
-	 *	imageObj.w
-	 *	imageObj.h
-	 *	imageObj.title
-	 *	imageObj.summary
-	 *	imageObj.description
-	 *	imageObj.album_id
-	 *	imageObj.keywords
-	 *	imageObj.derivatives	//	all resized versions of the image or a function that deliver this
-	 *	imageObj.siblings		// all images in the same album or a function that deliver this
-	 *
-	 *	@return $string
+	 * See sample module for details
 	 */
 	function insert($name){
 		// caution: \n in javascript strings: \\n
@@ -44,9 +18,9 @@ class bbcode_fullsize_image{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
-		str += '[url=' + item.base_item_url + '][img]' + imageObj.fullsize_img + '[/img][/url]';
+		str += '[url=' + item.base_item_url + '][img]' + item.fullsize_image + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]
@@ -69,14 +43,6 @@ SCRIPTSTUFF;
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return '';
-	}
 
 	/**
 	 * fill the select box to choose this renderer

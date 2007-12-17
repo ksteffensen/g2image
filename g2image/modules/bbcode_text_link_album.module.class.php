@@ -18,7 +18,7 @@ class bbcode_text_link_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, album, options){
 		return '[url=' + album.base_item_url + ']' + form.bbcode_text_link_album.value + '[/url]';
 	}
     //end module [{$name}]
@@ -39,14 +39,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="bbcode_text_link_album" size="84" maxlength="150" value="" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.bbcode_text_link_album = obj.bbcode_text_link_album.value;\n";
 	}
 
 	/**

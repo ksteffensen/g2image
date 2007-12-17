@@ -16,14 +16,14 @@ class drupal_g2_filter{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 
 		str += '[' + options.drupal_filter_prefix + ':' + item.id;
 		if (form.alignment.value != 'none'){
 			str += ' class=' + form.alignment.value;
 		}
-		if (imageObj['drupal_exactsize'])
+		if (form.drupal_exactsize.value)
 			str += ' exactsize=' + form.drupal_exactsize.value;
 		str += ']';
 
@@ -60,16 +60,6 @@ SCRIPTSTUFF;
 			$html = '                <input type="hidden" name="drupal_exactsize" value="" />' . "\n";
 		}
 
-		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		$html = "					imageObj.drupal_exactsize = obj.drupal_exactsize.value;\n"
-		. "					imageObj.drupal_filter_prefix = obj.drupal_filter_prefix.value;\n";
 		return $html;
 	}
 

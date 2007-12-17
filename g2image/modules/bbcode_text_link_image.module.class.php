@@ -8,34 +8,8 @@
 
 class bbcode_text_link_image{
 
-	//------------------------------------------------------------
 	/**
-	 * this is the main part of the class rendering the desired output
-	 *	var stack = [];
-	 *	stack[0] = module_name
-	 *	stack[1] = function within module
-	 *	stack[n] = optional extra subfunction or switch
-	 *
-	 *	var args = {};
-	 *
-	 *	var imageObj = {};
-	 *	imageObj.id
-	 *	imageObj.url
-	 *	imageObj.original
-	 *	imageObj.thumbnail
-	 *	imageObj.thumbw
-	 *	imageObj.thumbh
-	 *	imageObj.w
-	 *	imageObj.h
-	 *	imageObj.title
-	 *	imageObj.summary
-	 *	imageObj.description
-	 *	imageObj.album_id
-	 *	imageObj.keywords
-	 *	imageObj.derivatives	//	all resized versions of the image or a function that deliver this
-	 *	imageObj.siblings		// all images in the same album or a function that deliver this
-	 *
-	 *	@return $string
+	 * See sample module for details
 	 */
 	function insert($name){
 		// caution: \n in javascript strings: \\n
@@ -44,7 +18,7 @@ class bbcode_text_link_image{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		return '[url=' + item.base_item_url + ']' + form.bbcode_text_link_image.value + '[/url]';
 	}
     //end module [{$name}]
@@ -67,14 +41,6 @@ SCRIPTSTUFF;
 		. '                <input type="text" name="bbcode_text_link_image" size="84" maxlength="150" value="" />' . "\n"
 		. '                <br />' . "\n";
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.bbcode_text_link_image = obj.bbcode_text_link_image.value;\n";
 	}
 
 	/**

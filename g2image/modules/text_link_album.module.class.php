@@ -18,7 +18,7 @@ class text_link_album{
 	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, album, options){
+	function module_{$name}(stack, form, album, options){
 		return '<a href="' + album.base_item_url + '">' + form.text_link_album.value + '</a>';
 	}
 	//end module [{$name}]

@@ -8,34 +8,8 @@
 
 class fullsize_only{
 
-	//------------------------------------------------------------
 	/**
-	 * this is the main part of the class rendering the desired output
-	 *	var stack = [];
-	 *	stack[0] = module_name
-	 *	stack[1] = function within module
-	 *	stack[n] = optional extra subfunction or switch
-	 *
-	 *	var args = {};
-	 *
-	 *	var imageObj = {};
-	 *	imageObj.id
-	 *	imageObj.url
-	 *	imageObj.original
-	 *	imageObj.thumbnail
-	 *	imageObj.thumbw
-	 *	imageObj.thumbh
-	 *	imageObj.w
-	 *	imageObj.h
-	 *	imageObj.title
-	 *	imageObj.summary
-	 *	imageObj.description
-	 *	imageObj.album_id
-	 *	imageObj.keywords
-	 *	imageObj.derivatives	//	all resized versions of the image or a function that deliver this
-	 *	imageObj.siblings		// all images in the same album or a function that deliver this
-	 *
-	 *	@return $string
+	 * See sample module for details
 	 */
 	function insert($name){
 		// caution: \n in javascript strings: \\n
@@ -44,12 +18,12 @@ class fullsize_only{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<img src="' + imageObj.fullsize_img
+		str += '<img src="' + item.fullsize_image
 		+ '" alt="' + item.title
 		+ '" title="' + item.summary + '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
@@ -81,14 +55,6 @@ SCRIPTSTUFF;
 	}
 	//------------------------------------------------------------
 	//------------------------------------------------------------
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return '';
-	}
 
 	/**
 	 * fill the select box to choose this renderer

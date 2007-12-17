@@ -16,7 +16,7 @@ class drupal_g2_filter_album{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 
 		str += '[' + options.drupal_filter_prefix + ':' + item.id;
@@ -60,16 +60,6 @@ SCRIPTSTUFF;
 			$html = '                <input type="hidden" name="drupal_exactsize_album" value="" />' . "\n";
 		}
 
-		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		$html = "					imageObj.drupal_exactsize_album = obj.drupal_exactsize_album.value;\n"
-		. "					imageObj.drupal_filter_prefix = obj.drupal_filter_prefix.value;\n";
 		return $html;
 	}
 

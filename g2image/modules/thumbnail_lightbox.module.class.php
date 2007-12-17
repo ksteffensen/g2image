@@ -16,18 +16,18 @@ class thumbnail_lightbox{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj, form, item, album, options){
+	function module_{$name}(stack, form, item, album, options){
 		var str = "";
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<a href="' + imageObj.fullsize_img + '" rel="lightbox';
-		if (imageObj['lightbox_group'])
+		str += '<a href="' + item.fullsize_image + '" rel="lightbox';
+		if (form.lightbox_group.value)
 			str += '[' + form.lightbox_group.value + ']';
 		str += '" title="' + item.description
-		+ '"><img src="' + imageObj.thumbnail_img
-		+ '" width ="' + imageObj.thumbw
-		+ '" height="' + imageObj.thumbh
+		+ '"><img src="' + item.thumbnail_image
+		+ '" width ="' + item.thumbnail_width
+		+ '" height="' + item.thumbnail_height
 		+ '" alt="' + item.title
 		+ '" title="' + item.summary
 		+ '"';
