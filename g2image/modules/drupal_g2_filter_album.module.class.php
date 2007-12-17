@@ -23,8 +23,8 @@ class drupal_g2_filter_album{
 		if (form.album_alignment.value != 'none'){
 			str += ' class=' + form.album_alignment.value;
 		}
-		if (form.drupal_exactsize_album)
-			str += ' exactsize=' + form.drupal_exactsize_album;
+		if (form.drupal_exactsize_album.value)
+			str += ' exactsize=' + form.drupal_exactsize_album.value;
 		str += ']';
 
 		return str;

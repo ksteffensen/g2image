@@ -45,7 +45,7 @@ class text_link_image{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, imageObj, form, item, album, options){
-		return '<a href="' + item.base_item_url + '">' + form.text_link_image + '</a>';
+		return '<a href="' + item.base_item_url + '">' + form.text_link_image.value + '</a>';
 	}
     //end module [{$name}]
 
