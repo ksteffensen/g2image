@@ -16,9 +16,9 @@ class bbcode_fullsize_custom_url{
     //module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
+	function module_{$name}(stack, imageObj, form, item, album, options){
 		var str = "";
-		str += '[url=' + imageObj['custom_url_fullsize_bbcode'] + '][img]' + imageObj['fullsize_img'] + '[/img][/url]';
+		str += '[url=' + form.custom_url_fullsize_bbcode.value + '][img]' + imageObj.fullsize_img + '[/img][/url]';
 		return str;
 	}
     //end module [{$name}]

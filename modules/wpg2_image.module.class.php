@@ -13,39 +13,39 @@ class wpg2_image{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
-	function module_{$name}(stack, imageObj){
-		var str = "";
+	function module_{$name}(stack, imageObj, form, item, album, options){
+		var str = '';
 
-		if (imageObj['alignment'] != 'none'){
-			str += '<div class="' + imageObj['alignment'] + '">';
+		if (form.alignment.value != 'none') {
+			str += '<div class="' + form.alignment.value + '">';
 		}
-		if(window.tinyMCE) {
-			str += '<img src="' + imageObj['thumbnail_img']
-			+ '" alt="' + imageObj['image_id'];
-			if (imageObj['wpg2_tag_size'])
-				str += '|' + imageObj['wpg2_tag_size'];
-			str += '" title="' + imageObj['image_id'];
-			if (imageObj['wpg2_tag_size'])
-				str += '|' + imageObj['wpg2_tag_size'];
-			str += '" ' + imageObj['thumbw'] + imageObj['thumbh']
-			+ 'id="mce_plugin_g2image_wpg2" />';
+		if (window.tinyMCE) {
+			str += '<img src="' + imageObj.thumbnail_img
+			+ '" alt="' + item.id;
+			if (form.wpg2_tag_size.value)
+				str += '|' + form.wpg2_tag_size.value;
+			str += '" title="' + item.id;
+			if (form.wpg2_tag_size.value)
+				str += '|' + form.wpg2_tag_size.value;
+			str += '" width="' + imageObj.thumbw + '" height="' + imageObj.thumbh
+			+ '" id="mce_plugin_g2image_wpg2" />';
 		}
 		else {
-			str += '<wpg2>' + imageObj['image_id'];
-			if (imageObj['wpg2_tag_size'])
-				str += '|' + imageObj['wpg2_tag_size'];
+			str += '<wpg2>' + item.id;
+			if (form.wpg2_tag_size.value)
+				str += '|' + form.wpg2_tag_size.value;
 			str += '</wpg2>';
 		}
-		if (imageObj['alignment'] != 'none'){
+		if (form.alignment.value != 'none'){
 			str += '</div>';
 		}
 
 		return str;
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -68,23 +68,15 @@ SCRIPTSTUFF;
 		$version = $plugin->getVersion();
 		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
 		if ($version_comparison != 'older') {
-			$html = '                <label for="wpg2_tag_size">' . T_('WPG2 tag "size" attribute (Leave blank for the default size of: ') . $g2ic_options['wpg2_tag_size']. 'px)<br /></label>' . "\n"
-			. '                <input type="text" name="wpg2_tag_size" size="84" maxlength="150" value="" />' . "\n"
-			. '                <br />' . "\n";
+			$html = '				<label for="wpg2_tag_size">' . T_('WPG2 tag "size" attribute (Leave blank for the default size of: ') . $g2ic_options['wpg2_tag_size']. 'px)<br /></label>' . "\n"
+			. '				<input type="text" name="wpg2_tag_size" size="84" maxlength="150" value="" />' . "\n"
+			. '				<br />' . "\n";
 		}
 		else {
-			$html = '                <input type="hidden" name="wpg2_tag_size" value="" />' . "\n";
+			$html = '				<input type="hidden" name="wpg2_tag_size" value="" />' . "\n";
 		}
 
 		return $html;
-	}
-
-	/**
-	 * Set the javascript variables that this module requires.  Must be unique names among modules.
-	 *
-	 */
-	function javaScriptVariables(){
-		return "					imageObj.wpg2_tag_size = obj.wpg2_tag_size.value;\n";
 	}
 
 	/**
