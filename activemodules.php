@@ -8,7 +8,6 @@ $g2ic_options['image_modules'] = array(
 	'thumbnail_image',
 	'thumbnail_album',
 	'thumbnail_lightbox',
-//  'thumbnail_lightbox_resized',
 	'thumbnail_custom_url',
 	'thumbnail_only',
 	'fullsize_image',
@@ -16,6 +15,7 @@ $g2ic_options['image_modules'] = array(
 	'fullsize_custom_url',
 	'fullsize_only',
 	'text_link_image',
+    'ultimate_slideshow_images',
 );
 
 $g2ic_options['bbcode_album_modules'] = array(
