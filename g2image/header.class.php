@@ -92,7 +92,7 @@ class g2ic_header {
 	}
 
 	function insertItems(items, album, options){
-		var obj = document.forms[0];
+		var form = document.forms[0];
 		var htmlCode = \'\';
 		var id = 0;
 		var loop = 0;
@@ -103,21 +103,21 @@ class g2ic_header {
 
 		//hack required for when there is only one image
 
-		if (obj.images.length) {
-			loop = obj.images.length;
+		if (form.images.length) {
+			loop = form.images.length;
 			for (var i=0;i<loop;i++) {
-				image_id[i] = obj.image_id[i].value;
+				image_id[i] = form.image_id[i].value;
 			}
 		}
 		else {
 			loop = 1;
-			image_id[0] = obj.image_id.value;
+			image_id[0] = form.image_id.value;
 		}
 		
 		// Generate an array of checked-item IDs
 		var count = 0;
 		for (var i=0;i<loop;i++) {
-			if ((loop == 1) || obj.images[i].checked) {
+			if ((loop == 1) || form.images[i].checked) {
 				checkedItems[count] = image_id[i];
 				count++;
 			}
@@ -127,11 +127,13 @@ class g2ic_header {
 		// for checked items
 
 		for (var i=0;i<count;i++) {
-			if(typeof(insertFunctions[obj.imginsert.value])=="function"){
+			if(typeof(insertFunctions[form.imginsert.value])=="function"){
 				id = checkedItems[i];
 				items[id].total_items = count;
 				items[id].item_number = i;
-				fullsize = g2icBestFit(items[id], obj.max_width.value, obj.max_height.value, true);
+				var max_width = (form.max_width.value) ? form.max_width.value : 0;
+				var max_height = (form.max_height.value) ? form.max_height.value : 0;
+				fullsize = g2icBestFit(items[id], max_width, max_height);
 				if (fullsize) {
 					items[id].fullsize_id = fullsize.id;
 					items[id].fullsize_image = fullsize.image;
@@ -144,9 +146,9 @@ class g2ic_header {
 					items[id].thumbnail_height = items[id].imageVersions[items[id].thumbnail_id]["height"];
 				}
 
-				htmlCode += insertFunctions[obj.imginsert.value]( [obj.imginsert.value], obj, items[id], album, options );
+				htmlCode += insertFunctions[form.imginsert.value]( [form.imginsert.value], form, items[id], album, options );
 			}else{
-				alert(obj.imginsert.value);
+				alert(form.imginsert.value);
 				htmlCode += \'Error\';
 			}
 		}

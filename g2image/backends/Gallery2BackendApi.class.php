@@ -20,7 +20,8 @@
 
 class Gallery2BackendApi{
 	var $tree = array();
-	var $album = array(); 
+	var $album = array();
+	var $totalAvailableDataItems = 0;
 	var $dataItems = array();
 	var $albumItems = array();
 	var $error = false;
@@ -110,15 +111,14 @@ class Gallery2BackendApi{
 	 * $this->error = error returned during object construction
 	 * *************************
 	 */
-	function __construct($dsn, $album_tree=null, $data_items=null, $album_items=null, $filters=null){
+	function __construct($dsn, $album_tree=null, $data_items=null, $totalAvailableDataItems=null, $album_items=null, $filters=null){
 	
-		// Following $dsn variables are here for testing only.  Will move to g2image.php as part of input parameters
+		// TODO Following $dsn variables are here for testing only.  Will move to g2image.php as part of input parameters
 		$dsn['album_sortby'] = 'title_asc';
 		$dsn['build_all_data_items'] = false;
 		$dsn['build_all_album_items'] = false;
 		$dsn['build_child_album_items'] = false;
 		
-		// TODO make the constructor reuse tree and items if included as parameters.
 		$this->_init($dsn);
 		if ($this->error) {return;}
 		if (!$dsn['root_album']) {
@@ -132,21 +132,37 @@ class Gallery2BackendApi{
 		if(!$dsn['current_album']){
 			$dsn['current_album'] = $root;
 		}
-		list($ret, $this->tree) = $this->getAlbumTree($root, $dsn['album_sortby']);
-		$this->_check($ret);
-		if ($this->error) {return;}
-		list($ret, $this->dataItems) = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page'], 'data', $dsn['build_all_data_items']);
-		$this->_check($ret);
-		if ($this->error) {return;}
-		if ($dsn['build_all_album_items']) {
-			list($ret, $this->albumItems) = $this->getItems(null, $dsn['album_sortby'], null, null, 'album', true);
+		if (!$album_tree) {
+			list($ret, $this->tree) = $this->getAlbumTree($root, $dsn['album_sortby']);
 			$this->_check($ret);
 			if ($this->error) {return;}
 		}
-		elseif ($dsn['build_child_album_items']) {
-			list($ret, $this->albumItems) = $this->getItems($dsn['current_album'], $dsn['album_sortby'], null, null, 'album', false);
+		else {
+			$this->tree = $album_tree;
+		}
+		if (!$data_items) {
+			list($ret, $this->dataItems, $this->totalAvailableDataItems) = $this->getItems($dsn['current_album'], $dsn['sortby'], $dsn['current_page'], $dsn['images_per_page'], 'data', $dsn['build_all_data_items']);
 			$this->_check($ret);
 			if ($this->error) {return;}
+		}
+		else {
+			$this->dataItems = $data_items;
+			$this->totalAvailableDataItems = $totalAvailableDataItems;
+		}
+		if (!$album_titems) {
+			if ($dsn['build_all_album_items']) {
+				list($ret, $this->albumItems) = $this->getItems(null, $dsn['album_sortby'], null, null, 'album', true);
+				$this->_check($ret);
+				if ($this->error) {return;}
+			}
+			elseif ($dsn['build_child_album_items']) {
+				list($ret, $this->albumItems) = $this->getItems($dsn['current_album'], $dsn['album_sortby'], null, null, 'album', false);
+				$this->_check($ret);
+				if ($this->error) {return;}
+			}
+		}
+		else {
+			$this->albumItems = $album_items;
 		}
 		list($ret, $album) = $this->getItemsByIds(array($dsn['current_album']));
 		$this->_check($ret);
@@ -188,7 +204,7 @@ class Gallery2BackendApi{
 	  */
 	function getItems($albumID, $sortby=null, $current_page=null, $images_per_page=null, $child_type='data', $get_all=false){
 
-		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type, $get_all);
+		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id, $total_number_child_items) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type, $get_all);
 		if ($ret) {return array($ret, null);}
 		if (!empty($child_items)) {
 			list ($ret, $items) = $this->_normalize($child_items, $thumbnails, $fullsizes, $resizes);
@@ -197,7 +213,7 @@ class Gallery2BackendApi{
 		else{
 			$items = array();
 		}
-		return array(null, $items);
+		return array(null, $items, $total_number_child_items);
 	}
 
 	/**
@@ -423,24 +439,24 @@ class Gallery2BackendApi{
 			}
 			else {
 				list ($ret, $photo_ids) = GalleryCoreApi::fetchAllItemIds('GalleryPhotoItem');
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 				list ($ret, $movie_ids) = GalleryCoreApi::fetchAllItemIds('GalleryMovieItem');
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 				list ($ret, $animation_ids) = GalleryCoreApi::fetchAllItemIds('GalleryAnimationItem');
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 				list ($ret, $unknown_ids) = GalleryCoreApi::fetchAllItemIds('GalleryUnknownItem');
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 				$child_ids = array_merge($photo_ids, $movie_ids, $animation_ids, $unknown_ids);
 			}
 		}
 		else {
 			list ($ret, $item) = GalleryCoreApi::loadEntitiesById($id);
-			if ($ret) {return array($ret, null, null, null, null);}
+			if ($ret) {return array($ret, null, null, null, null, null);}
 			
 			if($item->getEntityType() != "GalleryAlbumItem"){
 				$id = $item->getParentId();
 				list ($ret, $item) =GalleryCoreApi::loadEntitiesById($id);
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 			}
 	
 			if ($child_type == 'album') {
@@ -451,11 +467,13 @@ class Gallery2BackendApi{
 			}
 		}
 			
-		if ($ret) {return array($ret, null, null, null, null);}
+		if ($ret) {return array($ret, null, null, null, null, null);}
+		
+		$total_number_child_items = count($child_ids);
 		
 		if (!empty($child_ids)) {
 			list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
-			if ($ret) {return array($ret, null, null, null, null);}
+			if ($ret) {return array($ret, null, null, null, null, null);}
 			if ($sortby && count($child_ids)>1) {
 				$child_ids = $this->_sortItems($child_items, $sortby);
 				$reload_items = true;
@@ -483,7 +501,7 @@ class Gallery2BackendApi{
 			}
 			if ($reload_items) {
 				list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
-				if ($ret) {return array($ret, null, null, null, null);}
+				if ($ret) {return array($ret, null, null, null, null, null);}
 			}
 			if ($child_type == 'album') {
 				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($source_image_ids);
@@ -491,11 +509,11 @@ class Gallery2BackendApi{
 			else {
 				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($child_ids);
 			}
-			if ($ret) {return array($ret, null, null, null, null);}
-			return array(null, $child_items, $thumbnails, $fullsizes, $resizes, $id); // id may differ if it is a derivative $id given as param
+			if ($ret) {return array($ret, null, null, null, null, null);}
+			return array(null, $child_items, $thumbnails, $fullsizes, $resizes, $id, $total_number_child_items); // id may differ if it is a derivative $id given as param
 		}
 		else {
-			return array(null, null, null, null, null);			
+			return array(null, null, null, null, null, 0);			
 		}
 	}
 

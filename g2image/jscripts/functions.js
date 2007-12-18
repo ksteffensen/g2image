@@ -85,10 +85,18 @@ function g2icBestFit(item, maxImageWidth, maxImageHeight) {
 				}
 			}
 		}
+		else {
+			// If no other image ID has already been returned, return the largest image.
+			bestFit.id = largest_id;
+			bestFit.image = item.imageVersions[largest_id].url.image;
+			bestFit.height = item.imageVersions[largest_id].height;
+			bestFit.width = item.imageVersions[largest_id].width;;
+			return bestFit;	//return the first one equal to or wider than $maxImageWidth
+		}
 	}
 	
-	// If no other image ID has already been returned or if there were no images in the first place.
-	return largest_id;	
+	// If there were no images available, return null.
+	return null;	
 }
 
 function checkAllImages() {

@@ -81,6 +81,9 @@ $g2ic_custom_class_4 = 'not_used';
 
 $g2ic_custom_url = 'http://';
 
+$g2ic_max_width = 640;
+$g2ic_max_height = 640;
+
 // Change this to determine where the alignment class will be inserted.
 // Valid options are 'img' to have it inserted as <img class=...> or
 // 'div' to have it inserted as <div class=...><img ...>.
@@ -105,6 +108,7 @@ $g2ic_default_image_action = 'thumbnail_image';
 // time, newest first), and 'mtime_asc' (modification time, oldest first).
 
 $g2ic_sortby = 'title_asc';
+$g2ic_album_sortby = 'title_asc';
 
 // EMBEDDED MODE OPERATIONS
 // This section applies to embedded mode operations, other than WPG2.
