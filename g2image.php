@@ -29,10 +29,14 @@ require_once('header.class.php');
 
 $BackendApiClass = 'Gallery2' . 'BackendApi';
 
-$g2obj = new $BackendApiClass( $g2ic_options );
+$g2obj = new $BackendApiClass($g2ic_options, $g2ic_tree, $g2ic_items, $g2ic_totalAvailableDataItems);
 if ($g2obj->error) {
 	g2ic_fatal_error($g2obj->error);
 }
+
+$_SESSION['g2ic_tree'] =  serialize($g2obj->tree);
+$_SESSION['g2ic_items'] =  serialize($g2obj->dataItems);
+$_SESSION['g2ic_totalAvailableDataItems'] =  $g2obj->totalAvailableDataItems;
 
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');
@@ -94,8 +98,8 @@ function g2ic_get_albuminsert_selectoptions($g2ic_options){
 		 $albuminsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
-	if ($albuminsert_selectoptions[$g2ic_options['default_album_action']]) {
-		$albuminsert_selectoptions[$g2ic_options['default_album_action']]['selected'] = TRUE;
+	if ($albuminsert_selectoptions[$g2ic_options['albuminsert']]) {
+		$albuminsert_selectoptions[$g2ic_options['albuminsert']]['selected'] = TRUE;
 	}
 	return $albuminsert_selectoptions;
 }
@@ -113,8 +117,8 @@ function g2ic_get_imginsert_selectoptions($g2ic_options){
 		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
 	}
 
-	if ($imginsert_selectoptions[$g2ic_options['default_image_action']]) {
-		$imginsert_selectoptions[$g2ic_options['default_image_action']]['selected'] = TRUE;
+	if ($imginsert_selectoptions[$g2ic_options['imginsert']]) {
+		$imginsert_selectoptions[$g2ic_options['imginsert']]['selected'] = TRUE;
 	}
 	return $imginsert_selectoptions;
 }
@@ -230,7 +234,7 @@ function g2ic_make_html_alignment_select($name, $g2ic_options){
 		$align_options = array_merge($align_options, array($g2ic_options['custom_class_4'] => array('text' => $g2ic_options['custom_class_4'])));
 	}
 
-	$align_options[$g2ic_options['default_alignment']]['selected'] = TRUE;
+	$align_options[$g2ic_options[$name]]['selected'] = TRUE;
 
 	$html = g2ic_make_html_select($name, $align_options);
 
@@ -255,7 +259,7 @@ function g2ic_make_html_album_insert_controls($g2ic_options){
 
 	$html .= "  \n";
 	foreach($g2ic_options['album_modules'] as $moduleName){
-		$html .= all_modules::renderOptions($g2ic_options['default_album_action'], $moduleName);
+		$html .= all_modules::renderOptions($g2ic_options['albuminsert'], $moduleName);
 	}
 
 	// Alignment selection
@@ -293,7 +297,7 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 
 	$html .= "  \n";
 	foreach($g2ic_options['image_modules'] as $moduleName){
-		$html .= all_modules::renderOptions($g2ic_options['default_image_action'], $moduleName);
+		$html .= all_modules::renderOptions($g2ic_options['imginsert'], $moduleName);
 	}
 
 	// Alignment selection
@@ -313,9 +317,10 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 	. '                />' . "\n"
 	. '                <br />' . "\n"
 	. '                <div id="advanced_html_controls" style="display:none">' . "\n"
-	. '                    ' . T_('Width') . "\n"
+	. '                    ' . T_('Fullsize Image Maximum Dimensions - Leave blank to use the original') . '<br />' . "\n"
+	. '                    ' . T_('Max Width:') . "\n"
 	. '                    <input type="text" name="max_width" size="4" maxlength="4" value="' . $g2ic_options['max_width'] . '" />' . "\n"
-	. '                    ' . T_('Height') . "\n"
+	. '                    ' . T_('Max Height:') . "\n"
 	. '                    <input type="text" name="max_height" size="4" maxlength="4" value="' . $g2ic_options['max_height'] . '" /><br />' . "\n"
 	. '                    '
 	. '                </div>'
@@ -518,7 +523,7 @@ function g2ic_make_html_img($g2obj, $item) {
  */
 function g2ic_make_html_page_navigation($g2obj, $g2ic_options) {
 
-	$pages = ceil(count($g2obj->dataItems)/$g2ic_options['images_per_page']);
+	$pages = ceil($g2obj->totalAvailableDataItems/$g2ic_options['images_per_page']);
 	if ($g2ic_options['current_page'] > $pages) {
 		$g2ic_options['current_page'] = $pages;
 	}
@@ -529,7 +534,7 @@ function g2ic_make_html_page_navigation($g2obj, $g2ic_options) {
 			$pagelinks[] = '        <strong>' . $count . '</strong>';
 		}
 		else {
-			$pagelinks[] = '        <a href="?g2ic_page=' . $count . '">' . $count . '</a>';
+			$pagelinks[] = '        <a href="?current_page=' . $count . '">' . $count . '</a>';
 		}
 	}
 

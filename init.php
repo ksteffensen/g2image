@@ -27,16 +27,20 @@ $g2ic_options['base_path'] = str_repeat("../", substr_count(dirname($_SERVER['PH
 // some integrations that overwrite config.php to set these variables.
 $g2ic_options['images_per_page'] = $g2ic_images_per_page;
 $g2ic_options['display_filenames'] = $g2ic_display_filenames;
-$g2ic_options['default_alignment'] = $g2ic_default_alignment;
+$g2ic_options['alignment'] = $g2ic_default_alignment;
+$g2ic_options['album_alignment'] = $g2ic_default_alignment;
 $g2ic_options['custom_class_1'] = $g2ic_custom_class_1;
 $g2ic_options['custom_class_2'] = $g2ic_custom_class_2;
 $g2ic_options['custom_class_3'] = $g2ic_custom_class_3;
 $g2ic_options['custom_class_4'] = $g2ic_custom_class_4;
 $g2ic_options['custom_url'] = $g2ic_custom_url;
 $g2ic_options['class_mode'] = $g2ic_class_mode;
-$g2ic_options['default_image_action'] = $g2ic_default_image_action;
-$g2ic_options['default_album_action'] = $g2ic_default_album_action;
+$g2ic_options['imginsert'] = $g2ic_default_image_action;
+$g2ic_options['albuminsert'] = $g2ic_default_album_action;
 $g2ic_options['sortby'] = $g2ic_sortby;
+$g2ic_options['album_sortby'] = $g2ic_album_sortby;
+$g2ic_options['max_width'] = $g2ic_max_width;
+$g2ic_options['max_height'] = $g2ic_max_height;
 $g2ic_options['drupal_g2_filter'] = $g2ic_drupal_g2_filter;
 $g2ic_options['drupal_g2_filter_prefix'] = $g2ic_drupal_g2_filter_prefix;
 $g2ic_options['bbcode_enabled'] = $g2ic_bbcode_enabled;
@@ -52,7 +56,10 @@ $g2ic_options['form'] = '';
 $g2ic_options['field'] = '';
 $g2ic_options['current_album'] = null;
 $g2ic_options['current_page'] = 1;
-
+$g2ic_tree = null;
+$g2ic_items = null;
+$g2ic_totalAvailableDataItems = null;
+$g2ic_session_variables = null;
 
 // ==============================================================
 // WPG2 validation
@@ -74,10 +81,7 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 			}
 			elseif ($count == 10) {
 				// Die on fatal error of not finding wp-config.php
-				print ('<h3>Fatal Error: Cannot locate wp-config.php.</h3><br />You have set $g2ic_in_wordpress to TRUE, but G2Image cannot locate wp-config.php in any parent directory.');
-				print '</body>' . "\n\n";
-				print '</html>';
-				die;
+				g2ic_fatal_error('<h3>Fatal Error: Cannot locate wp-config.php.</h3><br />You have set $g2ic_in_wordpress to TRUE, but G2Image cannot locate wp-config.php in any parent directory.');
 			}
 		}
 	}
@@ -107,8 +111,10 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 		else
 			$g2ic_options['display_filenames'] = FALSE;
 	}
-	if(isset($wpg2_g2ic['g2ic_default_alignment']))
-		$g2ic_options['default_alignment'] = $wpg2_g2ic['g2ic_default_alignment'];
+	if(isset($wpg2_g2ic['g2ic_default_alignment'])) {
+		$g2ic_options['alignment'] = $wpg2_g2ic['g2ic_default_alignment'];
+		$g2ic_options['album_alignment'] = $wpg2_g2ic['g2ic_default_alignment'];
+	}
 	if(isset($wpg2_g2ic['g2ic_custom_class_1']))
 		$g2ic_options['custom_class_1'] = $wpg2_g2ic['g2ic_custom_class_1'];
 	if(isset($wpg2_g2ic['g2ic_custom_class_2']))
@@ -124,24 +130,25 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 	if(isset($wpg2_g2ic['g2ic_sortby']))
 		$g2ic_options['sortby'] = $wpg2_g2ic['g2ic_sortby'];
 	if(isset($wpg2_g2ic['g2ic_default_album_action']))
-		$g2ic_options['default_album_action'] = $wpg2_g2ic['g2ic_default_album_action'];
+		$g2ic_options['albuminsert'] = $wpg2_g2ic['g2ic_default_album_action'];
 	else
-		$g2ic_options['default_album_action'] = 'wpg2_album';
+		$g2ic_options['albuminsert'] = 'wpg2_album';
 	if(isset($wpg2_g2ic['g2ic_default_image_action'])) {
 		// For backwards compatibility with old option value in WPG2 G2Image Options tab
 		if ($wpg2_g2ic['g2ic_default_image_action'] == 'wpg2')
-			$g2ic_options['default_image_action'] = 'wpg2_image';
+			$g2ic_options['imginsert'] = 'wpg2_image';
 		else
-			$g2ic_options['default_image_action'] = $wpg2_g2ic['g2ic_default_image_action'];
+			$g2ic_options['imginsert'] = $wpg2_g2ic['g2ic_default_image_action'];
 	}
 	else
-		$g2ic_options['default_image_action'] = 'wpg2_image';
+		$g2ic_options['imginsert'] = 'wpg2_image';
 }
 
 session_start();
 
 if (isset($_SESSION['g2ic_options'])) {
 	$g2ic_options = unserialize($_SESSION['g2ic_options']);
+	$g2ic_session_variables = $g2ic_options;
 }
 
 // Is this a TinyMCE window?
@@ -159,29 +166,25 @@ if(isset($_REQUEST['g2ic_field'])){
 	$g2ic_options['field'] = $_REQUEST['g2ic_field'];
 }
 
-// Get the current album
-if(IsSet($_REQUEST['current_album'])){
-	$g2ic_options['current_album'] = $_REQUEST['current_album'];
+foreach ($g2ic_options as $key=>$value) {
+	if (isset($_REQUEST[$key])) {
+		$g2ic_options[$key] = $_REQUEST[$key];
+	}
 }
 
-// Get the current page
-if (isset($_REQUEST['g2ic_page']) and is_numeric($_REQUEST['g2ic_page'])) {
-	$g2ic_options['current_page'] = floor($_REQUEST['g2ic_page']);
+if(isset($_SESSION['g2ic_tree'])) {
+	if (!isset($_REQUEST['refresh_album_tree']) && ($g2ic_session_variables['album_sortby'] == $g2ic_options['album_sortby'])) {
+		$g2ic_tree = unserialize($_SESSION['g2ic_tree']);
+	}
 }
 
-// Get the current sort method
-if(isset($_REQUEST['sortby']))
-	$g2ic_options['sortby'] = $_REQUEST['sortby'];
+if(isset($_SESSION['g2ic_items'])) {
+	if (($g2ic_session_variables['current_album'] == $g2ic_options['current_album']) && ($g2ic_session_variables['sortby'] == $g2ic_options['sortby']) && ($g2ic_session_variables['current_page'] == $g2ic_options['current_page']) && ($g2ic_session_variables['images_per_page'] == $g2ic_options['images_per_page'])) {
+		$g2ic_items = unserialize($_SESSION['g2ic_items']);
+		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
+	}
+}
 
-// Determine whether to display the titles or keep them hidden
-if(isset($_REQUEST['display']))
-	if ($_REQUEST['display'] == 'filenames')
-		$g2ic_options['display_filenames'] = TRUE;
-
-// Determine how many images to display per page
-if(isset($_REQUEST['images_per_page']))
-	$g2ic_options['images_per_page'] = $_REQUEST['images_per_page'];
-	
 $_SESSION['g2ic_options'] = serialize($g2ic_options);
 
 // ==============================================================
