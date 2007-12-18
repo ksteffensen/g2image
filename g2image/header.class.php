@@ -131,7 +131,7 @@ class g2ic_header {
 				id = checkedItems[i];
 				items[id].total_items = count;
 				items[id].item_number = i;
-				fullsize = g2icBestFit(items[id], 640, 640, true);
+				fullsize = g2icBestFit(items[id], obj.max_width.value, obj.max_height.value, true);
 				if (fullsize) {
 					items[id].fullsize_id = fullsize.id;
 					items[id].fullsize_image = fullsize.image;

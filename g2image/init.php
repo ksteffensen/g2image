@@ -47,6 +47,12 @@ $g2ic_options['use_full_path'] = $g2ic_use_full_path;
 $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
+$g2ic_options['tinymce'] = 0;
+$g2ic_options['form'] = '';
+$g2ic_options['field'] = '';
+$g2ic_options['current_album'] = null;
+$g2ic_options['current_page'] = 1;
+
 
 // ==============================================================
 // WPG2 validation
@@ -134,51 +140,33 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 
 session_start();
 
+if (isset($_SESSION['g2ic_options'])) {
+	$g2ic_options = unserialize($_SESSION['g2ic_options']);
+}
+
 // Is this a TinyMCE window?
 if(isset($_REQUEST['g2ic_tinymce'])){
 	$g2ic_options['tinymce'] = $_REQUEST['g2ic_tinymce'];
-	$_SESSION['g2ic_tinymce'] = $_REQUEST['g2ic_tinymce'];
 }
-else if (isset($_SESSION['g2ic_tinymce']))
-	$g2ic_options['tinymce'] = $_SESSION['g2ic_tinymce'];
-else $g2ic_options['tinymce'] = 0;
 
 // Get the form name (if set) for insertion (not TinyMCE or FCKEditor)
 if(isset($_REQUEST['g2ic_form'])){
 	$g2ic_options['form'] = $_REQUEST['g2ic_form'];
-	$_SESSION['g2ic_form'] = $_REQUEST['g2ic_form'];
 }
-else if (isset($_SESSION['g2ic_form']))
-	$g2ic_options['form'] = $_SESSION['g2ic_form'];
-else $g2ic_options['form'] = '';
 
 // Get the field name (if set) for insertion (not TinyMCE or FCKEditor)
 if(isset($_REQUEST['g2ic_field'])){
 	$g2ic_options['field'] = $_REQUEST['g2ic_field'];
-	$_SESSION['g2ic_field'] = $_REQUEST['g2ic_field'];
 }
-else if (isset($_SESSION['g2ic_field']))
-	$g2ic_options['field'] = $_SESSION['g2ic_field'];
-else $g2ic_options['field'] = '';
 
 // Get the current album
 if(IsSet($_REQUEST['current_album'])){
 	$g2ic_options['current_album'] = $_REQUEST['current_album'];
 }
-elseif(isset($_SESSION['g2ic_last_album_visited'])) {
-	$g2ic_options['current_album'] = $_SESSION['g2ic_last_album_visited'];
-}
-else {
-	$g2ic_options['current_album'] = null;
-}
-$_SESSION['g2ic_last_album_visited'] = $g2ic_options['current_album'];
 
 // Get the current page
 if (isset($_REQUEST['g2ic_page']) and is_numeric($_REQUEST['g2ic_page'])) {
 	$g2ic_options['current_page'] = floor($_REQUEST['g2ic_page']);
-}
-else {
-	$g2ic_options['current_page'] = 1;
 }
 
 // Get the current sort method
@@ -193,6 +181,8 @@ if(isset($_REQUEST['display']))
 // Determine how many images to display per page
 if(isset($_REQUEST['images_per_page']))
 	$g2ic_options['images_per_page'] = $_REQUEST['images_per_page'];
+	
+$_SESSION['g2ic_options'] = serialize($g2ic_options);
 
 // ==============================================================
 // NOTE for developers:
