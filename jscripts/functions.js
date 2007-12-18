@@ -68,9 +68,8 @@ function g2icBestFit(item, maxImageWidth, maxImageHeight) {
 				if (width >= maxImageWidth) {
 					bestFit.id = hash_x[width];
 					bestFit.image = item.imageVersions[bestFit.id].url.image;
-					imageWidth = item.imageVersions[bestFit.id].width;
-					bestFit.width = width;
-					bestFit.height = Math.round(item.imageVersions[bestFit.id].height*width/imageWidth);
+					bestFit.width = maxImageWidth;
+					bestFit.height = Math.round(item.imageVersions[bestFit.id].height*maxImageWidth/width);
 					return bestFit;	//return the first one equal to or wider than $maxImageWidth
 				}
 			}
@@ -80,9 +79,8 @@ function g2icBestFit(item, maxImageWidth, maxImageHeight) {
 				if (height >= maxImageHeight) {
 					bestFit.id = hash_y[height];
 					bestFit.image = item.imageVersions[bestFit.id].url.image;
-					imageHeight = item.imageVersions[bestFit.id].height;
-					bestFit.height = height;
-					bestFit.width = Math.round(item.imageVersions[bestFit.id].width*height/imageHeight);
+					bestFit.height = maxImageHeight;
+					bestFit.width = Math.round(item.imageVersions[bestFit.id].width*maxImageHeight/height);
 					return bestFit;	//return the first one equal to or wider than $maxImageWidth
 				}
 			}

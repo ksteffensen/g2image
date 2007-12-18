@@ -34,9 +34,6 @@ if ($g2obj->error) {
 	g2ic_fatal_error($g2obj->error);
 }
 
-$g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions();
-$g2ic_imginsert_options = g2ic_get_imginsert_selectoptions();
-
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');
 $header = new g2ic_header($g2ic_options, $g2obj);
@@ -47,23 +44,23 @@ $html .= '<body id="g2image">
             <tr>
                 <td width="200px" valign="top">
 ';
-$html .= g2ic_make_html_album_tree($g2obj->tree);
+$html .= g2ic_make_html_album_tree($g2obj->tree, $g2ic_options);
 $html .= '                </td>
                 <td valign="top">
                     <div class="main">
 ';
 
-$html .= g2ic_make_html_album_insert_controls();
+$html .= g2ic_make_html_album_insert_controls($g2ic_options);
 
 if (empty($g2obj->dataItems)) {
 	$html .= g2ic_make_html_empty_page();
 }
 else {
-	$g2ic_page_navigation = g2ic_make_html_page_navigation($g2obj);
-	$html .= g2ic_make_html_display_options();
-	$html .= g2ic_make_html_image_insert_controls();
+	$g2ic_page_navigation = g2ic_make_html_page_navigation($g2obj, $g2ic_options);
+	$html .= g2ic_make_html_display_options($g2ic_options);
+	$html .= g2ic_make_html_image_insert_controls($g2ic_options);
 	$html .= $g2ic_page_navigation;
-	$html .= g2ic_make_html_image_navigation($g2obj);
+	$html .= g2ic_make_html_image_navigation($g2obj, $g2ic_options);
 	$html .= $g2ic_page_navigation;
 	
 }
@@ -89,8 +86,7 @@ echo $html;
  *
  * @return array $albuminsert_selectoptions The array of selection options for the "How to Insert?" select element
  */
-function g2ic_get_albuminsert_selectoptions(){
-	GLOBAL $g2ic_options;
+function g2ic_get_albuminsert_selectoptions($g2ic_options){
 
 	$albuminsert_selectoptions = array();
 
@@ -109,8 +105,7 @@ function g2ic_get_albuminsert_selectoptions(){
  *
  * @return array $imginsert_selectoptions The array of selection options for the "How to Insert?" select element
  */
-function g2ic_get_imginsert_selectoptions(){
-	GLOBAL $g2ic_options;
+function g2ic_get_imginsert_selectoptions($g2ic_options){
 
 	$imginsert_selectoptions = array();
 
@@ -146,7 +141,6 @@ function g2ic_magic_quotes_remove(&$array) {
  * @return string $html The "About" alert HTML
  */
 function g2ic_make_html_about($g2obj, $version){
-	global $g2ic_options;
 
 	$album_info = $g2obj->album;
 
@@ -164,7 +158,7 @@ function g2ic_make_html_about($g2obj, $version){
  *
  * @return string $html The album tree HTML
  */
-function g2ic_make_html_album_tree($tree){
+function g2ic_make_html_album_tree($tree, $g2ic_options){
 
 	// Album navigation
 	$html = '<div class="dtree">' . "\n"
@@ -175,7 +169,7 @@ function g2ic_make_html_album_tree($tree){
 	$parent = -1;
 	$node = 0;
 	foreach ($tree as $root => $trunk) {
-		$html .= g2ic_make_html_album_tree_branches($trunk, $root, $parent, $node);
+		$html .= g2ic_make_html_album_tree_branches($trunk, $root, $parent, $node, $g2ic_options);
 	}
 	$html .= '        document.write(d);' . "\n"
 	. '        //-->' . "\n"
@@ -191,17 +185,16 @@ function g2ic_make_html_album_tree($tree){
  * @param int $current_album id of current album
  * @param int $parent node of the parent album
  */
-function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$node) {
-	global $g2ic_options;
+function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$node, $g2ic_options) {
+
 	$album_title = $branch['title'];
 	$html = '        d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
-	. '?current_album=' . $current_album . '&sortby=' . $g2ic_options['sortby']
-	. '&images_per_page=' . $g2ic_options['images_per_page'] . '");' . "\n";
+	. '?current_album=' . $current_album . '");' . "\n";
 	if ($branch['children']) {
 		$parent = $node;
 		foreach ($branch['children'] as $album => $twig) {
 			$node++;
-			$html .= g2ic_make_html_album_tree_branches($twig, $album, $parent, $node);
+			$html .= g2ic_make_html_album_tree_branches($twig, $album, $parent, $node, $g2ic_options);
 		}
 	}
 	return $html;
@@ -212,8 +205,7 @@ function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$
  *
  * @return string $html The alignment selection HTML
  */
-function g2ic_make_html_alignment_select($name){
-	GLOBAL $g2ic_options;
+function g2ic_make_html_alignment_select($name, $g2ic_options){
 
 	// array for output
 	$align_options = array('none' => array('text' => T_('None')),
@@ -240,7 +232,7 @@ function g2ic_make_html_alignment_select($name){
 
 	$align_options[$g2ic_options['default_alignment']]['selected'] = TRUE;
 
-	$html = g2ic_make_html_select($name,$align_options);
+	$html = g2ic_make_html_select($name, $align_options);
 
 	return $html;
 }
@@ -250,9 +242,10 @@ function g2ic_make_html_alignment_select($name){
  *
  * @return string $html The HTML for the album insert controls
  */
-function g2ic_make_html_album_insert_controls(){
-	global $g2ic_albuminsert_options, $g2ic_options;
-
+function g2ic_make_html_album_insert_controls($g2ic_options){
+	
+	$g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions($g2ic_options);
+	
 	// "How to insert:" selector
 	$html = '        <fieldset id="album_additional_dialog">' . "\n"
 	. '            <legend>' . T_('Album Insertion Options for the entire current album: ') . $g2obj->album['title'] . '</legend>' . "\n"
@@ -267,7 +260,7 @@ function g2ic_make_html_album_insert_controls(){
 
 	// Alignment selection
 	$html .= '            <label for="album_alignment">' . T_('G2Image Alignment Class') . '</label>' . "\n"
-	. g2ic_make_html_alignment_select('album_alignment')
+	. g2ic_make_html_alignment_select('album_alignment', $g2ic_options)
 	. '            <br />' . "\n"
 
 	// "Insert" button
@@ -287,9 +280,10 @@ function g2ic_make_html_album_insert_controls(){
  *
  * @return string $html The HTML for the image controls
  */
-function g2ic_make_html_image_insert_controls(){
-	global $g2ic_imginsert_options, $g2ic_options;
-
+function g2ic_make_html_image_insert_controls($g2ic_options){
+	
+	$g2ic_imginsert_options = g2ic_get_imginsert_selectoptions($g2ic_options);
+	
 	// "How to insert:" selector
 	$html = '        <fieldset id="additional_dialog">' . "\n"
 	. '            <legend>' . T_('Individual Image Insertion Options for the images below') . '</legend>' . "\n"
@@ -304,9 +298,30 @@ function g2ic_make_html_image_insert_controls(){
 
 	// Alignment selection
 	$html .= '            <label for="alignment">' . T_('G2Image Alignment Class') . '</label>' . "\n"
-	. g2ic_make_html_alignment_select('alignment')
+	. g2ic_make_html_alignment_select('alignment', $g2ic_options);
+	
+	$html .= '                ' . T_('Show Advanced HTML Controls') . "\n"
+	. '                <input type="button"' . "\n"
+	. '                name="show_flash_slideshow_configuration"' . "\n"
+	. '                onclick="document.getElementById(\'advanced_html_controls\').style.display=\'inline\';"' . "\n"
+	. '                value="' . T_('Show') . '"' . "\n"
+	. '                />' . "\n"
+	. '                <input type="button"' . "\n"
+	. '                name="hide_flash_slideshow_configuration"' . "\n"
+	. '                onclick="document.getElementById(\'advanced_html_controls\').style.display=\'none\';"' . "\n"
+	. '                value="' . T_('Hide') . '"' . "\n"
+	. '                />' . "\n"
+	. '                <br />' . "\n"
+	. '                <div id="advanced_html_controls" style="display:none">' . "\n"
+	. '                    ' . T_('Width') . "\n"
+	. '                    <input type="text" name="max_width" size="4" maxlength="4" value="' . $g2ic_options['max_width'] . '" />' . "\n"
+	. '                    ' . T_('Height') . "\n"
+	. '                    <input type="text" name="max_height" size="4" maxlength="4" value="' . $g2ic_options['max_height'] . '" /><br />' . "\n"
+	. '                    '
+	. '                </div>'
 	. "        </fieldset>\n\n";
 
+	
 	// "Insert" button
 	$html .=  "        <fieldset>\n"
 	. '            <legend>' . T_('Press button to insert checked image(s)') . '</legend>' . "\n"
@@ -326,8 +341,7 @@ function g2ic_make_html_image_insert_controls(){
  *
  * @return string $html The HTML for the "Display Options" box
  */
-function g2ic_make_html_display_options(){
-	global $g2ic_options;
+function g2ic_make_html_display_options($g2ic_options){
 
 	$images_per_page_options = array(10,20,30,40,50,60,9999);
 
@@ -408,8 +422,7 @@ function g2ic_make_html_empty_page() {
  *
  * @return string $html The HTML for the image block
  */
-function g2ic_make_html_image_navigation($g2obj){
-	global $g2ic_options;
+function g2ic_make_html_image_navigation($g2obj, $g2ic_options){
 
 	$items = $g2obj->dataItems;
 
@@ -503,8 +516,7 @@ function g2ic_make_html_img($g2obj, $item) {
  *
  * @return string $html The HTML for navigating multiple pages of images
  */
-function g2ic_make_html_page_navigation($g2obj) {
-	global $g2ic_options;
+function g2ic_make_html_page_navigation($g2obj, $g2ic_options) {
 
 	$pages = ceil(count($g2obj->dataItems)/$g2ic_options['images_per_page']);
 	if ($g2ic_options['current_page'] > $pages) {
@@ -517,9 +529,7 @@ function g2ic_make_html_page_navigation($g2obj) {
 			$pagelinks[] = '        <strong>' . $count . '</strong>';
 		}
 		else {
-			$pagelinks[] = '        <a href="?g2ic_page=' . $count
-			. '&sortby=' . $g2ic_options['sortby'] . '&current_album=' . $g2obj->album['id']
-			. '&images_per_page='  . $g2ic_options['images_per_page'] . '">' . $count . '</a>';
+			$pagelinks[] = '        <a href="?g2ic_page=' . $count . '">' . $count . '</a>';
 		}
 	}
 
