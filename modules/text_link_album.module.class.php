@@ -19,7 +19,15 @@ class text_link_album{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, album, options){
-		return '<a href="' + album.base_item_url + '">' + form.text_link_album.value + '</a>';
+		var str = '<a href="' + album.base_item_url + '"';
+		if (form.html_target.value){
+			str += ' target="' + form.html_target.value + '"';
+		}
+		if (form.html_onclick.value){
+			str += ' onclick="' + form.html_onclick.value + '"';
+		}
+		str += '>' + form.text_link_album.value + '</a>';
+		return str;
 	}
 	//end module [{$name}]
 

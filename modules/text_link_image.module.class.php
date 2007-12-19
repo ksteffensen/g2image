@@ -19,7 +19,15 @@ class text_link_image{
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
-		return '<a href="' + item.base_item_url + '">' + form.text_link_image.value + '</a>';
+		var str = '<a href="' + item.base_item_url + '"';
+		if (form.html_target.value){
+			str += ' target="' + form.html_target.value + '"';
+		}
+		if (form.html_onclick.value){
+			str += ' onclick="' + form.html_onclick.value + '"';
+		}
+		str += '>' + form.text_link_image.value + '</a>';
+		return str;
 	}
     //end module [{$name}]
 
@@ -29,8 +37,6 @@ SCRIPTSTUFF;
 		return $script;
 
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * here we can add extra vars or settings for the rendering
@@ -50,8 +56,6 @@ SCRIPTSTUFF;
 	function select(){
 		return T_('Textlink to image') . ' ' . T_('(HTML)');
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * instead of a selectionbox a icon
@@ -60,8 +64,6 @@ SCRIPTSTUFF;
 	function icon(){
 		return '';
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * check for needed javascripts
@@ -69,16 +71,12 @@ SCRIPTSTUFF;
 	 */
 	function preeq(){
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 *
 	 */
 	function help(){
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * maybe a setup function
@@ -87,8 +85,6 @@ SCRIPTSTUFF;
 	function setup(){
 		return '';
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * for later,avoid compatibility problem
@@ -106,8 +102,6 @@ SCRIPTSTUFF;
 			return $data;
 		}
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 }
 //------------------------------------------------------------
 ?>
