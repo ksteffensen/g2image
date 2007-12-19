@@ -28,6 +28,13 @@ $g2ic_totalAvailableDataItems = null;
 $g2ic_session_variables = null;
 $g2ic_options['wpg2_valid'] = FALSE;
 $g2ic_options['wp_rel_path'] = '';
+echo $_SERVER['PHP_SELF'] . '<br />';
+echo dirname($_SERVER['PHP_SELF']) . '<br />';
+echo substr_count(dirname($_SERVER['PHP_SELF']), '/') . '<br />';
+echo str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/')) . '<br />';
+$g2ic_options['base_path'] = str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/'));
+echo $g2ic_options['base_path'] . '<br />';
+
 
 // Convert the variables from config.php to $g2ic_options array items.
 // Kept the original variable names in config.php for backwards compatibility with
@@ -148,8 +155,14 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 session_start();
 
 if (isset($_SESSION['g2ic_options'])) {
-	$g2ic_options = unserialize($_SESSION['g2ic_options']);
-	$g2ic_session_variables = $g2ic_options;
+	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
+	unset($g2ic_session_variables['base_path']);
+	unset($g2ic_session_variables['wpg2_valid']);
+	unset($g2ic_session_variables['wp_rel_path']);
+	unset($g2ic_session_variables['tinymce']);
+	unset($g2ic_session_variables['form']);
+	unset($g2ic_session_variables['field']);
+	$g2ic_options = $g2ic_options;
 }
 
 // Is this a TinyMCE window?
@@ -185,13 +198,6 @@ if(isset($_SESSION['g2ic_items'])) {
 		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
 	}
 }
-
-echo $_SERVER['PHP_SELF'] . '<br />';
-echo dirname($_SERVER['PHP_SELF']) . '<br />';
-echo substr_count(dirname($_SERVER['PHP_SELF']), '/') . '<br />';
-echo str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/')) . '<br />';
-$g2ic_options['base_path'] = str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/'));
-echo $g2ic_options['base_path'] . '<br />';
 
 $_SESSION['g2ic_options'] = serialize($g2ic_options);
 
