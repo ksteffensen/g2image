@@ -328,9 +328,10 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 
 	// Alignment selection
 	$html .= '			<label for="alignment">' . T_('G2Image Alignment Class') . '</label>' . "\n"
-	. g2ic_make_html_alignment_select('alignment', $g2ic_options);
+	. g2ic_make_html_alignment_select('alignment', $g2ic_options)
 	
-	$html .= '			' . T_('Show Advanced HTML Controls') . "\n"
+	// Advanced HTML Controls
+	. '			' . T_('Show Advanced HTML Controls') . "\n"
 	. '			<input type="button"' . "\n"
 	. '			name="show_flash_slideshow_configuration"' . "\n"
 	. '			onclick="document.getElementById(\'advanced_html_controls\').style.display=\'inline\';"' . "\n"
@@ -354,18 +355,24 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 	. '				' . T_('HTML Onclick:') . "\n"
 	. '				<input type="text" name="html_onclick" size="80" maxlength="1000" value="' . $g2ic_options['html_onclick'] . '" />' . "\n"
 	. '			</div>' . "\n"
-	. '		</fieldset>'  . "\n";
-
+	. '		</fieldset>'  . "\n"
 	
 	// "Insert" button
-	$html .=  '		<fieldset>' . "\n"
+	. '		<fieldset>' . "\n"
 	. '			<legend>' . T_('Press button to insert checked image(s)') . '</legend>' . "\n"
-	. '			<input disabled type="button"' . "\n"
-	. '			name="insert_button"' . "\n"
-	. '			onclick="g2icInsert();"' . "\n"
-	. '			value="' . T_('Insert') . '"' . "\n"
-	. '			/>' . "\n"
+	. '			<input disabled type="button"'
+	. ' name="insert_button"'
+	. ' onclick="g2icInsert();"'
+	. ' value="' . T_('Insert') . '"'
+	. ' />' . "\n"
 	. '			<a href="javascript: checkAllImages();">' . T_('Check all') . '</a> | <a href="javascript: uncheckAllImages();">' . T_('Uncheck all') . '</a>' . "\n"
+	. '			' . T_('Keep G2Image window open after insertion') . "\n"
+	. '			<input type="checkbox"'
+	. ' name="keep_window_open"';
+	if ($g2ic_options['keep_window_open']) {
+		$html .= ' CHECKED';
+	}
+	$html .= ' />' . "\n"
 	. '		</fieldset>' . "\n";
 
 	return $html;
