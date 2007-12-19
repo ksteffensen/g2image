@@ -15,7 +15,7 @@ class bbcode_thumbnail_only{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
@@ -23,7 +23,7 @@ class bbcode_thumbnail_only{
 		str += '[img]' + item.thumbnail_image + '[/img]';
 		return str;
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############

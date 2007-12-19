@@ -13,7 +13,7 @@ class thumbnail_image{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
@@ -42,7 +42,7 @@ class thumbnail_image{
 		}
 		return str;
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############

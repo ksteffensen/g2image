@@ -61,9 +61,9 @@ class all_modules{
 
 	function renderOptions($defaultAction, $module){
 			$class = ($defaultAction == $module ) ? "displayed" : "hidden" ;
-			$html = "            <div id=\"a_{$module}\" module=\"{$module}\" name=\"{$module}_textbox\"  class=\"{$class}_textbox\" >" . "\n";
+			$html = "			<div id=\"a_{$module}\" module=\"{$module}\" name=\"{$module}_textbox\"  class=\"{$class}_textbox\" >" . "\n";
 			$html .= call_user_func(array($module, "dialog"));
-			$html .= '            </div>' . "\n\n";
+			$html .= '			</div>' . "\n\n";
 			return $html;
 
 	}
@@ -113,13 +113,13 @@ class module_prototype{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
 		return " ---";
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############

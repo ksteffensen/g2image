@@ -62,6 +62,7 @@ $g2ic_options['use_full_path'] = $g2ic_use_full_path;
 $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
+$g2ic_options['keep_window_open'] = $g2ic_keep_window_open;
 
 // ==============================================================
 // WPG2 validation
@@ -150,8 +151,18 @@ session_start();
 
 if (isset($_SESSION['g2ic_options'])) {
 	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
+	// Unset any variables that we don't want overridden by those stored in
+	// the session variable.  These need to be unset so that a user 
+	// switching from one platform to another within one browser 
+	// session will not have problems because of specific settings from 
+	// another platform.
 	unset($g2ic_session_variables['base_path']);
 	unset($g2ic_session_variables['wpg2_valid']);
+	unset($g2ic_session_variables['embedded_mode']);
+	unset($g2ic_session_variables['use_full_path']);
+	unset($g2ic_session_variables['embed_uri']);
+	unset($g2ic_session_variables['gallery2_uri']);
+	unset($g2ic_session_variables['gallery2_path']);
 	unset($g2ic_session_variables['wp_rel_path']);
 	unset($g2ic_session_variables['tinymce']);
 	unset($g2ic_session_variables['form']);

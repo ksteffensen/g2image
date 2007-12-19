@@ -13,7 +13,7 @@ class drupal_g2_filter_album{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
@@ -29,7 +29,7 @@ class drupal_g2_filter_album{
 
 		return str;
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -52,12 +52,12 @@ SCRIPTSTUFF;
 		$version = $plugin->getVersion();
 		$version_comparison = GalleryRepositoryUtilities::compareRevisions($version,'1.0.9');
 		if ($version_comparison != 'older') {
-			$html = '                <label for="drupal_exactsize_album">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
-			. '                <input type="text" name="drupal_exactsize_album" size="84" maxlength="150" value="" />' . "\n"
-			. '                <br />' . "\n";
+			$html = '				<label for="drupal_exactsize_album">' . T_('Drupal G2 Filter "exactsize" attribute (Leave blank for no exactsize attribute)') . '<br /></label>' . "\n"
+			. '				<input type="text" name="drupal_exactsize_album" size="84" maxlength="150" value="" />' . "\n"
+			. '				<br />' . "\n";
 		}
 		else {
-			$html = '                <input type="hidden" name="drupal_exactsize_album" value="" />' . "\n";
+			$html = '				<input type="hidden" name="drupal_exactsize_album" value="" />' . "\n";
 		}
 
 		return $html;
