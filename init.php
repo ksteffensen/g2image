@@ -17,15 +17,17 @@
 require_once('config.php');
 
 // ====( Initialize Variables )=================================
+$g2ic_options['tinymce'] = 0;
+$g2ic_options['form'] = '';
+$g2ic_options['field'] = '';
+$g2ic_options['current_album'] = null;
 $g2ic_options['current_page'] = 1;
+$g2ic_tree = null;
+$g2ic_items = null;
+$g2ic_totalAvailableDataItems = null;
+$g2ic_session_variables = null;
 $g2ic_options['wpg2_valid'] = FALSE;
 $g2ic_options['wp_rel_path'] = '';
-echo $_SERVER['PHP_SELF'] . '<br />';
-echo dirname($_SERVER['PHP_SELF']) . '<br />';
-echo substr_count(dirname($_SERVER['PHP_SELF']), '/') . '<br />';
-echo str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/')) . '<br />';
-$g2ic_options['base_path'] = str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/'));
-echo $g2ic_options['base_path'] . '<br />';
 
 // Convert the variables from config.php to $g2ic_options array items.
 // Kept the original variable names in config.php for backwards compatibility with
@@ -59,15 +61,6 @@ $g2ic_options['use_full_path'] = $g2ic_use_full_path;
 $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
-$g2ic_options['tinymce'] = 0;
-$g2ic_options['form'] = '';
-$g2ic_options['field'] = '';
-$g2ic_options['current_album'] = null;
-$g2ic_options['current_page'] = 1;
-$g2ic_tree = null;
-$g2ic_items = null;
-$g2ic_totalAvailableDataItems = null;
-$g2ic_session_variables = null;
 
 // ==============================================================
 // WPG2 validation
@@ -192,6 +185,13 @@ if(isset($_SESSION['g2ic_items'])) {
 		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
 	}
 }
+
+echo $_SERVER['PHP_SELF'] . '<br />';
+echo dirname($_SERVER['PHP_SELF']) . '<br />';
+echo substr_count(dirname($_SERVER['PHP_SELF']), '/') . '<br />';
+echo str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/')) . '<br />';
+$g2ic_options['base_path'] = str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/'));
+echo $g2ic_options['base_path'] . '<br />';
 
 $_SESSION['g2ic_options'] = serialize($g2ic_options);
 
