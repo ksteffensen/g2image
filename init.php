@@ -22,8 +22,9 @@ $g2ic_options['wpg2_valid'] = FALSE;
 $g2ic_options['wp_rel_path'] = '';
 echo $_SERVER['PHP_SELF'] . '<br />';
 echo dirname($_SERVER['PHP_SELF']) . '<br />';
-echo substr_count(dirname($_SERVER['PHP_SELF']), "/") . '<br />';
-$g2ic_options['base_path'] = str_repeat("../", substr_count(dirname($_SERVER['PHP_SELF']), "/"));
+echo substr_count(dirname($_SERVER['PHP_SELF']), '/') . '<br />';
+echo str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/')) . '<br />';
+$g2ic_options['base_path'] = str_repeat('../', substr_count(dirname($_SERVER['PHP_SELF']), '/'));
 
 // Convert the variables from config.php to $g2ic_options array items.
 // Kept the original variable names in config.php for backwards compatibility with
