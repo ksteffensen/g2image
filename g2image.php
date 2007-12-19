@@ -31,7 +31,7 @@ $BackendApiClass = 'Gallery2' . 'BackendApi';
 
 $g2obj = new $BackendApiClass($g2ic_options, $g2ic_tree, $g2ic_items, $g2ic_totalAvailableDataItems);
 if ($g2obj->error) {
-	g2ic_fatal_error($g2obj->error);
+	g2ic_fatal_error($g2obj->error, $g2ic_options, $g2obj);
 }
 
 $_SESSION['g2ic_tree'] =  serialize($g2obj->tree);
@@ -617,9 +617,9 @@ function g2ic_make_html_select($name,$options,$onchange=null) {
 	return $html;
 }
 
-function g2ic_fatal_error($str){
+function g2ic_fatal_error($str, $g2ic_options, $g2obj){
 	require_once('header.class.php');
-	$header = new g2ic_header($g2ic_options);
+	$header = new g2ic_header($g2ic_options, $g2obj);
 	echo $header->html;
 	echo $str . "\n";
 	echo '</body>
