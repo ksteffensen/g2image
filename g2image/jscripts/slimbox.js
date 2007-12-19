@@ -192,4 +192,4 @@ var Lightbox = {
 
 // Hack to make Slimbox work within a TinyMCE popup window
 // Changed the window.addEvent from domready to load
-window.addEvent('load', Lightbox.init.bind(Lightbox));
+window.addEvent('domready', Lightbox.init.bind(Lightbox));
