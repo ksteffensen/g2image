@@ -203,7 +203,7 @@ function showThumbnails(){
 	}
 }
 
-function insertHtml(html, g2ic_form, g2ic_field) {
+function insertHtml(html, g2ic_form, g2ic_field, keep_open) {
 	if(window.opener){
 		if(window.tinyMCE)
 			window.opener.tinyMCE.execCommand("mceInsertContent",true,html);
@@ -211,7 +211,10 @@ function insertHtml(html, g2ic_form, g2ic_field) {
 			window.opener.FCK.InsertHtml(html);
 		else
 			insertAtCursor(window.opener.document.forms[g2ic_form].elements[g2ic_field],html);
-		window.close();
+		if (keep_open)
+			location.reload();
+		else
+			window.close();
 	}else{
 		var textA = document.getElementById("outputArea");
 		if(!textA){

@@ -86,7 +86,7 @@ $g2ic_max_height = 640;
 $g2ic_html_target = '';
 $g2ic_custom_target = 'test';
 $g2ic_html_onclick = '';
-$g2ic_keep_window_open = false;
+$g2ic_keep_window_open = FALSE;
 
 // Change this to determine where the alignment class will be inserted.
 // Valid options are 'img' to have it inserted as <img class=...> or

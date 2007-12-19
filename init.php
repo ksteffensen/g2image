@@ -164,9 +164,6 @@ if (isset($_SESSION['g2ic_options'])) {
 	unset($g2ic_session_variables['gallery2_uri']);
 	unset($g2ic_session_variables['gallery2_path']);
 	unset($g2ic_session_variables['wp_rel_path']);
-	unset($g2ic_session_variables['tinymce']);
-	unset($g2ic_session_variables['form']);
-	unset($g2ic_session_variables['field']);
 	foreach ($g2ic_session_variables as $key=>$value) {
 		$g2ic_options[$key] = $value;
 	}

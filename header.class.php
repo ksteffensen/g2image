@@ -88,8 +88,7 @@ class g2ic_header {
 			alert(form.albuminsert.value);
 			htmlCode += \'Error\';
 		}
-
-		insertHtml(htmlCode, options.form, options.field);
+		insertHtml(htmlCode, options.form, options.field, form.keep_window_open.checked);
 	}
 
 	function insertItems(items, album, options){
@@ -153,7 +152,7 @@ class g2ic_header {
 				htmlCode += \'Error\';
 			}
 		}
-		insertHtml(htmlCode, options.form, options.field);
+		insertHtml(htmlCode, options.form, options.field, form.keep_window_open.checked);
 	}
 	// -->
 	</script>
