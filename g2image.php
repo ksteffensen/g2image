@@ -116,7 +116,7 @@ function g2ic_get_imginsert_selectoptions($g2ic_options){
 	$imginsert_selectoptions = array();
 
 	foreach($g2ic_options['image_modules'] as $moduleName){
-		 $imginsert_selectoptions[$moduleName] = array( "text" => all_modules::call($moduleName, "select") ) ;
+		 $imginsert_selectoptions[$moduleName] = array('text' => all_modules::call($moduleName, 'select')) ;
 	}
 
 	if ($imginsert_selectoptions[$g2ic_options['imginsert']]) {
@@ -285,7 +285,6 @@ function g2ic_make_html_album_insert_controls($g2ic_options){
 	. g2ic_make_html_select('albuminsert', $g2ic_albuminsert_options, 'toggleAlbumTextboxes();')
 	. '			<br />' . "\n";
 
-	$html .= "  \n";
 	foreach($g2ic_options['album_modules'] as $moduleName){
 		$html .= all_modules::renderOptions($g2ic_options['albuminsert'], $moduleName);
 	}
@@ -323,7 +322,6 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 	. g2ic_make_html_select('imginsert', $g2ic_imginsert_options, 'toggleTextboxes();')
 	. '			<br />' . "\n";
 
-	$html .= "  \n";
 	foreach($g2ic_options['image_modules'] as $moduleName){
 		$html .= all_modules::renderOptions($g2ic_options['imginsert'], $moduleName);
 	}

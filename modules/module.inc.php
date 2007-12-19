@@ -63,7 +63,7 @@ class all_modules{
 			$class = ($defaultAction == $module ) ? "displayed" : "hidden" ;
 			$html = "			<div id=\"a_{$module}\" module=\"{$module}\" name=\"{$module}_textbox\"  class=\"{$class}_textbox\" >" . "\n";
 			$html .= call_user_func(array($module, "dialog"));
-			$html .= '			</div>' . "\n\n";
+			$html .= '			</div>' . "\n";
 			return $html;
 
 	}
