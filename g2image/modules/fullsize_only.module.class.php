@@ -23,9 +23,14 @@ class fullsize_only{
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<img src="' + item.fullsize_image
-		+ '" alt="' + item.title
-		+ '" title="' + item.summary + '"';
+		str += '<img src="' + item.fullsize_image + '"';
+		if (form.html_onclick.value){
+			str += ' onclick="' + form.html_onclick.value + '"';
+		}
+		str += ' width="' + item.fullsize_width + '"'
+		+ ' height="' + item.fullsize_height + '"'
+		+ ' alt="' + item.title + '"'
+		+ ' title="' + item.summary + '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
 			str += ' class="' + form.alignment.value + '"';
 		}
@@ -43,8 +48,6 @@ SCRIPTSTUFF;
 		return $script;
 
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * here we can add extra vars or settings for the rendering
@@ -53,8 +56,6 @@ SCRIPTSTUFF;
 	function dialog(){
 		return '';
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * fill the select box to choose this renderer
@@ -63,8 +64,6 @@ SCRIPTSTUFF;
 	function select(){
 		return T_('Fullsized image only - no link') . ' ' . T_('(HTML)');
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * instead of a selectionbox a icon
@@ -73,8 +72,6 @@ SCRIPTSTUFF;
 	function icon(){
 		return '';
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * check for needed javascripts
@@ -82,16 +79,12 @@ SCRIPTSTUFF;
 	 */
 	function preeq(){
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 *
 	 */
 	function help(){
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * maybe a setup function
@@ -100,8 +93,6 @@ SCRIPTSTUFF;
 	function setup(){
 		return '';
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 
 	/**
 	 * for later,avoid compatibility problem
@@ -119,8 +110,5 @@ SCRIPTSTUFF;
 			return $data;
 		}
 	}
-	//------------------------------------------------------------
-	//------------------------------------------------------------
 }
-//------------------------------------------------------------
 ?>

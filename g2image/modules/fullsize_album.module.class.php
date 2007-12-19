@@ -21,11 +21,18 @@ class fullsize_album{
 		if ((form.alignment.value != 'none') && (options.class_mode == 'div')){
 			str += '<div class="' + form.alignment.value + '">';
 		}
-		str += '<a href="' + album.base_item_url
-		+ '"><img src="' + item.fullsize_image
-		+ '" alt="' + item.title
-		+ '" title="' + item.summary
-		+ '"';
+		str += '<a href="' + album.base_item_url + '"';
+		if (form.html_target.value){
+			str += ' target="' + form.html_target.value + '"';
+		}
+		if (form.html_onclick.value){
+			str += ' onclick="' + form.html_onclick.value + '"';
+		}
+		str += '><img src="' + item.fullsize_image + '"'
+		+ ' width="' + item.fullsize_width + '"'
+		+ ' height="' + item.fullsize_height + '"'
+		+ ' alt="' + item.title + '"'
+		+ ' title="' + item.summary + '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
 			str += ' class="' + form.alignment.value + '"';
 		}

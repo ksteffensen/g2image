@@ -24,13 +24,12 @@ class thumbnail_lightbox{
 		str += '<a href="' + item.fullsize_image + '" rel="lightbox';
 		if (form.lightbox_group.value)
 			str += '[' + form.lightbox_group.value + ']';
-		str += '" title="' + item.description
-		+ '"><img src="' + item.thumbnail_image
-		+ '" width ="' + item.thumbnail_width
-		+ '" height="' + item.thumbnail_height
-		+ '" alt="' + item.title
-		+ '" title="' + item.summary
-		+ '"';
+		str += '" title="' + item.description + '"'
+		+ '><img src="' + item.thumbnail_image + '"'
+		+ ' width ="' + item.thumbnail_width + '"'
+		+ ' height="' + item.thumbnail_height + '"'
+		+ ' alt="' + item.title + '"'
+		+ ' title="' + item.summary + '"';
 		if ((form.alignment.value != 'none') && (options.class_mode == 'img')){
 			str += ' class="' + form.alignment.value + '"';
 		}

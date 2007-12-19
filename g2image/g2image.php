@@ -124,6 +124,32 @@ function g2ic_get_imginsert_selectoptions($g2ic_options){
 }
 
 /**
+ * Make the array of selection options for the "HTML Target" select element
+ *
+ * @return array $imginsert_selectoptions The array of selection options for the "HTML Target" select element
+ */
+function g2ic_make_html_target_select($name, $g2ic_options) {
+
+	$html_target_options = array('' => array('text' => T_('None')),
+		'_blank' => array('text' => T_('_blank - New Window')),
+		'_parent' => array('text' => T_('_parent - Parent Frame')),
+		'_self' => array('text' => T_('_self - Same Window/Frame')),
+		'_top' => array('text' => T_('_top - Top Frame')));
+
+	if ($g2ic_options['custom_target']){
+		$html_target_options = array_merge($html_target_options, array($g2ic_options['custom_target'] => array('text' => $g2ic_options['custom_target'])));
+	}
+	
+	if ($html_target_options[$g2ic_options['html_target']]) {
+		$html_target_options[$g2ic_options['html_target']]['selected'] = TRUE;
+	}
+	
+	$html = g2ic_make_html_select($name, $html_target_options);
+
+	return $html;
+}
+
+/**
  * Remove "Magic Quotes"
  *
  * @param array &$array POST or GET with magic quotes
@@ -317,12 +343,15 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
 	. '                />' . "\n"
 	. '                <br />' . "\n"
 	. '                <div id="advanced_html_controls" style="display:none">' . "\n"
-	. '                    ' . T_('Fullsize Image Maximum Dimensions - Leave blank to use the original') . '<br />' . "\n"
+	. '                    ' . T_('Fullsize Image Maximum Dimensions - Leave both blank to use the original') . '<br />' . "\n"
 	. '                    ' . T_('Max Width:') . "\n"
 	. '                    <input type="text" name="max_width" size="4" maxlength="4" value="' . $g2ic_options['max_width'] . '" />' . "\n"
 	. '                    ' . T_('Max Height:') . "\n"
 	. '                    <input type="text" name="max_height" size="4" maxlength="4" value="' . $g2ic_options['max_height'] . '" /><br />' . "\n"
-	. '                    '
+	. '                    ' . T_('HTML Target: ') . "\n"
+	. g2ic_make_html_target_select('html_target', $g2ic_options) . '<br />' . "\n"
+	. '                    ' . T_('HTML Onclick:') . "\n"
+	. '                    <input type="text" name="html_onclick" size="80" maxlength="1000" value="' . $g2ic_options['html_onclick'] . '" />' . "\n"
 	. '                </div>'
 	. "        </fieldset>\n\n";
 

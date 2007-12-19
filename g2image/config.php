@@ -83,6 +83,9 @@ $g2ic_custom_url = 'http://';
 
 $g2ic_max_width = 640;
 $g2ic_max_height = 640;
+$g2ic_html_target = '';
+$g2ic_custom_target = 'test';
+$g2ic_html_onclick = '';
 
 // Change this to determine where the alignment class will be inserted.
 // Valid options are 'img' to have it inserted as <img class=...> or
