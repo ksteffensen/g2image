@@ -211,9 +211,7 @@ function insertHtml(html, g2ic_form, g2ic_field, keep_open) {
 			window.opener.FCK.InsertHtml(html);
 		else
 			insertAtCursor(window.opener.document.forms[g2ic_form].elements[g2ic_field],html);
-		if (keep_open)
-			location.reload();
-		else
+		if (!keep_open)
 			window.close();
 	}else{
 		var textA = document.getElementById("outputArea");
