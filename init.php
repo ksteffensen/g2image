@@ -156,7 +156,9 @@ if (isset($_SESSION['g2ic_options'])) {
 	unset($g2ic_session_variables['tinymce']);
 	unset($g2ic_session_variables['form']);
 	unset($g2ic_session_variables['field']);
-	$g2ic_options = $g2ic_options;
+	foreach ($g2ic_session_variables as $key=>$value) {
+		$g2ic_options[$key] = $value;
+	}
 }
 
 // Is this a TinyMCE window?
