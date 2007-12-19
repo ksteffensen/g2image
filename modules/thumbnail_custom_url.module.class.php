@@ -13,7 +13,7 @@ class thumbnail_custom_url{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
@@ -42,7 +42,7 @@ class thumbnail_custom_url{
 		}
 		return str;
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -57,9 +57,9 @@ SCRIPTSTUFF;
 	 */
 	function dialog(){
 		global $g2ic_options;
-		$html = '                <label for="custom_url_thumbnail">' . T_('Custom URL') . '<br /></label>' . "\n"
-		. '                <input type="text" name="custom_url_thumbnail" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
-		. '                <br />' . "\n";
+		$html = '				<label for="custom_url_thumbnail">' . T_('Custom URL') . '<br /></label>' . "\n"
+		. '				<input type="text" name="custom_url_thumbnail" size="84" maxlength="150" value="' . $g2ic_options['custom_url'] . '" />' . "\n"
+		. '				<br />' . "\n";
 		return $html;
 	}
 

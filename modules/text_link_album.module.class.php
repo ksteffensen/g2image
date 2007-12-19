@@ -43,9 +43,9 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '                <label for="text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '                <input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
-		. '                <br />' . "\n";
+		$html = '				<label for="text_link_album">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '				<input type="text" name="text_link_album" size="84" maxlength="150" value="" />' . "\n"
+		. '				<br />' . "\n";
 		return $html;
 	}
 

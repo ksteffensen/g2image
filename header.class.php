@@ -28,7 +28,8 @@ class g2ic_header {
 	<link rel="stylesheet" href="css/g2image.css" type="text/css" />
 	<link rel="stylesheet" href="css/dtree.css" type="text/css" />
 	<link rel="stylesheet" href="css/slimbox.css" type="text/css" media="screen" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+';
 		if($options['tinymce'] && $options['wpg2_valid']) {
 			$this->html .= "	<script language='javascript' type='text/javascript' src='../../../../wp-includes/js/tinymce/tiny_mce_popup.js'></script>\n";
 		}

@@ -15,13 +15,13 @@ class bbcode_text_link_image{
 		// caution: \n in javascript strings: \\n
 //## JAVASCRIPT #################
 		$script = <<<SCRIPTSTUFF
-    //module [{$name}]
+	//module [{$name}]
 	insertFunctions["{$name}"] = module_{$name};
 
 	function module_{$name}(stack, form, item, album, options){
 		return '[url=' + item.base_item_url + ']' + form.bbcode_text_link_image.value + '[/url]';
 	}
-    //end module [{$name}]
+	//end module [{$name}]
 
 SCRIPTSTUFF;
 //## END JAVASCRIPT #############
@@ -37,9 +37,9 @@ SCRIPTSTUFF;
 	 *
 	 */
 	function dialog(){
-		$html = '                <label for="bbcode_text_link_image">' . T_('Text for text link') . '<br /></label>' . "\n"
-		. '                <input type="text" name="bbcode_text_link_image" size="84" maxlength="150" value="" />' . "\n"
-		. '                <br />' . "\n";
+		$html = '				<label for="bbcode_text_link_image">' . T_('Text for text link') . '<br /></label>' . "\n"
+		. '				<input type="text" name="bbcode_text_link_image" size="84" maxlength="150" value="" />' . "\n"
+		. '				<br />' . "\n";
 		return $html;
 	}
 
