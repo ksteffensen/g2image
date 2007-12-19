@@ -155,8 +155,8 @@ class g2ic_header {
 		}
 		insertHtml(htmlCode, options.form, options.field);
 	}
-    // -->
-    </script>
+	// -->
+	</script>
 </head>
 ';
 		return;
