@@ -685,5 +685,5 @@ function g2ic_add_tabs ($level) {
 	return $retVal;
 }
 
-//echo debug::show($g2obj, 'Backend Object');
+echo debug::show($g2obj, 'Backend Object');
 ?>
