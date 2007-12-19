@@ -370,9 +370,12 @@ class Gallery2BackendApi{
 		
 		if(!$dsn['embedded_mode'])
 			$dsn['gallery2_uri'] = '/' . $dsn['gallery2_path'] . 'main.php';
+		echo $dsn['base_path'] . '<br />';
+		echo $dsn['gallery2_path'] . '<br />';
 		if(!$dsn['use_full_path'])
 			$dsn['gallery2_path'] = $dsn['base_path'] . $dsn['gallery2_path'];
-
+		echo $dsn['gallery2_path'] . '<br />';
+			
 		if(file_exists($dsn['gallery2_path'].'embed.php')) {
 			require_once($dsn['gallery2_path'].'embed.php');
 			if ($dsn['embedded_mode']){
