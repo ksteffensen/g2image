@@ -211,8 +211,12 @@ function insertHtml(html, g2ic_form, g2ic_field, keep_open) {
 			window.opener.FCK.InsertHtml(html);
 		else
 			insertAtCursor(window.opener.document.forms[g2ic_form].elements[g2ic_field],html);
-		if (keep_open)
-			window.focus();
+		if (keep_open) {
+			// window.focus is required to pull the focus back to the G2Image window
+			// after inserting with TinyMCE, if keeping the window open
+			if(window.focus)
+				window.focus();
+		}
 		else
 			window.close();
 	}else{

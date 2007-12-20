@@ -149,7 +149,7 @@ class Gallery2BackendApi{
 			$this->dataItems = $data_items;
 			$this->totalAvailableDataItems = $totalAvailableDataItems;
 		}
-		if (!$album_titems) {
+		if (!$album_items) {
 			if ($dsn['build_all_album_items']) {
 				list($ret, $this->albumItems) = $this->getItems(null, $dsn['album_sortby'], null, null, 'album', true);
 				$this->_check($ret);
@@ -204,10 +204,10 @@ class Gallery2BackendApi{
 	  */
 	function getItems($albumID, $sortby=null, $current_page=null, $images_per_page=null, $child_type='data', $get_all=false){
 
-		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id, $total_number_child_items) = $this->_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type, $get_all);
+		list($ret, $child_items, $thumbnails, $fullsizes, $resizes, $id, $total_number_child_items) = Gallery2BackendApi::_getChildren($albumID, $sortby, $current_page, $images_per_page, $child_type, $get_all);
 		if ($ret) {return array($ret, null);}
 		if (!empty($child_items)) {
-			list ($ret, $items) = $this->_normalize($child_items, $thumbnails, $fullsizes, $resizes);
+			list ($ret, $items) = Gallery2BackendApi::_normalize($child_items, $thumbnails, $fullsizes, $resizes);
 			if ($ret) {return array($ret, null);}
 		}
 		else{
@@ -240,10 +240,10 @@ class Gallery2BackendApi{
 					$ids[$key] = $albumSourceImage[0]->getParentId();
 				}
 			}
-		list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($ids);
+		list ($ret, $thumbnails, $fullsizes, $resizes) = Gallery2BackendApi::_fetchAllVersionsByItemIds($ids);
 		if ($ret) {return array($ret, null);}
 		if (!empty($items)) {
-			list ($ret, $normalized_items) = $this->_normalize($items, $thumbnails, $fullsizes, $resizes);
+			list ($ret, $normalized_items) = Gallery2BackendApi::_normalize($items, $thumbnails, $fullsizes, $resizes);
 			if ($ret) {return array($ret, null);}
 		}
 		else{
@@ -267,7 +267,7 @@ class Gallery2BackendApi{
 		if ($ret) {return array($ret, null);}
 		list ($ret, $tree_items) = GalleryCoreApi::loadEntitiesById($album_tree_ids);
 		if ($ret) {return array($ret, null);}
-		list ($ret, $tree) = $this->_normalizeTree($base, $album_tree, $tree_items, $sortby);
+		list ($ret, $tree) = Gallery2BackendApi::_normalizeTree($base, $album_tree, $tree_items, $sortby);
 		if ($ret) {return array($ret, null);}
 		return array(null, $tree);
 	}
@@ -475,7 +475,7 @@ class Gallery2BackendApi{
 			list ($ret, $child_items) = GalleryCoreApi::loadEntitiesById($child_ids);
 			if ($ret) {return array($ret, null, null, null, null, null);}
 			if ($sortby && count($child_ids)>1) {
-				$child_ids = $this->_sortItems($child_items, $sortby);
+				$child_ids = Gallery2BackendApi::_sortItems($child_items, $sortby);
 				$reload_items = true;
 			}
 			if ($child_type == 'album') {
@@ -496,7 +496,7 @@ class Gallery2BackendApi{
 				$reload_items = true;
 			}
 			elseif ($current_page && $images_per_page) {
-				$child_ids = $this->_cutItems($child_ids, $current_page, $images_per_page);
+				$child_ids = Gallery2BackendApi::_cutItems($child_ids, $current_page, $images_per_page);
 				$reload_items = true;
 			}
 			if ($reload_items) {
@@ -504,10 +504,10 @@ class Gallery2BackendApi{
 				if ($ret) {return array($ret, null, null, null, null, null);}
 			}
 			if ($child_type == 'album') {
-				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($source_image_ids);
+				list ($ret, $thumbnails, $fullsizes, $resizes) = Gallery2BackendApi::_fetchAllVersionsByItemIds($source_image_ids);
 			}
 			else {
-				list ($ret, $thumbnails, $fullsizes, $resizes) = $this->_fetchAllVersionsByItemIds($child_ids);
+				list ($ret, $thumbnails, $fullsizes, $resizes) = Gallery2BackendApi::_fetchAllVersionsByItemIds($child_ids);
 			}
 			if ($ret) {return array($ret, null, null, null, null, null);}
 			return array(null, $child_items, $thumbnails, $fullsizes, $resizes, $id, $total_number_child_items); // id may differ if it is a derivative $id given as param
@@ -701,7 +701,7 @@ class Gallery2BackendApi{
 			if (empty($data['title'])) {
 				$data['title'] = $data["name"];
 			}
-			$data['base_item_url'] = $this->_generateUrl($data["id"], 'pagelink');
+			$data['base_item_url'] = Gallery2BackendApi::_generateUrl($data["id"], 'pagelink');
 			$data["entityType"] = $item->getEntityType();
 			if ($data["entityType"] != "GalleryAlbumItem") {
 				$data["mimeType"] = $item->getMimeType();
@@ -735,7 +735,7 @@ class Gallery2BackendApi{
 			$image_versions = array();
 			if (!empty($thumbnails[$id])) {
 				$image_version = $thumbnails[$id];
-				$normalized_image_version = $this->_normalizeVersion($image_version);
+				$normalized_image_version = Gallery2BackendApi::_normalizeVersion($image_version);
 				$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
 				$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
 				$image_versions[$normalized_image_version['id']] = $normalized_image_version;
@@ -744,7 +744,7 @@ class Gallery2BackendApi{
 			// types, will need to do entity type test on resizes
 			if (!empty($resizes[$id])) {
 				foreach($resizes[$id] as $image_version){
-					$normalized_image_version = $this->_normalizeVersion($image_version);
+					$normalized_image_version = Gallery2BackendApi::_normalizeVersion($image_version);
 					$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
 					$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
 					$image_versions[$normalized_image_version['id']] = $normalized_image_version;
@@ -753,7 +753,7 @@ class Gallery2BackendApi{
 			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
 			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {
 				$image_version = $fullsizes[$id];
-				$normalized_image_version = $this->_normalizeVersion($image_version);
+				$normalized_image_version = Gallery2BackendApi::_normalizeVersion($image_version);
 				$xhash[$normalized_image_version['width']] = $normalized_image_version['id'];
 				$yhash[$normalized_image_version['height']] = $normalized_image_version['id'];			
 				$image_versions[$normalized_image_version['id']] = $normalized_image_version;
@@ -792,8 +792,8 @@ class Gallery2BackendApi{
 			$h = null;
 		}
 		$sized = array();
-		$url['image'] = $this->_generateUrl($id, 'image');
-		$url['pagelink'] = $this->_generateUrl($id, 'pagelink');
+		$url['image'] = Gallery2BackendApi::_generateUrl($id, 'image');
+		$url['pagelink'] = Gallery2BackendApi::_generateUrl($id, 'pagelink');
 		// php_path is needed for modifying images by external applications
 		list ($ret, $php_path) = $version->fetchPath();
 		if ($entityType != "GalleryAlbumItem") {
@@ -843,10 +843,10 @@ class Gallery2BackendApi{
 		}
 		$normalized_album_tree[$base]['sorted_by'] = $sortby;
 		if(count($album_tree)>0){
-			list ($ret, $normalized_album_tree[$base]['children']) = $this->_normalizeTreeBranches($album_tree, $tree, $sortby);
+			list ($ret, $normalized_album_tree[$base]['children']) = Gallery2BackendApi::_normalizeTreeBranches($album_tree, $tree, $sortby);
 			if ($ret) {return array($ret, null);}
 			if (count($normalized_album_tree[$base]['children'])>1) { 
-				$normalized_album_tree[$base]['children'] = $this->_sortNormalizedTreeBranches($normalized_album_tree[$base]['children'], $sortby);
+				$normalized_album_tree[$base]['children'] = Gallery2BackendApi::_sortNormalizedTreeBranches($normalized_album_tree[$base]['children'], $sortby);
 			}
 		}
 		return array (null, $normalized_album_tree);
@@ -877,10 +877,10 @@ class Gallery2BackendApi{
 				$normalized_album_tree[$album]['source_image_id'] = null;
 			}
 			if(count($branch)>0){
-				list ($ret, $normalized_album_tree[$album]['children']) = $this->_normalizeTreeBranches($branch, $tree, $sortby);
+				list ($ret, $normalized_album_tree[$album]['children']) = Gallery2BackendApi::_normalizeTreeBranches($branch, $tree, $sortby);
 				if ($ret) {return array($ret, null);}
 				if (count($normalized_album_tree[$album]['children'])>1) { 
-					$normalized_album_tree[$album]['children'] = $this->_sortNormalizedTreeBranches($normalized_album_tree[$album]['children'], $sortby);
+					$normalized_album_tree[$album]['children'] = Gallery2BackendApi::_sortNormalizedTreeBranches($normalized_album_tree[$album]['children'], $sortby);
 				}
 			}
 		}
