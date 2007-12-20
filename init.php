@@ -151,6 +151,7 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 session_start();
 
 if (isset($_SESSION['g2ic_options'])) {
+	echo $_SESSION['g2ic_options'];
 	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
 	// Unset any variables that we don't want overridden by those stored in
 	// the session variable.  These need to be unset so that a user 
