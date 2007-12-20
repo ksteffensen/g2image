@@ -96,8 +96,6 @@ else {
 	$g2obj->__destruct();
 }
 
-//$BackendApiClass::finished();  TODO fix for PHP4
-
 // ====( Functions - Alphabetical by Function Name)
 
 /**
