@@ -37,9 +37,9 @@ if ($g2obj->error) {
 	g2ic_fatal_error($head.$body, $g2ic_options, $g2obj);
 }
 
-$_SESSION['g2ic_tree'] =  serialize($g2obj->tree);
-$_SESSION['g2ic_items'] =  serialize($g2obj->dataItems);
-$_SESSION['g2ic_totalAvailableDataItems'] =  $g2obj->totalAvailableDataItems;
+$_SESSION['g2ic_tree_array'] =  serialize($g2obj->tree);
+$_SESSION['g2ic_items_array'] =  serialize($g2obj->dataItems);
+$_SESSION['g2ic_totalAvailableDataItems_value'] =  $g2obj->totalAvailableDataItems;
 
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');

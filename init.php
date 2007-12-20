@@ -191,16 +191,16 @@ foreach ($g2ic_options as $key=>$value) {
 	}
 }
 
-if(isset($_SESSION['g2ic_tree'])) {
+if(isset($_SESSION['g2ic_tree_array'])) {
 	if (!isset($_REQUEST['refresh_album_tree']) && ($g2ic_session_variables['current_backend'] == $g2ic_options['current_backend']) && ($g2ic_session_variables['album_sortby'] == $g2ic_options['album_sortby'])) {
-		$g2ic_tree = unserialize($_SESSION['g2ic_tree']);
+		$g2ic_tree = unserialize($_SESSION['g2ic_tree_array']);
 	}
 }
 
-if(isset($_SESSION['g2ic_items'])) {
+if(isset($_SESSION['g2ic_items_array'])) {
 	if (($g2ic_session_variables['current_backend'] == $g2ic_options['current_backend']) && ($g2ic_session_variables['current_album'] == $g2ic_options['current_album']) && ($g2ic_session_variables['sortby'] == $g2ic_options['sortby']) && ($g2ic_session_variables['current_page'] == $g2ic_options['current_page']) && ($g2ic_session_variables['images_per_page'] == $g2ic_options['images_per_page'])) {
-		$g2ic_items = unserialize($_SESSION['g2ic_items']);
-		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
+		$g2ic_items = unserialize($_SESSION['g2ic_items_array']);
+		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems_value'];
 	}
 }
 
