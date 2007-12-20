@@ -149,11 +149,13 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 }
 
 session_start();
-
+print_r($g2ic_options);
+echo '<br />';
 if (isset($_SESSION['g2ic_options'])) {
 	echo $_SESSION['g2ic_options'] . '<br />';
 	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
 	print_r($g2ic_session_variables);
+	echo '<br />';
 	// Unset any variables that we don't want overridden by those stored in
 	// the session variable.  These need to be unset so that a user 
 	// switching from one platform to another within one browser 
