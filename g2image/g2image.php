@@ -51,7 +51,7 @@ $html .= '<body id="g2image">
 <tr>
 <td width="200px" valign="top">
 ';
-$html .= g2ic_make_html_album_tree($g2obj->tree, $g2ic_options);
+$html .= g2ic_make_html_album_tree($g2obj->tree, $g2ic_options, $g2obj);
 $html .= '</td>
 <td valign="top">
 	<div class="main">
@@ -193,10 +193,17 @@ function g2ic_make_html_about($g2obj, $version){
  *
  * @return string $html The album tree HTML
  */
-function g2ic_make_html_album_tree($tree, $g2ic_options){
+function g2ic_make_html_album_tree($tree, $g2ic_options, $g2obj){
 
+	$sortoptions = $g2obj->albumSortMethod;
+
+	$sortoptions[$g2ic_options['album_sortby']]['selected'] = TRUE;
+
+	$html = '	' . T_('Sorted by:') . "\n"
+	. g2ic_make_html_select('album_sortby',$sortoptions,'document.forms[0].submit();')
+	
 	// Album navigation
-	$html = '	<div class="dtree">' . "\n"
+	.'	<div class="dtree">' . "\n"
 	. '		<p><a href="javascript: d.openAll();">' . T_('Expand all') . '</a> | <a href="javascript: d.closeAll();">' . T_('Collapse all') . '</a></p>' . "\n"
 	. '		<script type="text/javascript">' . "\n"
 	. '			<!--' . "\n"
@@ -395,7 +402,6 @@ function g2ic_make_html_display_options($g2ic_options, $g2obj){
 		sort($images_per_page_options);
 	}
 
-	// array for output
 	$sortoptions = $g2obj->itemSortMethod;
 
 	$sortoptions[$g2ic_options['sortby']]['selected'] = TRUE;
