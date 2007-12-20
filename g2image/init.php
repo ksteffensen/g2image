@@ -64,7 +64,7 @@ $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
 $g2ic_options['keep_window_open'] = $g2ic_keep_window_open;
-
+print_r($g2ic_options);
 // ==============================================================
 // WPG2 validation
 // ==============================================================
