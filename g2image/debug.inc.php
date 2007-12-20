@@ -2,7 +2,7 @@
 $rndnum=0;
 class debug{
 
-	public function show($arr, $start="", $height=false, $colorindex=2) {
+	/*public*/ function show($arr, $start="", $height=false, $colorindex=2) {
 		static $debugcount = 0;
 		global $rndnum;
 		global $colorscheme;
@@ -100,7 +100,7 @@ class debug{
 	}
 
 
-	private function decorateValue($value, $key=false) {
+	/*private*/ function decorateValue($value, $key=false) {
 		if (is_string($value)) {
 			if (trim($value) == "") $decValue = "\"$value\"";
 			else $decValue = htmlentities($value);
@@ -122,11 +122,11 @@ class debug{
 		return $decValue;
 	}
 
-	private function click($id){
+	/*private*/ function click($id){
 		return " onclick='var p=document.getElementById(\"$id\"); p.style.display=(p.style.display!=\"none\")?\"none\":\"block\";' ";
 	}
 	///////////////////////////////////////////////////
-	private function isXOneDimensional($arr) {
+	/*private*/ function isXOneDimensional($arr) {
 		if (! is_array($arr) && ! is_object($arr)) return false;
 		foreach ($arr as $val) {
 			if (is_array($val) || is_object($val)) return false;

@@ -92,7 +92,7 @@ class message_handling{
 		return ""; //** --
 	}
 
-	$headStr = ($runOnce) ? "" : self::_getStyle($moreStyles) . self::_getScript();
+	$headStr = ($runOnce) ? "" : message_handling::_getStyle($moreStyles) . message_handling::_getScript();
 	$bodyStr ="";
 
 	$cnt = array();
@@ -103,14 +103,14 @@ class message_handling{
 		$more = (trim($msg[2])!="")? "..." : "" ;
 		$hand = (trim($msg[2])!="")? "hand" : "" ;
 		$loop .= "<div  rel='{$msg[0]}' class='info normal'>";
-		$loop .= "<div class='{$msg[0]} cap $hand' onclick='resiz(this)'>".self::T_($prefix.$msg[0]."_".$msg[1])."&nbsp;$more</div><div class='trace'>{$msg[2]}</div>";
+		$loop .= "<div class='{$msg[0]} cap $hand' onclick='resiz(this)'>".message_handling::T_($prefix.$msg[0]."_".$msg[1])."&nbsp;$more</div><div class='trace'>{$msg[2]}</div>";
 		$loop .= "</div>\n";
 	}
-	$tabs = "&nbsp;<span class='all hand' onclick='ishow(this, \"all\");'><b>".self::T_($prefix."show_all_messages")."</b></span>&nbsp;&nbsp;&nbsp;";
+	$tabs = "&nbsp;<span class='all hand' onclick='ishow(this, \"all\");'><b>".message_handling::T_($prefix."show_all_messages")."</b></span>&nbsp;&nbsp;&nbsp;";
 	$title = "";
 	foreach($cnt as $type=>$count){
-		$title = self::T_($prefix.$type)."=$count ";
-		$tabs .= "<span class='$type hand' onclick='ishow(this, \"$type\");'>&nbsp;".self::T_($prefix.$type)." <b>$count</b>&nbsp;</span>&nbsp;";
+		$title = message_handling::T_($prefix.$type)."=$count ";
+		$tabs .= "<span class='$type hand' onclick='ishow(this, \"$type\");'>&nbsp;".message_handling::T_($prefix.$type)." <b>$count</b>&nbsp;</span>&nbsp;";
 	}
 	$bodyStr .= "<div ><div rel='top' class='info'>&nbsp;$tabs&nbsp;</div><div class='showmessages' >";
 	$bodyStr .= $loop;
@@ -126,7 +126,7 @@ class message_handling{
 			$append = ($fileRunOnce) ? FILE_APPEND : 0 ;
 			file_put_contents($file, "<html>\n<head>\n$headStr\n</head>\n<body style='background-color:#CCC;'><h1>".date("h:i:s Y-m-d")."</h1>\n$bodyStr\n</body>\n</html>\n", $append );
 			$fileRunOnce = true;
-			return array("", "<a href='$url' target='".TARGET_WINDOW_NAME."' title='$title'>" . self::T_($prefix."Open_Messages") . "</a>" ); //** --
+			return array("", "<a href='$url' target='".TARGET_WINDOW_NAME."' title='$title'>" . message_handling::T_($prefix."Open_Messages") . "</a>" ); //** --
 		}
 	}
 	$runOnce = true;

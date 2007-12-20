@@ -38,8 +38,9 @@ class Gallery2BackendApi{
 	 *
 	 * @param array $dsn see __construct for details
 	 */
-	function Gallery2BackendApi($dsn){
-		__construct($dsn);
+	function Gallery2BackendApi($dsn, $album_tree=null, $data_items=null, $totalAvailableDataItems=null, $album_items=null, $filters=null){
+		Gallery2BackendApi::__construct($dsn, $album_tree=null, $data_items=null, $totalAvailableDataItems=null, $album_items=null, $filters=null);
+		if ($this->error) {return;}
 	}
 
 	/**
@@ -115,7 +116,7 @@ class Gallery2BackendApi{
 	 * *************************
 	 */
 	function __construct($dsn, $album_tree=null, $data_items=null, $totalAvailableDataItems=null, $album_items=null, $filters=null){
-		
+
 		$this->_init($dsn);
 		if ($this->error) {return;}
 		if (!isset($dsn['root_album'])) {
@@ -409,7 +410,7 @@ class Gallery2BackendApi{
 					'fullInit' => true)
 				);
 			}
-
+			
 			$this->_check($ret, '<h3>Fatal Gallery2 error:  Failed to initialize Gallery2.</h3><br />Here\'s the error from G2:');
 			if ($this->error) {return;}
 		}
