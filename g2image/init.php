@@ -149,13 +149,9 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 }
 
 session_start();
-print_r($g2ic_options);
-echo '<br />';
+
 if (isset($_SESSION['g2ic_options_array'])) {
-	echo $_SESSION['g2ic_options_array'] . '<br />';
 	$g2ic_session_variables = unserialize($_SESSION['g2ic_options_array']);
-	print_r($g2ic_session_variables);
-	echo '<br />';
 	// Unset any variables that we don't want overridden by those stored in
 	// the session variable.  These need to be unset so that a user 
 	// switching from one platform to another within one browser 
@@ -169,9 +165,9 @@ if (isset($_SESSION['g2ic_options_array'])) {
 	unset($g2ic_session_variables['gallery2_uri']);
 	unset($g2ic_session_variables['gallery2_path']);
 	unset($g2ic_session_variables['wp_rel_path']);
-//	foreach ($g2ic_session_variables as $key=>$value) {
-//		$g2ic_options[$key] = $value;
-//	}
+	foreach ($g2ic_session_variables as $key=>$value) {
+		$g2ic_options[$key] = $value;
+	}
 }
 
 // Is this a TinyMCE window?
