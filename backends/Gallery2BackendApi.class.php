@@ -372,7 +372,8 @@ class Gallery2BackendApi{
 			'create_time_desc' => array('text' => T_('Creation Time (Newest First)')),
 			'create_time_asc' => array('text' => T_('Creation Time (Oldest First)')),
 			'mtime_desc' => array('text' => T_('Last Modification (Newest First)')),
-			'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')));
+			'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')),
+			'' => array('text' => T_('None (G2 manual sort order)')));
 		return $itemSortMethod;
 	}
 
