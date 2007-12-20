@@ -20,11 +20,11 @@ $g2ic_version_array = array(3,1);
 
 // ====( Initialization Code )
 g2ic_magic_quotes_remove($_REQUEST);
+require_once('debug.inc.php');
 require_once('init.php');
 require_once('modules/module.inc.php');
 require_once('activemodules.php');
 require_once('backends/' . 'Gallery2' . 'BackendApi.class.php');
-require_once('debug.inc.php');
 require_once('header.class.php');
 require_once('message_handling.class.php');
 
