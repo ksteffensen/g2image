@@ -64,9 +64,7 @@ $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
 $g2ic_options['keep_window_open'] = $g2ic_keep_window_open;
-print_r($g2ic_options);
-echo '<br />';
-echo '<br />';
+
 // ==============================================================
 // WPG2 validation
 // ==============================================================
@@ -149,16 +147,11 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 	else
 		$g2ic_options['imginsert'] = 'wpg2_image';
 }
-print_r($g2ic_options);
-echo '<br />';
-echo '<br />';
+
 session_start();
 
 if (isset($_SESSION['g2ic_options'])) {
 	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
-print_r($g2ic_session_variables);
-echo 'in session variables...<br />';
-echo '<br />';
 	// Unset any variables that we don't want overridden by those stored in
 	// the session variable.  These need to be unset so that a user 
 	// switching from one platform to another within one browser 
@@ -176,9 +169,7 @@ echo '<br />';
 		$g2ic_options[$key] = $value;
 	}
 }
-print_r($g2ic_options);
-echo '<br />';
-echo '<br />';
+
 // Is this a TinyMCE window?
 if(isset($_REQUEST['g2ic_tinymce'])){
 	$g2ic_options['tinymce'] = $_REQUEST['g2ic_tinymce'];
@@ -212,9 +203,6 @@ if(isset($_SESSION['g2ic_items'])) {
 		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
 	}
 }
-print_r($g2ic_options);
-echo '<br />';
-echo '<br />';
 
 $_SESSION['g2ic_options'] = serialize($g2ic_options);
 
