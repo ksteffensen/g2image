@@ -151,9 +151,9 @@ if (@file_exists('../wpg2.php') || $g2ic_in_wordpress) {
 session_start();
 print_r($g2ic_options);
 echo '<br />';
-if (isset($_SESSION['g2ic_options'])) {
-	echo $_SESSION['g2ic_options'] . '<br />';
-	$g2ic_session_variables = unserialize($_SESSION['g2ic_options']);
+if (isset($_SESSION['g2ic_options_array'])) {
+	echo $_SESSION['g2ic_options_array'] . '<br />';
+	$g2ic_session_variables = unserialize($_SESSION['g2ic_options_array']);
 	print_r($g2ic_session_variables);
 	echo '<br />';
 	// Unset any variables that we don't want overridden by those stored in
@@ -208,7 +208,7 @@ if(isset($_SESSION['g2ic_items'])) {
 	}
 }
 
-$_SESSION['g2ic_options'] = serialize($g2ic_options);
+$_SESSION['g2ic_options_array'] = serialize($g2ic_options);
 
 // ==============================================================
 // NOTE for developers:
