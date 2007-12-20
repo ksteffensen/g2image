@@ -747,9 +747,16 @@ class Gallery2BackendApi{
 			$data["viewedSinceTimestamp"] = $item->getViewedSinceTimestamp();
 			$data["serialNumber"] = $item->getSerialNumber();
 			$data["isAlbum"] = $item->getCanContainChildren();
-							
-			list ($ret, $data["realpath"]) = $item->fetchPath();  // TODO Fix for album with thumbnail
-			if ($ret) {return array($ret, null);}
+			
+			if ($data["entityType"] == "GalleryAlbumItem") {
+				list ($ret, $albums) = GalleryCoreApi::loadEntitiesById(array($id));
+				list ($ret, $data["realpath"]) = $albums[0]->fetchPath();
+				if ($ret) {return array($ret, null);}
+			}
+			else {
+				list ($ret, $data["realpath"]) = $item->fetchPath();
+				if ($ret) {return array($ret, null);}
+			}
 			
 			$xhash = array();
 			$yhash = array();
