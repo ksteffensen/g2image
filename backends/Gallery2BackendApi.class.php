@@ -25,7 +25,7 @@ class Gallery2BackendApi{
 	var $dataItems = array();
 	var $albumItems = array();
 	var $itemSortMethod = array();
-	var $albumsSortMethod = array();
+	var $albumSortMethod = array();
 	var $error = false;
 	var $messages = array();
 
@@ -115,12 +115,6 @@ class Gallery2BackendApi{
 	 * *************************
 	 */
 	function __construct($dsn, $album_tree=null, $data_items=null, $totalAvailableDataItems=null, $album_items=null, $filters=null){
-	
-		// TODO Following $dsn variables are here for testing only.  Will move to g2image.php as part of input parameters
-		$dsn['album_sortby'] = 'title_asc';
-		$dsn['build_all_data_items'] = false;
-		$dsn['build_all_album_items'] = false;
-		$dsn['build_child_album_items'] = false;
 		
 		$this->_init($dsn);
 		if ($this->error) {return;}
