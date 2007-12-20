@@ -86,6 +86,16 @@ $html .= '	</div>
 
 echo $html;
 
+$php_version = phpversion();
+if (version_compare($php_version, '5', '>=')) {
+	/*PHP5*/
+	unset($g2obj); // calls __destruct() automatic
+}
+else {
+	/*PHP4*/
+	$g2obj->__destruct();
+}
+
 //$BackendApiClass::finished();  TODO fix for PHP4
 
 // ====( Functions - Alphabetical by Function Name)
