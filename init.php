@@ -212,6 +212,9 @@ if(isset($_SESSION['g2ic_items'])) {
 		$g2ic_totalAvailableDataItems = $_SESSION['g2ic_totalAvailableDataItems'];
 	}
 }
+print_r($g2ic_options);
+echo '<br />';
+echo '<br />';
 
 $_SESSION['g2ic_options'] = serialize($g2ic_options);
 
