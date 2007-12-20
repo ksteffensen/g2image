@@ -260,7 +260,7 @@ SCRIPTSTUFF;
 
 		$html = '';
 
-		if ($g2ic_options[$name] == $value) {
+		if (isset($g2ic_options[$name]) && $g2ic_options[$name] == $value) {
 			$html = ' SELECTED';
 		}
 

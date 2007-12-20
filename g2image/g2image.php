@@ -26,12 +26,15 @@ require_once('activemodules.php');
 require_once('backends/' . 'Gallery2' . 'BackendApi.class.php');
 require_once('debug.inc.php');
 require_once('header.class.php');
+require_once('message_handling.class.php');
 
 $BackendApiClass = 'Gallery2' . 'BackendApi';
 
 $g2obj = new $BackendApiClass($g2ic_options, $g2ic_tree, $g2ic_items, $g2ic_totalAvailableDataItems);
 if ($g2obj->error) {
-	g2ic_fatal_error($g2obj->error, $g2ic_options, $g2obj);
+	echo debug::show($g2obj, 'Backend Object');
+	list($head, $body) = message_handling::renderMessages($g2obj->messages);
+	g2ic_fatal_error($head.$body, $g2ic_options, $g2obj);
 }
 
 $_SESSION['g2ic_tree'] =  serialize($g2obj->tree);
@@ -54,14 +57,14 @@ $html .= '</td>
 	<div class="main">
 ';
 
-$html .= g2ic_make_html_album_insert_controls($g2ic_options);
+$html .= g2ic_make_html_album_insert_controls($g2ic_options, $g2obj);
 
 if (empty($g2obj->dataItems)) {
 	$html .= g2ic_make_html_empty_page();
 }
 else {
 	$g2ic_page_navigation = g2ic_make_html_page_navigation($g2obj, $g2ic_options);
-	$html .= g2ic_make_html_display_options($g2ic_options);
+	$html .= g2ic_make_html_display_options($g2ic_options, $g2obj);
 	$html .= g2ic_make_html_image_insert_controls($g2ic_options);
 	$html .= $g2ic_page_navigation;
 	$html .= g2ic_make_html_image_navigation($g2obj, $g2ic_options);
@@ -222,7 +225,7 @@ function g2ic_make_html_album_tree_branches($branch, $current_album, $parent, &$
 	$album_title = $branch['title'];
 	$html = '			d.add(' . $node . ',' . $parent . ',"' . $album_title . '","'
 	. '?current_album=' . $current_album . '");' . "\n";
-	if ($branch['children']) {
+	if (isset($branch['children'])) {
 		$parent = $node;
 		foreach ($branch['children'] as $album => $twig) {
 			$node++;
@@ -274,7 +277,7 @@ function g2ic_make_html_alignment_select($name, $g2ic_options){
  *
  * @return string $html The HTML for the album insert controls
  */
-function g2ic_make_html_album_insert_controls($g2ic_options){
+function g2ic_make_html_album_insert_controls($g2ic_options, $g2obj){
 	
 	$g2ic_albuminsert_options = g2ic_get_albuminsert_selectoptions($g2ic_options);
 	
@@ -383,7 +386,7 @@ function g2ic_make_html_image_insert_controls($g2ic_options){
  *
  * @return string $html The HTML for the "Display Options" box
  */
-function g2ic_make_html_display_options($g2ic_options){
+function g2ic_make_html_display_options($g2ic_options, $g2obj){
 
 	$images_per_page_options = array(10,20,30,40,50,60,9999);
 
@@ -393,12 +396,7 @@ function g2ic_make_html_display_options($g2ic_options){
 	}
 
 	// array for output
-	$sortoptions = array('title_asc' => array('text' => T_('Gallery2 Title (A-z)')),
-		'title_desc' => array('text' => T_('Gallery2 Title (z-A)')),
-		'orig_time_desc' => array('text' => T_('Origination Time (Newest First)')),
-		'orig_time_asc' => array('text' => T_('Origination Time (Oldest First)')),
-		'mtime_desc' => array('text' => T_('Last Modification (Newest First)')),
-		'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')));
+	$sortoptions = $g2obj->itemSortMethod;
 
 	$sortoptions[$g2ic_options['sortby']]['selected'] = TRUE;
 

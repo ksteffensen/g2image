@@ -24,7 +24,10 @@ class Gallery2BackendApi{
 	var $totalAvailableDataItems = 0;
 	var $dataItems = array();
 	var $albumItems = array();
+	var $itemSortMethod = array();
+	var $albumsSortMethod = array();
 	var $error = false;
+	var $messages = array();
 
 	//=================================================
 	// Public functions
@@ -121,7 +124,7 @@ class Gallery2BackendApi{
 		
 		$this->_init($dsn);
 		if ($this->error) {return;}
-		if (!$dsn['root_album']) {
+		if (!isset($dsn['root_album'])) {
 		 	list($ret, $root) = $this->getRootAlbumId();
 			$this->_check($ret);
 			if ($this->error) {return;}
@@ -129,7 +132,7 @@ class Gallery2BackendApi{
 		else {
 			$root = $dsn['root_album'];
 		}
-		if(!$dsn['current_album']){
+		if(!isset($dsn['current_album'])) {
 			$dsn['current_album'] = $root;
 		}
 		if (!$album_tree) {
@@ -167,6 +170,8 @@ class Gallery2BackendApi{
 		list($ret, $album) = $this->getItemsByIds(array($dsn['current_album']));
 		$this->_check($ret);
 		$this->album = $album[$dsn['current_album']];
+		$this->itemSortMethod = $this->getItemSortMethod();
+		$this->albumSortMethod = $this->getAlbumSortMethod();
 		
 		return;
 
@@ -355,6 +360,26 @@ class Gallery2BackendApi{
 		else {
 			return array(null, $root_album_id);
 		}
+	}
+	
+	function getItemSortMethod() {
+		$itemSortMethod = array('title_asc' => array('text' => T_('Gallery2 Title (A-z)')),
+			'title_desc' => array('text' => T_('Gallery2 Title (z-A)')),
+			'orig_time_desc' => array('text' => T_('Origination Time (Newest First)')),
+			'orig_time_asc' => array('text' => T_('Origination Time (Oldest First)')),
+			'mtime_desc' => array('text' => T_('Last Modification (Newest First)')),
+			'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')));
+		return $itemSortMethod;
+	}
+
+	function getAlbumSortMethod() {
+		$itemSortMethod = array('title_asc' => array('text' => T_('Gallery2 Title (A-z)')),
+			'title_desc' => array('text' => T_('Gallery2 Title (z-A)')),
+			'create_time_desc' => array('text' => T_('Creation Time (Newest First)')),
+			'create_time_asc' => array('text' => T_('Creation Time (Oldest First)')),
+			'mtime_desc' => array('text' => T_('Last Modification (Newest First)')),
+			'mtime_asc' => array('text' => T_('Last Modification (Oldest First)')));
+		return $itemSortMethod;
 	}
 
 	//=================================================
@@ -902,11 +927,11 @@ class Gallery2BackendApi{
 			case 'title_desc' :
 				uasort($items, array ("Gallery2BackendApi","_albumByTitleDesc"));
 				break;
-			case 'orig_time_asc' :
-				uasort($items, array ("Gallery2BackendApi","_albumByOrigTimeAsc"));
+			case 'create_time_asc' :
+				uasort($items, array ("Gallery2BackendApi","_albumByCreationTimeAsc"));
 				break;
-			case 'orig_time_desc' :
-				uasort($items, array ("Gallery2BackendApi","_albumByOrigTimeDesc"));
+			case 'create_time_desc' :
+				uasort($items, array ("Gallery2BackendApi","_albumByCreationTimeDesc"));
 				break;
 			case 'mtime_asc' :
 				uasort($items, array ("Gallery2BackendApi","_albumByModTimeAsc"));
@@ -967,15 +992,13 @@ class Gallery2BackendApi{
 	 */
 	function _check($ret, $str="Error: ") {
 		global $gallery;
-	    if ($ret){
-			if(function_exists("T_")){ 
-				$this->error = T_($str) . " ". $ret->getAsHtml();
-			}
-			else { 
-				$this->error = $str . " ". $ret->getAsHtml(); 
-			}
-	    	return;
+		if ($ret){
+			$errStr = (function_exists("T_")) ? T_($str) : $str;
+			$errStr .= $ret->getAsHtml();
+			$this->error = $errStr;
+			$this->messages[] = array("error", $errStr, debug_backtrace());
 		}
+		return;
 	}
 	
 	/**
@@ -984,12 +1007,9 @@ class Gallery2BackendApi{
 	 * @param unknown_type $str
 	 */
 	function _fatalError($str){
-		if(function_exists("T_")){ 
-			$this->error = T_($str);
-		}
-		else { 
-			$this->error = $str; 
-		}
+		$errStr = (function_exists("T_")) ? T_($str) : $str;
+		$this->error = $errStr;
+		$this->messages[] = array("error", $errStr, debug_backtrace());
 		return;
 	}
 	
