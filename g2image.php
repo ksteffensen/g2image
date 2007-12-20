@@ -44,20 +44,20 @@ $_SESSION['g2ic_totalAvailableDataItems'] =  $g2obj->totalAvailableDataItems;
 // ====( Main HTML Generation Code )
 header('content-type: text/html; charset=utf-8');
 $header = new g2ic_header($g2ic_options, $g2obj);
-$html = $header->html;
-$html .= '<body id="g2image">
+$html = $header->html
+. '<body id="g2image">
 <form method="post">
 <table>
 <tr>
 <td width="200px" valign="top">
-';
-$html .= g2ic_make_html_album_tree($g2obj->tree, $g2ic_options, $g2obj);
-$html .= '</td>
+'
+. g2ic_make_html_backend_selector($g2ic_options)
+. g2ic_make_html_album_tree($g2obj->tree, $g2ic_options, $g2obj)
+. '</td>
 <td valign="top">
 	<div class="main">
-';
-
-$html .= g2ic_make_html_album_insert_controls($g2ic_options, $g2obj);
+'
+. g2ic_make_html_album_insert_controls($g2ic_options, $g2obj);
 
 if (empty($g2obj->dataItems)) {
 	$html .= g2ic_make_html_empty_page();
@@ -188,6 +188,22 @@ function g2ic_make_html_about($g2obj, $version){
 	return $html;
 }
 
+function g2ic_make_html_backend_selector($g2ic_options){
+
+	$sortoptions = array();
+	
+	foreach ($g2ic_options['active_backends'] as $backend) {
+		$sortoptions = array_merge($sortoptions, array($backend => array('text' => $backend)));
+	}
+
+	$sortoptions[$g2ic_options['current_backend']]['selected'] = TRUE;
+
+	$html = '	' . T_('Gallery Platform:') . "\n"
+	. g2ic_make_html_select('current_backend',$sortoptions,'document.forms[0].submit();');
+	
+	return $html;
+}	
+
 /**
  * Creates the album tree HTML
  *
@@ -204,7 +220,7 @@ function g2ic_make_html_album_tree($tree, $g2ic_options, $g2obj){
 	
 	// Album navigation
 	.'	<div class="dtree">' . "\n"
-	. '		<p><a href="javascript: d.openAll();">' . T_('Expand all') . '</a> | <a href="javascript: d.closeAll();">' . T_('Collapse all') . '</a></p>' . "\n"
+	. '		<p><a href="javascript: d.openAll();">' . T_('Expand all') . '</a> | <a href="javascript: d.closeAll();">' . T_('Collapse all') . '</a> | <a href="?refresh_album_tree=1">' . T_('Refresh') . '</a></p>' . "\n"
 	. '		<script type="text/javascript">' . "\n"
 	. '			<!--' . "\n"
 	. '			d = new dTree("d");' . "\n";

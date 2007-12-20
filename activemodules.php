@@ -1,4 +1,8 @@
 <?php
+$g2ic_options['active_backends'] = array(
+	'Gallery2',
+);
+
 $g2ic_options['album_modules'] = array(
 	'flash_slideshow_album',
 	'text_link_album',
