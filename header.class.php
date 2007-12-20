@@ -11,7 +11,7 @@ class g2ic_header {
 	 * @return g2ic_header
 	 */
 	function g2ic_header($options, $g2obj){
-		__construct($options, $g2obj);
+		g2ic_header::__construct($options, $g2obj);
 	}
 
 	/**
