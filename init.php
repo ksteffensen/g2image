@@ -207,8 +207,6 @@ if(isset($_SESSION['g2ic_items_array'])) {
 	}
 }
 
-$_SESSION['g2ic_options_array'] = serialize($g2ic_options);
-
 // ==============================================================
 // NOTE for developers:
 // If you are developing an embedded application for Gallery2 and want to use
