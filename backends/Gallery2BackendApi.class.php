@@ -60,8 +60,8 @@ class Gallery2BackendApi{
 	 *  $dsn['sortby] (optional)   // How to sort dataItems
 	 *  $dsn['current_page'] (optional) 
 	 *  $dsn['images_per_page'] (optional) 
-	 * 	$dsn['root_album'] (optional) 
 	 * 	$dsn['images_per_page'] (optional) 
+	 * 	$dsn['gallery2_root_album'] (optional) 
 	 * @param array $album_tree (optional) 
 	 * @param array $data_items (optional)
 	 * @param array $album_items (optional)
@@ -119,13 +119,13 @@ class Gallery2BackendApi{
 
 		$this->_init($dsn);
 		if ($this->error) {return;}
-		if (!isset($dsn['root_album'])) {
+		if (!isset($dsn['gallery2_root_album'])) {
 		 	list($ret, $root) = $this->getRootAlbumId();
 			$this->_check($ret);
 			if ($this->error) {return;}
 		}
 		else {
-			$root = $dsn['root_album'];
+			$root = $dsn['gallery2_root_album'];
 		}
 		if(!isset($dsn['current_album'])) {
 			$dsn['current_album'] = $root;

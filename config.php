@@ -16,7 +16,7 @@
 $g2ic_options = array();
 
 $g2ic_default_backend = 'Gallery2';
-$g2ic_default_root_album = '';
+$g2ic_default_gallery2_root_album = false;
 
 $g2ic_in_wordpress = FALSE;
 // WORDPRESS USERS STOP HERE!!!
