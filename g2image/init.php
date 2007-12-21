@@ -64,7 +64,9 @@ $g2ic_options['gallery2_uri'] = $g2ic_gallery2_uri;
 $g2ic_options['embed_uri'] = $g2ic_embed_uri;
 $g2ic_options['language'] = $g2ic_language;
 $g2ic_options['keep_window_open'] = $g2ic_keep_window_open;
-$g2ic_options['root_album'] = $g2ic_default_root_album;
+if ($g2ic_default_gallery2_root_album) {
+	$g2ic_options['gallery2_root_album'] = $g2ic_default_gallery2_root_album;
+}
 
 // ==============================================================
 // WPG2 validation
