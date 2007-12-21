@@ -13,6 +13,7 @@
 	See README.HTML for installation info.
 	See CHANGELOG.HTML for a history of changes.
 */
+error_reporting(E_ALL);
 
 // ====( Version Info )
 $g2ic_version_text = '3.1 Alpha';
@@ -85,6 +86,8 @@ $html .= '	</div>
 </html>';
 
 echo $html;
+
+$_SESSION['g2ic_options_array'] = serialize($g2ic_options);
 
 $php_version = phpversion();
 if (version_compare($php_version, '5', '>=')) {
