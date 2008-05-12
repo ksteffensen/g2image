@@ -2,7 +2,7 @@
 /*
    Copyright (c) 2005 Steven Armstrong <sa at c-area dot ch>
     Modified for Gallery 2 Image Chooser by Kirk Steffensen
-    Version 3.0.2 - updated 01 OCT 2007
+    Version 3.0.3 - updated 13 MAY 2008
 
    Drop in replacement for native gettext.
 

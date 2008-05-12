@@ -1,7 +1,7 @@
 <?php
 /*
     Gallery 2 Image Chooser
-    Version 3.0.2 - updated 01 OCT 2007
+    Version 3.0.3 - updated 13 MAY 2008
     Documentation: http://g2image.steffensenfamily.com/
 
     Author: Kirk Steffensen with inspiration, code snipets,
@@ -15,8 +15,8 @@
 */
 
 // ====( Version Info )
-$g2ic_version_text = '3.0.2';
-$g2ic_version_array = array(3,0,2);
+$g2ic_version_text = '3.0.3';
+$g2ic_version_array = array(3,0,3);
 
 // ====( Initialization Code )
 require_once('init.php');
