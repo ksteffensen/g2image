@@ -1,0 +1,91 @@
+<?php
+
+// Gallery2 Image Chooser pop-up window Dutch lang variables - Version 2.2
+
+// If you translate this file to your own language, please zip it and e-mail
+// it to blogger (at sign) steffensenfamily (dot) com and I'll make it available
+// for others and include it in the next version.  Thanks!
+
+$g2ic_lang = array(
+'about' => 'G2Image info',
+'alignment_class' => 'Alignment Class:',
+'alignment_legend' => 'Uitlijning (De g2image classes dienen te zijn toegevoegd in uw css file):',
+'click_advanced' => 'Open het Extra Opties Menu',
+'click_image' => 'Klik op een afbeelding voor afbeelding opties.',
+'click_one_click' => 'Invoegen met standaard opties',
+'click_options' => 'Na het aanklikken van de afbeelding:',
+'current_album' => 'Huidig album:',
+'custom_url' => 'Eigen URL:',
+'description' => 'Beschrijving:',
+'description_legend' => 'Afbeelding beschrijving (bij muis-over) of naam van tekst link:',
+'display_legend' => 'Album weergave',
+'drupal_album_legend' => 'Voeg een Drupal G2 Filter tag voor huidig album in:',
+'drupal_g2_filter' => 'Drupal Gallery2 Filter',
+'empty_album' => 'Er bevinden zich geen afbeeldingen in dit album.<br /><br />Kies een ander album via de navigatie opties hierboven.',
+'filename' => 'Bestandsnaam: ',
+'filenames' => 'Bestandsnamen',
+'g2_directory_error' => 'De Gallery2 data map kan niet worden geopend.',
+'g2_embedded_error' => '<h3>Fatale Gallery2 Fout: De Gallery2 Intergratie (Embedded) functies kunnen niet worden geactiveerd.</h3><br />Voor WordPress users, installeer de WPG2 plugin
+(via <a href="http://wpg2.ozgreg.com/">http://wpg2.ozgreg.com/</a>) of controleer uw Gallery2 pad in het G2Image Popup Opties admin scherm.<br /><br />Voor overige gebruikers, controleer uw Gallery2 pad in config.php.',
+'g2_entities_by_id_error' => '<h3>Fatale Gallery2 Fout: Kan geen afbeelding informatie voor dit Gallery2 ID verkrijgen.</h3><br />Hier volgt de fout informatie van G2: ',
+'g2_fatal_error' => '<h3>Fatale Gallery2 Fout:</h3><br />Hier volgt de fout informatie van G2: ',
+'g2_id_by_path_error' => '<br /><h3>Gallery2 Fout: Kan het Gallery2 ID voor het huidige pad niet verkrijgen.</h3><br />Dit komt hoogst waarschijnlijk door de aanwezigheid van een bestand of een map in uw Gallery2
+data map, welke niet is geregistreerd in Gallery2 als een deel van uw album structuur.  De rest van de functionaliteit op deze pagina zal gewoon werken.<br /><br />Hier volgt het corrupte pad: ',
+'g2_id_not_found_error' => '<h3>Fatale Gallery2 Fout: Kan het Gallery2 ID voor dit bestand niet verkrijgen.</h3>Hier volgt de fout informatie van G2: ',
+'g2_image_title' => 'Gallery2 Titel:',
+'go' => 'Open',
+'how_insert' => 'Hoe dient deze afbeelding ingevoegd te worden:',
+'image_title' => 'Titel: ',
+'img_float_left' => 'Links uitlijnen',
+'img_float_right' => 'Rechts uitlijnen',
+'img_centered' => 'Centreren',
+'img_none' => 'Geen uilijning',
+'img_normal' => 'Op tekstregel',
+'insert' => 'Afbeelding invoegen',
+'insert_legend' => 'Klik op deze knop om de afbeelding in te voegen:',
+'last_modification_new' => 'Laatst aangepast (nieuwste afbeelingen eerst)',
+'last_modification_old' => 'Laatst aangepast (oudste afbeeldingen eerst)',
+'link_album' => 'Tekst link naar album waar deze afbeelding zich bevindt',
+'link_image' => 'Tekst link naar afbeelding',
+'name_a_to_z' => 'Bestandsnaam (A-z)',
+'name_z_to_a' => 'Bestandsnaam (z-A)',
+'page' => 'Pagina:',
+'page_navigation' => 'Pagina navigatie:',
+'photo_albums' => 'Foto Albums',
+'redraw' => 'Afbeeldingen opnieuw sorteren',
+'sort_error' => 'Fout bij sorteren',
+'sorted_by' => 'Sorteren op:',
+'subalbums' => 'Subalbums:',
+'thumbnails' => 'Thumbnails',
+'thumbnail_album' => 'Thumbnail met link naar album waar deze afbeelding zich in bevindt',
+'thumbnail_custom_url' => 'Thumbnail met link naar eigen URL (in tekst veld hieronder)',
+'thumbnail_image' => 'Thumbnail met link naar afbeelding',
+'thumbnail_only' => 'Alleen een thumbnail - geen link',
+'thumbnails_per_page' => '<p><!-- this is for a linebreak which looks better in the result than a <br /> linebreak (only necessary for the dutch translation because of the long sentences)--></p>Aantal afbeeldingen per pagina:',
+'title' => 'Gallery 2 Afbeelding Kiezer',
+'title_a_to_z' => 'Gallery2 Titel (A-z)',
+'title_z_to_a' => 'Gallery2 Titel (z-A)',
+'url' => 'URL:',
+'wpg2_album_legend' => 'Voeg een WPG2 tag voor het huidige album in:',
+'wpg2_configuration_error' => 'Configuratie Fout:<br />WPG2 is aanwezig en actief, echter niet gevalideerd.<br />Configureer en valideer WPG2 in het
+WordPress admin scherm.<br />Instructies hiervoor: http://www.ozgreg.com.',
+'wpg2_link_album' => 'Tekst link naar album waar deze afbeelding zich in bevindt (HTML)',
+'wpg2_link_image' => 'Tekst link naar afbeelding (HTML)',
+'wpg2_tag_image' => 'WPG2 tag van afbeelding',
+'wpg2_thumbnail_album' => 'Thumbnail met link naar album waar deze afbeelding zich in bevindt (HTML)',
+'wpg2_thumbnail_custom_url' => 'Thumbnail met link naar eigen URL (in tekst veld hieronder) (HTML)',
+'wpg2_thumbnail_image' => 'Thumbnail met link naar afbeelding (HTML)',
+'wpg2_thumbnail_only' => 'Alleen een thumbnail - geen link (HTML)',
+//
+// New for version 2.2
+//
+'fullsize_image' => 'Fullsized image with link to Gallery page for image',
+'fullsize_only' => 'Fullsized image only - no link',
+'image_size' => 'Image Size',
+'image_size_instructions' => 'Leave size blank the current default size of ',
+'thumbnail_lightbox' => 'Thumbnail with LightBox link to Fullsized Image',
+'titles' => 'Titles',
+'wpg2_fullsize_image' => 'Fullsized image with link to Gallery page for image (HTML)',
+'wpg2_fullsize_only' => 'Fullsized image only - no link (HTML)',
+'wpg2_thumbnail_lightbox' => 'Thumbnail with LightBox link to Fullsized Image (HTML)')
+?>

@@ -1,0 +1,133 @@
+/* CSS file for g2image plugin popup */
+
+body#g2image {
+	background-color: #FFFFFF;
+	font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+	font-size: .8em;
+	margin: 4px 8px 8px 8px;
+}
+
+#g2image legend {
+	color: #0D324F;
+	font-weight: bold;
+}
+
+#g2image fieldset {
+	border: 1px solid #919B9C;
+	font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+	font-size: 1em;
+	margin: 2px 0px 2px 0px;
+	padding: 2px 8px 6px 8px;
+	clear: left;
+}
+
+#g2image a:link, #g2image a:visited {
+	color: black;
+}
+
+#g2image a:hover {
+	color: #2B6FB6;
+}
+
+#g2image input {
+	background: #FFFFFF;
+	border: 1px solid #cccccc;
+}
+
+#g2image td, #g2image input, #g2image select, #g2image textarea {
+	font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+	font-size: 1em;
+}
+
+#g2image input, #g2image select, #g2image textarea {
+	border: 1px solid #808080;
+}
+
+
+/* Specific Gallery2 Image Chooser CSS */
+
+img {
+	margin: 2px;
+	float: left;
+}
+
+form {
+	margin: 2px 0px 0px 0px;
+}
+
+p {
+	margin: 4px;
+}
+
+.bordered_imageblock {
+	background: #FFFFFF;
+	border: 1px solid #cccccc;
+	margin:4px 0px 4px 0px;
+	padding: 2px;
+	clear: left;
+}
+
+.transparent_imageblock {
+
+}
+
+.displayed_title {
+	font-size: 1em;
+	line-height:1.5em;
+	float: left;
+	padding-left: 5px;
+}
+
+.hidden_title {
+	display: none;
+}
+
+.active_placeholder {
+	clear: left;
+}
+
+.inactive_placeholder {
+}
+
+.hidden_form {
+	display:none;
+}
+
+.displayed_form_thumbnail {
+	clear: left;
+}
+
+.about_button {
+	padding: 10px 0px 0px 0px;
+	clear: left;
+}
+
+/* Legacy CSS from TinyMCE */
+
+td {
+	font-family: "Lucida Grande","Lucida Sans Unicode",Tahoma,Verdana;
+	font-size: 11px;
+}
+
+h1, h2, h3, h4 {
+	color: #2B6FB6;
+	margin: 0px;
+	padding: 0px;
+	padding-top: 5px;
+}
+
+h3 {
+	font-size: 14px;
+}
+
+input.radio  {
+	border: 1px none #000000;
+	background-color: transparent;
+	vertical-align: middle;
+}
+
+input.checkbox {
+	border: 1px none #000000;
+	background-color: transparent;
+	vertical-align: middle;
+}
