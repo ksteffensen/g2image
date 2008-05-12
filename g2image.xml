@@ -9,7 +9,7 @@
     <copyright>Kirk Steffensen</copyright>
     <license>GPL</license>
     <description>Gallery2 Image Chooser plugin for JCE</description>
-    <icon></icon>
+    <icon>g2image</icon>
     <layout>g2image</layout>
     <elements></elements>
     <files>
@@ -43,6 +43,7 @@
         <filename>img/empty.gif</filename>
         <filename>img/folder.gif</filename>
         <filename>img/folderopen.gif</filename>
+        <filename>img/g2image.gif</filename>
         <filename>img/join.gif</filename>
         <filename>img/joinbottom.gif</filename>
         <filename>img/line.gif</filename>
