@@ -13,11 +13,10 @@
     <layout_icon>g2image</layout_icon>
     <elements></elements>
     <files>
-        <filename plugin="g2image">editor_plugin.js</filename>
+        <filename>editor_plugin.js</filename>
         <filename>CHANGELOG.HTML</filename>
         <filename>config.php</filename>
         <filename>CREDITS.HTML</filename>
-        <filename>editor_plugin.js</filename>
         <filename>editor_plugin_src.js</filename>
         <filename>g2image.php</filename>
         <filename>gettext.inc</filename>
