@@ -9,8 +9,8 @@
     <copyright>Kirk Steffensen</copyright>
     <license>GPL</license>
     <description>Gallery2 Image Chooser plugin for JCE</description>
-    <icon>g2image</icon>
-    <layout_icon>g2image</layout_icon>
+    <icon></icon>
+    <layout>g2image</layout>
     <elements></elements>
     <files>
         <filename>editor_plugin.js</filename>
@@ -80,4 +80,6 @@
         <filename>langs/zh_TW.mo</filename>
     </files>
     <params></params>
+    <languages></languages>
+    <help></help>
 </install>
