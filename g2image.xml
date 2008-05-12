@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
-<mosinstall version="1.1.0" type="jceplugin" plugin="g2image">
+<install version="1.5.0" type="plugin" plugin="g2image">
     <name>Gallery2 Image Chooser</name>
-    <version>3.0.2</version>
-    <creationDate>10/01/2007</creationDate>
+    <version>3.0.3</version>
+    <creationDate>05/13/2008</creationDate>
     <author>Kirk Steffensen</author>
     <authorEmail>blogger (at sign) steffensenfamily (dot) com</authorEmail>
     <authorUrl>http://g2image.steffensenfamily.com/</authorUrl>
@@ -85,4 +85,4 @@
         <filename>langs/zh_TW.mo</filename>
     </files>
     <params></params>
-</mosinstall>
+</install>
