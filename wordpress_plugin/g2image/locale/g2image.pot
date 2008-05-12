@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: G2Image 1.3.2\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-02-27 19:22-0500\n"
+"Last-Translator: Kirk Steffensen <blogger@steffensenfamily.com>\n"
+"Language-Team: Kirk Steffensen <blogger@steffensenfamily.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+
+#: g2image/g2image-admin.php:42
+#: g2image/g2image-wp-plugin.php:35
+msgid "G2Image Popup Options"
+msgstr ""
+
+#: g2image/g2image-admin.php:47
+msgid "G2Image API located in TinyMCE plugins folder?"
+msgstr ""
+
+#: g2image/g2image-admin.php:50
+msgid "Success"
+msgstr ""
+
+#: g2image/g2image-admin.php:52
+msgid "Failed.  Please install G2Image files in TinyMCE plugins directory."
+msgstr ""
+
+#: g2image/g2image-admin.php:71
+msgid "Gallery2 Path"
+msgstr ""
+
+#: g2image/g2image-admin.php:73
+msgid "WPG2 is not active, so you must enter the path from your web root directory to your Gallery2 directory."
+msgstr ""
+
+#: g2image/g2image-admin.php:75
+msgid "Example: If your Gallery2 homepage is www.domain.com/gallery2/main.php, then the Gallery2 path is \"gallery2/\".  Make sure you include the trailing forward slash.<br /><strong>NOTE:</strong> <a href=\"http://wpg2.ozgreg.com\">WPG2</a> extends the integration of Gallery2 into WordPress and is highly recommended."
+msgstr ""
+
+#: g2image/g2image-admin.php:84
+msgid "Thumbnails per Page:"
+msgstr ""
+
+#: g2image/g2image-admin.php:90
+msgid "Default Image Sort Order:"
+msgstr ""
+
+#: g2image/g2image-admin.php:93
+msgid "Gallery2 Title (A-z)"
+msgstr ""
+
+#: g2image/g2image-admin.php:94
+msgid "Gallery2 Title (z-A)"
+msgstr ""
+
+#: g2image/g2image-admin.php:95
+msgid "Filename (A-z)"
+msgstr ""
+
+#: g2image/g2image-admin.php:96
+msgid "Filename (z-A)"
+msgstr ""
+
+#: g2image/g2image-admin.php:97
+msgid "Last Modification (newest first)"
+msgstr ""
+
+#: g2image/g2image-admin.php:98
+msgid "Last Modification (oldest first)"
+msgstr ""
+
+#: g2image/g2image-admin.php:103
+msgid "Default Display"
+msgstr ""
+
+#: g2image/g2image-admin.php:105
+msgid "Thumbnails Only"
+msgstr ""
+
+#: g2image/g2image-admin.php:106
+msgid "Thumbnails with Titles and Filenames"
+msgstr ""
+
+#: g2image/g2image-admin.php:110
+msgid "Default Click Action"
+msgstr ""
+
+#: g2image/g2image-admin.php:112
+msgid "Instantly insert using default settings"
+msgstr ""
+
+#: g2image/g2image-admin.php:113
+msgid "Show Advanced Options Panel"
+msgstr ""
+
+#: g2image/g2image-admin.php:117
+msgid "Allow User to Change Click Options?"
+msgstr ""
+
+#: g2image/g2image-admin.php:119
+msgid "Yes"
+msgstr ""
+
+#: g2image/g2image-admin.php:120
+msgid "No"
+msgstr ""
+
+#: g2image/g2image-admin.php:129
+msgid "WPG2ID or WPG2 Tags?"
+msgstr ""
+
+#: g2image/g2image-admin.php:131
+msgid "WPG2ID Tags"
+msgstr ""
+
+#: g2image/g2image-admin.php:132
+msgid "WPG2 Tags"
+msgstr ""
+
+#: g2image/g2image-admin.php:141
+msgid "Default Action:"
+msgstr ""
+
+#: g2image/g2image-admin.php:143
+msgid "Choose the default \"How to Insert\" option."
+msgstr ""
+
+#: g2image/g2image-admin.php:150
+msgid "WPG2/WPG2ID Tag"
+msgstr ""
+
+#: g2image/g2image-admin.php:156
+msgid "Thumbnail with link to image"
+msgstr ""
+
+#: g2image/g2image-admin.php:157
+msgid "Thumbnail with link to parent album"
+msgstr ""
+
+#: g2image/g2image-admin.php:158
+msgid "Thumbnail with link to custom URL"
+msgstr ""
+
+#: g2image/g2image-admin.php:159
+msgid "Thumbnail only - no link"
+msgstr ""
+
+#: g2image/g2image-admin.php:160
+msgid "Text link to image"
+msgstr ""
+
+#: g2image/g2image-admin.php:161
+msgid "Text link to parent album"
+msgstr ""
+
+#: g2image/g2image-admin.php:166
+msgid "Default Image Alignment:"
+msgstr ""
+
+#: g2image/g2image-admin.php:168
+msgid "The g2image classes must be implemented in your style.css for the alignment classes to be effective."
+msgstr ""
+
+#: g2image/g2image-admin.php:170
+msgid "None"
+msgstr ""
+
+#: g2image/g2image-admin.php:171
+msgid "Normal"
+msgstr ""
+
+#: g2image/g2image-admin.php:172
+msgid "Float Left"
+msgstr ""
+
+#: g2image/g2image-admin.php:173
+msgid "Float Right"
+msgstr ""
+
+#: g2image/g2image-admin.php:174
+msgid "Centered"
+msgstr ""
+
+#: g2image/g2image-admin.php:188
+msgid "Custom classes will be available as options after entering them below and hitting the \"Update Options\" button."
+msgstr ""
+
+#: g2image/g2image-admin.php:192
+msgid "Default Class Mode"
+msgstr ""
+
+#: g2image/g2image-admin.php:199
+msgid "This setting only applies to images inserted as img tags.  WPG2 tags will be wrapped with a div tag."
+msgstr ""
+
+#: g2image/g2image-admin.php:205
+msgid "Class in the img tag - &lt;img class=... /&gt; (Recommended)"
+msgstr ""
+
+#: g2image/g2image-admin.php:206
+msgid "Class in a div tag wrapper - &lt;div class=...&gt;&lt;img ... /&gt;&lt;/div&gt;"
+msgstr ""
+
+#: g2image/g2image-admin.php:210
+msgid "Default Custom URL:"
+msgstr ""
+
+#: g2image/g2image-admin.php:216
+msgid "Custom Classes:"
+msgstr ""
+
+#: g2image/g2image-admin.php:218
+msgid "Custom Class 1 (a valid class in your CSS or \"not_used\")"
+msgstr ""
+
+#: g2image/g2image-admin.php:220
+msgid "Custom Class 2 (a valid class in your CSS or \"not_used\")"
+msgstr ""
+
+#: g2image/g2image-admin.php:222
+msgid "Custom Class 3 (a valid class in your CSS or \"not_used\")"
+msgstr ""
+
+#: g2image/g2image-admin.php:224
+msgid "Custom Class 4 (a valid class in your CSS or \"not_used\")"
+msgstr ""
+
+#: g2image/g2image-admin.php:231
+msgid "Update Options"
+msgstr ""
+
+#: g2image/g2image-wp-plugin.php:35
+#: g2image/g2image-wp-plugin.php:63
+msgid "G2Image"
+msgstr ""
+
+#: g2image/g2image-wp-plugin.php:63
+msgid "Gallery2 Image Chooser"
+msgstr ""
+

@@ -1,0 +1,241 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: G2Image 1.3.1\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-02-27 19:22-0500\n"
+"Last-Translator: Stephen Chu <stephen@ju-ju.com>\n"
+"Language-Team: Kirk Steffensen <blogger@steffensenfamily.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: g2image/g2image-admin.php:42
+#: g2image/g2image-wp-plugin.php:35
+msgid "G2Image Popup Options"
+msgstr "G2Image 跳出式視窗設定"
+
+#: g2image/g2image-admin.php:47
+msgid "G2Image API located in TinyMCE plugins folder?"
+msgstr "在 TniyMCE 插入組件檔案夾中裝有 G2Image API？"
+
+#: g2image/g2image-admin.php:50
+msgid "Success"
+msgstr "成功"
+
+#: g2image/g2image-admin.php:52
+msgid "Failed.  Please install G2Image files in TinyMCE plugins directory."
+msgstr "失敗。請在TniyMCE 插入組件檔案夾中安裝 G2Image 檔案。"
+
+#: g2image/g2image-admin.php:71
+msgid "Gallery2 Path"
+msgstr "Gallery2 路徑"
+
+#: g2image/g2image-admin.php:73
+msgid "WPG2 is not active, so you must enter the path from your web root directory to your Gallery2 directory."
+msgstr "你沒有使用 WPG2，所以你必需輸入從你的網頁根目錄到你的 Gallery2 目錄的路徑。"
+
+#: g2image/g2image-admin.php:75
+msgid "Example: If your Gallery2 homepage is www.domain.com/gallery2/main.php, then the Gallery2 path is \"gallery2/\".  Make sure you include the trailing forward slash.<br /><strong>NOTE:</strong> <a href=\"http://wpg2.ozgreg.com\">WPG2</a> extends the integration of Gallery2 into WordPress and is highly recommended."
+msgstr "例如：你的 Gallery2 在 www.domain.com/gallery2/main.php，Gallery2 路徑就是「gallery2/」。請確認你包含路徑末尾的斜線符號。<br /><strong>注意：</string> <a href=\"http://wpg2.ozgreg.com\">WPG2</a> 加強了 Gallery2 和 WordPress 的整合性，強烈建議你採用。"
+
+#: g2image/g2image-admin.php:84
+msgid "Thumbnails per Page:"
+msgstr "每頁縮略圖數："
+
+#: g2image/g2image-admin.php:90
+msgid "Default Image Sort Order:"
+msgstr "預設圖像排序方式："
+
+#: g2image/g2image-admin.php:93
+msgid "Gallery2 Title (A-z)"
+msgstr "Gallery 2 主題（A-z）"
+
+#: g2image/g2image-admin.php:94
+msgid "Gallery2 Title (z-A)"
+msgstr "Gallery 2 主題（z-A）"
+
+#: g2image/g2image-admin.php:95
+msgid "Filename (A-z)"
+msgstr "檔案名稱（A-z）"
+
+#: g2image/g2image-admin.php:96
+msgid "Filename (z-A)"
+msgstr "檔案名稱（z-A）"
+
+#: g2image/g2image-admin.php:97
+msgid "Last Modification (newest first)"
+msgstr "上次更新日期（最新的在前）"
+
+#: g2image/g2image-admin.php:98
+msgid "Last Modification (oldest first)"
+msgstr "上次更新日期（最舊的在前）"
+
+#: g2image/g2image-admin.php:103
+msgid "Default Display"
+msgstr "預設顯示方式"
+
+#: g2image/g2image-admin.php:105
+msgid "Thumbnails Only"
+msgstr "只顯示縮略圖"
+
+#: g2image/g2image-admin.php:106
+msgid "Thumbnails with Titles and Filenames"
+msgstr "縮略圖和主題及檔名"
+
+#: g2image/g2image-admin.php:110
+msgid "Default Click Action"
+msgstr "預設滑鼠按鍵動作"
+
+#: g2image/g2image-admin.php:112
+msgid "Instantly insert using default settings"
+msgstr "立刻使用預設方式插入資料"
+
+#: g2image/g2image-admin.php:113
+msgid "Show Advanced Options Panel"
+msgstr "顯示進階設定面板"
+
+#: g2image/g2image-admin.php:117
+msgid "Allow User to Change Click Options?"
+msgstr "允許用戶改變滑鼠按鍵設定？"
+
+#: g2image/g2image-admin.php:119
+msgid "Yes"
+msgstr "是"
+
+#: g2image/g2image-admin.php:120
+msgid "No"
+msgstr "否"
+
+#: g2image/g2image-admin.php:129
+msgid "WPG2ID or WPG2 Tags?"
+msgstr "WPG2ID 或 WPG2 標籤？"
+
+#: g2image/g2image-admin.php:131
+msgid "WPG2ID Tags"
+msgstr "WPG2ID 標籤"
+
+#: g2image/g2image-admin.php:132
+msgid "WPG2 Tags"
+msgstr "WPG2 標籤"
+
+#: g2image/g2image-admin.php:141
+msgid "Default Action:"
+msgstr "預設動作："
+
+#: g2image/g2image-admin.php:143
+msgid "Choose the default \"How to Insert\" option."
+msgstr "請選擇預設的「如何插入資料」的設定。"
+
+#: g2image/g2image-admin.php:150
+msgid "WPG2/WPG2ID Tag"
+msgstr "WPG2/WPG2ID 標籤"
+
+#: g2image/g2image-admin.php:156
+msgid "Thumbnail with link to image"
+msgstr "指到圖像的縮略圖"
+
+#: g2image/g2image-admin.php:157
+msgid "Thumbnail with link to parent album"
+msgstr "指到上層相簿的縮略圖"
+
+#: g2image/g2image-admin.php:158
+msgid "Thumbnail with link to custom URL"
+msgstr "指到自定網址的縮略圖"
+
+#: g2image/g2image-admin.php:159
+msgid "Thumbnail only - no link"
+msgstr "沒有鏈接的縮略圖"
+
+#: g2image/g2image-admin.php:160
+msgid "Text link to image"
+msgstr "指到圖像的文字鏈接"
+
+#: g2image/g2image-admin.php:161
+msgid "Text link to parent album"
+msgstr "指到上層相簿的文字鏈接"
+
+#: g2image/g2image-admin.php:166
+msgid "Default Image Alignment:"
+msgstr "預設圖像對齊方式："
+
+#: g2image/g2image-admin.php:168
+msgid "The g2image classes must be implemented in your style.css for the alignment classes to be effective."
+msgstr "對齊級別只有在你的 style.css 中有定義 g2image 級別時才會有效。"
+
+#: g2image/g2image-admin.php:170
+msgid "None"
+msgstr "無"
+
+#: g2image/g2image-admin.php:171
+msgid "Normal"
+msgstr "正常"
+
+#: g2image/g2image-admin.php:172
+msgid "Float Left"
+msgstr "靠左浮動"
+
+#: g2image/g2image-admin.php:173
+msgid "Float Right"
+msgstr "靠右浮動"
+
+#: g2image/g2image-admin.php:174
+msgid "Centered"
+msgstr "對中"
+
+#: g2image/g2image-admin.php:188
+msgid "Custom classes will be available as options after entering them below and hitting the \"Update Options\" button."
+msgstr "自定級別會在下列選項輸入並按下「更新選項」按鈕後出現在選單中。"
+
+#: g2image/g2image-admin.php:192
+msgid "Default Class Mode"
+msgstr "預設級別模式"
+
+#: g2image/g2image-admin.php:199
+msgid "This setting only applies to images inserted as img tags.  WPG2 tags will be wrapped with a div tag."
+msgstr "這個設定只會應用在以 img 標籤方式插入的圖像。WPG2 標籤會包含在一個 div 標籤中。"
+
+#: g2image/g2image-admin.php:205
+msgid "Class in the img tag - &lt;img class=... /&gt; (Recommended)"
+msgstr "在 img 標籤中的級別 - &lt;img class=... /&gt;（建議使用）"
+
+#: g2image/g2image-admin.php:206
+msgid "Class in a div tag wrapper - &lt;div class=...&gt;&lt;img ... /&gt;&lt;/div&gt;"
+msgstr "在外包的 div 標籤中的級別 - &lt;div class=...&gt;&lt;img ... /&gt;&lt;/div&gt;"
+
+#: g2image/g2image-admin.php:210
+msgid "Default Custom URL:"
+msgstr "預設自定網址："
+
+#: g2image/g2image-admin.php:216
+msgid "Custom Classes:"
+msgstr "自訂級別："
+
+#: g2image/g2image-admin.php:218
+msgid "Custom Class 1 (a valid class in your CSS or \"not_used\")"
+msgstr "自訂級別 1（在你的 CSS 中的有效級別或「not_used」）"
+
+#: g2image/g2image-admin.php:220
+msgid "Custom Class 2 (a valid class in your CSS or \"not_used\")"
+msgstr "自訂級別 2（在你的 CSS 中的有效級別或「not_used」）"
+
+#: g2image/g2image-admin.php:222
+msgid "Custom Class 3 (a valid class in your CSS or \"not_used\")"
+msgstr "自訂級別 3（在你的 CSS 中的有效級別或「not_used」）"
+
+#: g2image/g2image-admin.php:224
+msgid "Custom Class 4 (a valid class in your CSS or \"not_used\")"
+msgstr "自訂級別 4（在你的 CSS 中的有效級別或「not_used」）"
+
+#: g2image/g2image-admin.php:231
+msgid "Update Options"
+msgstr "更新選項"
+
+#: g2image/g2image-wp-plugin.php:35
+#: g2image/g2image-wp-plugin.php:63
+msgid "G2Image"
+msgstr "G2Image"
+
+#: g2image/g2image-wp-plugin.php:63
+msgid "Gallery2 Image Chooser"
+msgstr "選取 Gallery 2 圖像"
+

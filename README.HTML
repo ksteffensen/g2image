@@ -1,0 +1,223 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Gallery2 Image Chooser README.HTML</title>
+	<link rel="stylesheet" href="readme.css" type="text/css" />
+</head>
+<body>
+<div id="main" >
+<h2>Gallery 2 Image Chooser</h2>
+<p>Version 1.3.5 - See <a href="CHANGELOG.HTML">CHANGELOG.HTML</a> for change history<br />
+Author: <a href="http://www.steffensenfamily.com" >Kirk Steffensen</a><br />
+Information Page: <a href="http://g2image.steffensenfamily.com">g2image.steffensenfamily.com</a><br />
+Live Demo: <a href="http://demo.steffensenfamily.com">demo.steffensenfamily.com</a><br />
+See <a href="CREDITS.HTML">CREDITS.HTML</a> for inspiration/code credits</p>
+
+<h3>I - REQUIREMENTS</h3>
+
+<ol>
+<li>To use the "Gallery 2 Image Chooser" plugin, you must have <a href="http://gallery.menalto.com/" >Gallery2</a>
+installed and properly configured:
+<ul>
+<li>You must have <a href="http://codex.gallery2.org/index.php?title=Gallery2:Download&oldid=5932">Gallery2 2.0.x</a>
+<li><strong>NOTE:</strong> This version WILL NOT WORK with Gallery2 version 2.1 or greater.
+<ul>
+<li>Use version 2.0 of the plugin if you need to use Gallery2 versions 2.1 or greater.
+</ul>
+<li><strong>You must also have the Gallery2 ImageBlock module installed and activated.</strong>
+<ul>
+<li>The ImageBlock module does not come with the "minimum" Gallery2 installation and must be downloaded from the <a href="http://codex.gallery2.org/index.php?title=Gallery2:Download&oldid=5932">Gallery2 download page</a> and installed separately.
+</ul>
+</ul>
+
+<li>The plugin was designed to be used with <a href="http://tinymce.moxiecode.com/" >TinyMCE</a>
+<ul>
+<li>Tested with TinyMCE version 2.0.1 and with the modified TinyMCE that is included with WordPress 2.0
+<li>To use the plugin without TinyMCE (in an application other than WordPress), please see the developer
+documentation at <a href="http://g2image.steffensenfamily.com/">http://g2image.steffensenfamily.com/</a>.
+</ul>
+
+<li>The plugin has been optimized for use with WordPress (with the WPG2 plugin):
+
+<ul>
+<li><a href="http://wordpress.org/" >WordPress</a>
+<ul>
+<li>Tested with version 2.0.1.  (It should work well on version 1.5.2, but has not been thoroughly tested
+on 1.5.2.)
+</ul>
+<li><a href="http://wpg2.ozgreg.com/" >WPG2</a>
+<ul>
+<li>Tested with version 1.0
+</ul>
+</ul>
+
+<li>If you are using WP 2.0, and you have users in the "Author" role, you'll need
+this plugin:
+
+<ul>
+<li><a href="http://redalt.com/wiki/Role+Manager" >Roles Mangager</a>
+<ul>
+<li>Activate it and modify the Author role by giving "Unfiltered HTML" rights.
+</ul>
+</ul>
+
+<li>Tested with IE 6.0 and Firefox 1.5.
+</ol>
+
+<h3>II - INSTALLATION</h3>
+
+<ol>
+<li>Unzip the files.
+
+<li>If you are NOT using WordPress with the WPG2 plugin, check config.php to
+make sure that $g2ic_gallery2_path is pointing to your Gallery2 directory.  If you are using an embedded
+application (other than WordPress) match the embedded paths, etc., at the bottom of config.php with the
+settings in your embedded application.
+
+<li>FTP the contents of the "tinymce_plugin/g2image/" directory to a new folder called /g2image/
+in your TinyMCE plugins directory.
+<ul>
+<li>For WordPress 2.0, this is /wordpress/wp-includes/js/tinymce/plugins/.
+<li>If you are using TinyMCE version 2.0.3 or greater, overwrite /g2image/editor_plugin.js and
+/g2image/editor_plugin_src.js with the files in the /TinyMCE_version_2.0.3_files/ directory.
+</ul>
+
+<li>If you are using WordPress, FTP the contents of the "wordpress_plugin/g2image/" directory to
+a new folder called /g2image/ in your wp-content/plugins/ directory.
+<ul>
+<li>Then activate the plugin.  The G2Image options panel will appear under the overall
+"Options" admin panel.
+<li>If you previously installed a modified WP 2.0.x tiny_mce_gzip.php file for an earlier g2image
+version, you should revert to the original WP 2.0.2 (or higher) tiny_mce_gzip.php file.
+<ul>
+<li>A copy of tiny_php_gzip.php from WP 2.0.2 is included in the wordpress_plugin/original_tiny_mce_gzip
+directory.  The changes that were in the modified tiny_mce_gzip.php are now included in the WP 2.0.2 file.
+<li>If you do not replace the previous tiny_mce_gzip.php file, the program will function properly, but you will
+have two g2image buttons.
+</ul>
+<li>If you are using any other plugins that affect the TinyMCE button layout, like the Advanced Editor Plugin,
+you need to check whether you'll need to add g2image to their button setup.
+</ul>
+
+<li>If you are not using WordPress 2.0 with WPG2, see the <a href="http://g2image.steffensenfamily.com/">
+G2Image Information Homepage</a> for more info on getting G2Image to work with your application.
+
+<ul>
+<li>Basically, you'll need to find the file that is initializing
+		TinyMCE for your installation.  It should have a tinyMCE.init
+		function like the one below (but probably much more
+		complicated).  You'll need to add g2image to the plugins and
+		buttons areas:
+<div class="codeblock" >
+<pre>
+tinyMCE.init({
+      theme : "advanced",
+      mode : "textareas",
+      plugins : "g2image",
+      theme_advanced_buttons3_add : "g2image"
+});
+</pre>
+</div>
+</ul>
+</ul>
+
+<li>CSS for the alignment options:
+
+<ul>
+<li>If you want to use the built-in alignment options, you'll need to add these
+three classes to your CSS.  You can also add upto four custom classes and add
+them to the config.php file.  Custom classes will be available in the alignment
+selector.
+
+<li>You'll need to customize these to fit into your site design.  This is how
+they're implemented in the CSS for www.steffensenfamily.com:
+
+<div class="codeblock" >
+<pre>
+.g2image_normal
+{
+	margin: 4px;
+}
+
+.g2image_float_left
+{
+	float: left;
+	clear: left;
+	margin: 4px;
+}
+
+.g2image_float_right
+{
+	float: right;
+	clear: right;
+	margin: 4px;
+}
+
+.g2image_centered
+{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+</pre>
+</div>
+
+<li>Note: The alignment classes only apply to the HTML thumbnails and the WPG2 tags,
+not the text links.  If you use the g2image classes for your WPG2 tags, you
+should not use the class for the WPG2 tags in the WordPress admin page for WPG2.
+If you do, you'll end up with two &lt;div class=___&gt; tags competing against each
+other.
+</ul>
+
+<li>After everything is installed, force a reload (for FireFox) or a refresh
+(for IE).  This forces the TinyMCE javascript to reload and display the button.
+
+<li>There are several options that you can set in config.php, such as default
+view, default number of images, default class, and more.  There are notes for each
+configuration option in the config.php file.
+
+<li>Language Support:
+<ul>
+<li>Version 1.3 shipped with support for English (en), Chinese Traditional (zh_TW),
+and Italian (it).
+<li>If you translate /g2image/langs/en.js and en.php, you can use them by changing
+the language settings in /g2image/config.php and editor_plugin.js.
+<ul>
+<li>For /g2image/config.php, set $g2ic_language to the corresponding letters.
+<li>For /g2image/editor_plugin.php add your language to the
+second line with a preceding comma after the "it".  For example German (de) is added here:
+<ul>
+<li><code>tinyMCE.importPluginLanguagePack('g2image', 'en, zh_TW, it, de');</code>
+</ul>
+</ul>
+<li>For WordPress: If you use <a href="http://www.poedit.org/index.php">poEdit</a>
+to create po and mo files from wp-content/plugins/g2image/locale/g2image.pot you
+can localize the WordPress G2Image Admin panel.  Place the resulting g2image-xx.mo
+file in the /locale/ folder (where xx is the locale language).  It should be the
+same language and encoding as your WPLANG in wp-config.php.
+<ul>
+<li>Version 1.3.1 shipped with support for Chinese Traditional (g2image-zh_TW.mo)
+</ul>
+</ul>
+</ol>
+
+<h3>III - ABOUT THE LICENSE</h3>
+
+<p>This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details, in the <a href="LICENSE.HTML">LICENSE.HTML</a> file.</p>
+
+<p>If you have not received a copy of this file along with this program, write to:<br />
+The Free Software Foundation, Inc.<br />
+59 Temple Place - Suite 330<br />
+Boston, MA  02111-1307<br />
+USA</p>
+</div>
+</body>
+</html>
