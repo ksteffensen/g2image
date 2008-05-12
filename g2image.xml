@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<mosinstall version="1.1.0" type="jceplugin" plugin="g2image">
+    <name>Gallery2 Image Chooser</name>
+    <version>2.2</version>
+    <creationDate>8/18/2007</creationDate>
+    <author>Kirk Steffensen</author>
+    <authorEmail>blogger (at sign) steffensenfamily (dot) com</authorEmail>
+    <authorUrl>http://g2image.steffensenfamily.com/</authorUrl>
+    <copyright>Kirk Steffensen</copyright>
+    <license>GPL</license>
+    <description>Gallery2 Image Chooser plugin for JCE</description>
+    <icon>g2image</icon>
+    <layout_icon>g2image</layout_icon>
+    <elements></elements>
+    <files>
+        <filename plugin="g2image">editor_plugin.js</filename>
+        <filename>editor_plugin.js</filename>
+        <filename>editor_plugin_src.js</filename>
+        <filename>g2image.php</filename>
+        <filename>config.php</filename>
+        <filename>init.php</filename>
+        <filename>g2image.xml</filename>
+        <filename>css/g2image.css</filename>
+        <filename>images/g2image.gif</filename>
+        <filename>jscripts/functions.js</filename>
+        <filename>jscripts/popup.js</filename>
+        <filename>langs/en.js</filename>
+        <filename>langs/en.php</filename>
+        <filename>langs/it.js</filename>
+        <filename>langs/it.php</filename>
+        <filename>langs/zh_TW.js</filename>
+        <filename>langs/zh_TW.php</filename>
+        <filename>langs/de.js</filename>
+        <filename>langs/de.php</filename>
+        <filename>langs/de_DE.js</filename>
+        <filename>langs/de_DE.php</filename>
+        <filename>langs/es.js</filename>
+        <filename>langs/es.php</filename>
+        <filename>langs/es_ES.js</filename>
+        <filename>langs/es_ES.php</filename>
+        <filename>langs/no.js</filename>
+        <filename>langs/no.php</filename>
+        <filename>langs/nl.js</filename>
+        <filename>langs/nl.php</filename>
+        <filename>langs/hu.js</filename>
+        <filename>langs/hu.php</filename>
+        <filename>langs/ko_KR.js</filename>
+        <filename>langs/ko_KR.php</filename>
+        <filename>langs/pl.js</filename>
+        <filename>langs/pl.php</filename>
+    </files>
+    <params></params>
+</mosinstall>
