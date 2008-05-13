@@ -7,12 +7,15 @@
 // Translation date : 19/06/2007
 // Translation by Benjamin Vossey - Benjamin@vossey.com
 
-tinyMCE.addToLang('g2image',{
-button_title : 'Inserer une image de Gallery',
-wpg2_album_photo_name : 'Album Gallery2/Nom de la photo:',
-wpg2_popup_title : 'Editeur de tag WPG2',
-wpg2_update : 'Mise &agrave; des tags WPG2:',
-wpg2id_id : 'ID de l\'objet Gallery:',
-wpg2id_popup_title : 'Editeur du tag WPG2ID',
-wpg2id_update : 'Mise &agrave; jour du tag WPG2ID:'
-});
+tinyMCE.addI18n({en:{
+	g2image:{
+		button_title : 'Inserer une image de Gallery',
+		title : 'Insert a Gallery 2 Image',
+		wpg2_album_photo_name : 'Album Gallery2/Nom de la photo:',
+		wpg2_popup_title : 'Editeur de tag WPG2',
+		wpg2_update : 'Mise &agrave; des tags WPG2:',
+		wpg2id_id : 'ID de l\'objet Gallery:',
+		wpg2id_popup_title : 'Editeur du tag WPG2ID',
+		wpg2id_update : 'Mise &agrave; jour du tag WPG2ID:'
+	}
+}});

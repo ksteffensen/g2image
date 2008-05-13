@@ -4,7 +4,7 @@
 // it to blogger (at sign) steffensenfamily (dot) com and I'll make it available
 // for others and include it in the next version.  Thanks!
 
-tinyMCE.addToLang('g2image',{
+tinyMCE.addI18n({en:{
 button_title : 'Voeg een Gallery 2 Afbeelding in',
 wpg2_album_photo_name : 'Gallery2 Album/Foto Naam:',
 wpg2_popup_title : 'WPG2 Tag Aanpassen',
