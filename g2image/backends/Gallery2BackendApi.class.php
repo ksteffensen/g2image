@@ -778,6 +778,8 @@ class Gallery2BackendApi{
 					$image_versions[$normalized_image_version['id']] = $normalized_image_version;
 				}
 			}
+			print $id;
+			print_r($fullsizes[$id]);
 			$fullsize_entity_type = $fullsizes[$id]->getEntityType();
 			if (!empty($fullsizes[$id]) && (($fullsize_entity_type == 'GalleryPhotoItem') || $fullsize_entity_type == 'GalleryDerivativeImage')) {
 				$image_version = $fullsizes[$id];
