@@ -1,24 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>{$lang_g2image_wpg2id_popup_title}</title>
+	<title>{#g2image.wpg2id_popup_title}</title>
 	<script language="javascript" type="text/javascript" src="../../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
-	<script language="javascript" type="text/javascript" src="jscripts/popup.js"></script>
+	<script language="javascript" type="text/javascript" src="jscripts/g2image.js"></script>
 </head>
 
-<body onload="tinyMCEPopup.executeOnLoad('init();');">
+<body>
 
 <form onsubmit="insertg2image();return false;" action="#">
 
-	<p class="title">{$lang_g2image_wpg2id_update}</p>
+	<p class="title">{#g2image.wpg2id_update}</p>
 
 	<div style="border: 1px solid #aaa; margin-bottom:10px;padding:5px">
-		<p>{$lang_g2image_wpg2id_id}<input name="file_name" type="text" id="width" value="" style="width: 565px; vertical-align: middle;" /></p>
+		<p>{#g2image.wpg2id_id}<input name="file_name" type="text" id="width" value="" style="width: 565px; vertical-align: middle;" /></p>
 	</div>
 
 	<div style="text-align:right" >
-		<input type="button" name="insert" value="{$lang_update}" onclick="insertwpg2id();" id="insert" />
-		<input type="button" name="cancel" value="{$lang_cancel}" onclick="cancelAction();" id="cancel" />
+		<input type="button" name="insert" value="{#update}" onclick="insertwpg2id();" id="insert" />
+		<input type="button" name="cancel" value="{#cancel}" onclick="cancelAction();" id="cancel" />
 	</div>
 
 </form>

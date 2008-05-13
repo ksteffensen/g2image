@@ -205,8 +205,10 @@ function showThumbnails(){
 
 function insertHtml(html, g2ic_form, g2ic_field, keep_open) {
 	if(window.opener){
-		if(window.tinyMCE)
-			window.opener.tinyMCE.execCommand("mceInsertContent",true,html);
+		if(window.tinyMCE) {
+			tinyMCE.execCommand("mceInsertContent",true,html);
+			tinyMCEPopup.close();
+		}
 		else if (window.opener.FCK)
 			window.opener.FCK.InsertHtml(html);
 		else

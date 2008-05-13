@@ -1,6 +1,6 @@
 /*
     Gallery 2 Image Chooser
-    Version 3.1 alpha - updated 07 OCT 2007
+    Version 3.1 - updated 13 MAY 2008
     Documentation: http://g2image.steffensenfamily.com/
 
     Author: Kirk Steffensen with inspiration, code snipets,
@@ -13,23 +13,20 @@
     See CHANGELOG.HTML for a history of changes.
 */
 
-function init() {
-
+tinyMCEPopup.onInit.add(function(ed) {
 	var formObj = document.forms[0];
-	formObj.file_name.value  = tinyMCE.getWindowArg('file_name');
-}
+	formObj.file_name.value = tinyMCEPopup.getWindowArg('file_name');
+});
 
 function insertwpg2() {
 
-	var inst = tinyMCEPopup.windowOpener.tinyMCE;
-
 	var formObj   = document.forms[0];
 	var file_name = formObj.file_name.value;
-	var empty_image_path = "{$pluginurl}/images/wpg2_placeholder.jpg";
+	var empty_image_path = tinyMCEPopup.getWindowArg('plugin_url') + "/images/wpg2_placeholder.jpg";
 
 	var html = ''
 		+ '<img src="' + empty_image_path + '"'
-		+ ' alt="'+file_name+'" title="'+file_name+'" id="mce_plugin_g2image_wpg2" />';
+		+ ' alt="'+file_name+'" title="'+file_name+'" class="mceItem" id="mce_plugin_g2image_wpg2" />';
 
 	tinyMCEPopup.execCommand("mceInsertContent", true, html);
 	tinyMCEPopup.close();
@@ -37,15 +34,13 @@ function insertwpg2() {
 
 function insertwpg2id() {
 
-	var inst = tinyMCEPopup.windowOpener.tinyMCE;
-
 	var formObj   = document.forms[0];
 	var file_name = formObj.file_name.value;
-	var empty_image_path = "{$pluginurl}/images/wpg2_placeholder.jpg";
+	var empty_image_path = tinyMCEPopup.getWindowArg('plugin_url') + "/images/wpg2_placeholder.jpg";
 
 	var html = ''
 		+ '<img src="' + empty_image_path + '"'
-		+ ' alt="'+file_name+'" title="'+file_name+'" id="mce_plugin_g2image_wpg2id" />';
+		+ ' alt="'+file_name+'" title="'+file_name+'" class="mceItem" id="mce_plugin_g2image_wpg2id" />';
 
 	tinyMCEPopup.execCommand("mceInsertContent", true, html);
 	tinyMCEPopup.close();
